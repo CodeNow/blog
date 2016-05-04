@@ -1,0 +1,58 @@
+// navigation
+.header {
+  background: $purple-light;
+  position: relative; // override default
+}
+
+// wraps avatar and blog description
+// only shows on index page
+.blog-hero-wrapper {
+  align-items: center;
+  background: $purple-light;
+  background-size: 1400px 480px;
+  display: flex;
+  flex-direction: column;
+  height: 360px;
+  justify-content: center;
+  padding-bottom: 30px;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    height: 300px;
+  }
+}
+
+// runnabear image
+.user-avatar {
+  background-image: url(http://static.tumblr.com/b89zjri/cPCo2nwzy/bearr.svg);
+  background-size: 90px 90px;
+  height: 90px;
+  width: 90px;
+
+  @media (max-width: 480px) {
+    background-size: 75px 75px;
+    height: 75px;
+    width: 75px;
+  }
+}
+
+.blog-description {
+  font-size: 24px;
+  line-height: 1.4;
+  margin-top: 12px;
+  max-width: 420px;
+  padding: 0 30px;
+
+  @media (max-width: 480px) {
+    font-size: 19px;
+  }
+}
+
+// not sure why we need this?
+.modal {
+  color: $gray-dark;
+
+  .h1 {
+    margin: 21px 0 15px;
+  }
+}

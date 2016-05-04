@@ -1,0 +1,104 @@
+body {
+  color: $gray-darker;
+
+  @media (max-width: 480px) {
+    font-size: 17px;
+  }
+}
+
+// headings
+h1,
+h2,
+h3,
+h4 {
+  font-weight: $weight-bold;
+  line-height: 1.4;
+}
+
+// intro paragraphs are only styled differently on the permalink page
+.permalink .intro {
+  color: $gray;
+  font-size: 24px;
+  margin-bottom: 45px;
+  text-align: center;
+}
+
+.blockquote {
+  border-left: 1px solid currentColor;
+  margin: 0 0 15px; // override default margin
+  padding-left: 20px;
+}
+
+// for all monospace text
+.monospace {
+  background: $gray-lightest;
+  color: #777;
+  font-size: 17px; // override
+  font-weight: $weight-normal;
+  overflow-x: scroll;
+
+  .small & {
+    font-size: inherit;
+  }
+
+  .h3 & {
+    background: none;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
+}
+
+// for code blocks
+.pre {
+  border-radius: 6px;
+  line-height: 1.6; // override
+  padding: 6px 12px;
+
+  + .p {
+    margin-top: 25px;
+  }
+}
+
+.code-block-label {
+  background: $gray-lightest;
+  border-radius: 6px 6px 0 0;
+  color: #777;
+  margin-top: 30px;
+  padding: 6px 12px;
+
+  + .pre {
+    border-radius: 0 0 6px 6px;
+    margin-top: 2px;
+  }
+}
+
+// for code blocks that should wrap, instead of scrolling horizontally
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.em {
+  font-style: italic;
+}
+
+.link:active {
+  color: $purple-light;
+}
+
+.caption {
+  margin-top: 0; // override default
+  position: relative;
+  top: -45px;
+}
+
+.footnote {
+  margin-top: 60px;
+
+  + .footnote {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,119 @@
+// wraps all posts
+.content {
+  overflow-x: hidden;
+}
+
+// wraps individual posts
+.post-wrapper {
+  border-bottom: 1px solid $gray-lighter;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 75px 0;
+}
+
+// wraps .post-info and .body-text
+.post {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 0 30px;
+}
+
+// wraps avatar, author, date, tag, social
+.post-info {
+  display: flex;
+  flex-wrap: wrap;
+
+  .permalink & {
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 45px;
+
+    .grid-block {
+      margin-bottom: 3px;
+    }
+  }
+}
+
+.post-author::after {
+  content: '\00a0';  // inserts a space before the date
+}
+
+// post title
+.title {
+  font-size: 30px;
+  font-weight: $weight-extra-bold;
+  margin-bottom: 15px;
+
+  .permalink & {
+    margin-bottom: 30px;
+    text-align: center;
+
+    @media (min-width: 480px) {
+      font-size: 45px;
+    }
+  }
+}
+
+// tumblr’s class for the "continue reading" link
+.read_more {
+  border-bottom: 2px solid rgba($purple-light,.25);
+  color: $purple-light;
+  display: inline-block;
+  font-weight: $weight-extra-bold;
+
+  &::after {
+    content: ' →';
+  }
+
+  &:hover {
+    border-bottom: 2px solid transparent;
+  }
+
+  &:active {
+    color: $gray-darker;
+  }
+}
+
+// content for each post
+.body-text {
+
+  // default margin for children of .body-text
+  * + * {
+    margin-top: 20px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 24px;
+    margin-top: 60px;
+  }
+
+  .ol,
+  .ul {
+    padding-left: 30px;
+
+    .ol {
+      list-style-type: lower-alpha;
+    }
+  }
+
+  .ol {
+    list-style-type: decimal;
+  }
+
+  .ul {
+    list-style-type: circle;
+  }
+}
+
+// centers graphics at any width
+.post-graphic {
+  height: auto;
+  margin-bottom: 60px;
+  margin-left: 50%;
+  margin-top: 60px;
+  max-width: calc(100vw - 60px);
+  transform: translateX(-50%);
+}

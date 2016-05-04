@@ -1,0 +1,67 @@
+.nav-wrapper {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 60px 30px;
+}
+
+.nav-tags,
+.nav-pages {
+  align-content: center;
+  line-height: 2;
+
+  .p:not(:last-child) {
+    margin-right: 20px;
+  }
+}
+
+// would use only-child, but tumblr injects a <script> element :(
+.nav-tags:only-of-type {
+  justify-content: center;
+}
+
+.nav-pages {
+  justify-content: center;
+
+  &:not(:only-child) .p:first-child {
+    margin-left: auto;
+  }
+}
+
+.tag-page {
+  background: $gray-lightest;
+  color: $gray;
+  padding: 15px 30px;
+}
+
+// footer
+.footer {
+  margin-top: 45px;
+}
+
+.cta-wrapper {
+  padding: 0 30px;
+}
+
+.cta {
+  align-items: center;
+  background: $gray-lighterest;
+  border: 1px solid $gray-lighter;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 50px 30px;
+  position: relative;
+
+  .p {
+    color: $gray-dark;
+    font-size: 24px;
+    margin-bottom: 15px;
+    max-width: 690px;
+
+    @media (max-width: 480px) {
+      font-size: 19px;
+    }
+  }
+}

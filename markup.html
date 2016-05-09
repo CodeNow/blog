@@ -44,33 +44,91 @@
     <header class="grid-block shrink header">
       <div class="grid-block grid-container align-justify">
         <a href="https://runnable.com" class="grid-content shrink logo">
-          <img class="img" src="http://static.tumblr.com/b89zjri/IKCo4rv26/runnable-logo.svg" height="36" width="192">
+          <img class="img" src="http://runnable.com/images/runnable-logo.svg" height="36" width="192">
         </a>
-        <div class="grid-block shrink">
-          <a href="https://runnable.com/product.html" class="grid-content btn btn-sm text-white strong hidden-sm">Product</a>
-          <a href="http://support.runnable.io" class="grid-content btn btn-sm text-white strong hidden-sm">Docs</a>
-          <a href="https://api.runnable.io/auth/github?redirect=https://app.runnable.io/?auth" class="grid-content btn btn-sm text-white strong hidden-md">Sign In</a>
-          <a href="#sign-up" class="grid-content btn btn-sm btn-white text-white strong hidden-xs">Sign Up</a>
-          <div class="grid-content btn btn-sm popover-trigger click" tabindex="1">
-            <img class="img-overflow" src="//p4.zdassets.com/hc/theme_assets/610215/200082209/icons-overflow.svg" height="24" width="24">
-            <div class="popover bottom">
-              <div class="list text-left">
-                <a href="https://api.runnable.io/auth/github?redirect=https://app.runnable.io/?auth" class="list-item-a visible-md">Sign In</a>
-                <a href="#sign-up" class="list-item-a visible-xs">Sign Up</a>
-                <a class="list-item divider visible-md"></a>
-                <a href="//runnable.com/product.html" class="list-item-a visible-sm">Product</a>
-                <a href="http://support.runnable.io" class="list-item-a visible-sm">Docs</a>
-                <a href="//runnable.com/about.html" class="list-item-a">About</a>
-                <a href="{BlogURL}" class="list-item-a">Blog</a>
-                <a href="http://blog.runnable.com/private/141107158076/tumblr_o43mfmwB671t3hjy4" class="list-item-a">Pricing</a>
-                <a href="http://blog.runnable.com/private/141107137076/tumblr_o43mexUxVP1t3hjy4" class="list-item-a">Security</a>
-                <a href="//runnable.com/privacy.html" class="list-item-a">Privacy</a>
+        <nav class="nav grid-block shrink">
+          <div class="grid-content btn btn-sm popover-trigger hover has-links text-white strong hidden-sm product-link" tabindex="1">
+            <a class="a" href="http://runnable.com/product.html">
+              <span class="float-left">Product Tour</span>
+              <svg class="icons icons-chevron-down float-right">
+                <use xlink:href="#icons-chevron-down">
+              </svg>
+            </a>
+            <div class="popover-hover-wrapper">
+              <div class="grid-block popover popover-product-menu bottom">
+                <a href="http://runnable.com/product.html" class="grid-block align-center vertical btn btn-product">
+                  <img class="img" src="http://runnable.com/images/product-menu/sandbox.svg" height="36" width="36">
+                  <p class="p">
+                    <strong class="strong">Get an overview.</strong>
+                    <small class="small">A sandbox service for teams.</small>
+                  </p>
+                </a>
+                <a href="http://runnable.com/integration-testing.html" class="grid-block align-center vertical btn btn-product">
+                  <img class="img" src="http://runnable.com/images/product-menu/integration-testing.svg" height="36" width="36">
+                  <p class="p">
+                    <strong class="strong">Integrate & test changes.</strong>
+                    <small class="small">Every branch, end-to-end.</small>
+                  </p>
+                </a>
+                <a href="http://runnable.com/production.html" class="grid-block align-center vertical btn btn-product">
+                  <img class="img" src="http://runnable.com/images/product-menu/production.svg" height="36" width="36">
+                  <p class="p">
+                    <strong class="strong">Deploy tested artifacts.</strong>
+                    <small class="small">Tested builds, ready to push.</small>
+                  </p>
+                </a>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </header>
+            </div>
+            <a href="http://support.runnable.io" class="grid-content btn btn-sm text-white strong hidden-sm">Docs</a>
+            <a href="https://api.runnable.io/auth/github?redirect=https://app.runnable.io/?auth" class="grid-content btn btn-sm text-white strong hidden-md">Sign In</a>
+            <a href="#sign-up" class="grid-content btn btn-sm btn-white text-white strong hidden-xs">Sign Up</a>
+            <div class="grid-content btn btn-sm btn-overflow popover-trigger hover has-links" tabindex="1">
+              <svg class="icons icons-overflow">
+                <use xlink:href="#icons-overflow">
+                </svg>
+                <div class="popover-hover-wrapper right-align-sm">
+                  <div class="grid-block popover popover-header-menu bottom">
+                    <div class="grid-block shrink vertical visible-sm list-product">
+                      <a href="http://runnable.com/product.html" class="grid-block align-center vertical btn btn-product">
+                        <img class="img" src="http://runnable.com/images/product-menu/sandbox.svg" height="36" width="36">
+                        <p class="p">
+                          <strong class="strong">Get an overview.</strong>
+                          <small class="small">A sandbox service for teams.</small>
+                        </p>
+                      </a>
+                      <a href="http://runnable.com/integration-testing.html" class="grid-block align-center vertical btn btn-product">
+                        <img class="img" src="http://runnable.com/images/product-menu/integration-testing.svg" height="36" width="36">
+                        <p class="p">
+                          <strong class="strong">Integrate & test changes.</strong>
+                          <small class="small">Every branch, end-to-end.</small>
+                        </p>
+                      </a>
+                      <a href="http://runnable.com/production.html" class="grid-block align-center vertical btn btn-product">
+                        <img class="img" src="http://runnable.com/images/product-menu/production.svg" height="36" width="36">
+                        <p class="p">
+                          <strong class="strong">Deploy tested artifacts.</strong>
+                          <small class="small">Tested builds, ready to push.</small>
+                        </p>
+                      </a>
+                    </div>
+                    <div class="grid-block vertical list text-left">
+                      <a href="undefined/auth/github?redirect&#x3D;undefined/?auth" class="list-item-a visible-md">Sign In</a>
+                      <a href="#sign-up" class="list-item-a visible-xs">Sign Up</a>
+                      <div class="list-item divider visible-md"></div>
+                      <a href="http://support.runnable.io" class="list-item-a visible-sm">Docs</a>
+                      <a href="about.html" class="list-item-a">About</a>
+                      <a href="http://blog.runnable.com" class="list-item-a">Blog</a>
+                      <a href="http://blog.runnable.com/private/141107158076/tumblr_o43mfmwB671t3hjy4" class="list-item-a">Pricing</a>
+                      <a href="http://blog.runnable.com/private/141107137076/tumblr_o43mexUxVP1t3hjy4" class="list-item-a">Security</a>
+                      <a href="http://runnable.com/privacy.html" class="list-item-a">Privacy</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </header>
     {block:IndexPage}
     <div class="blog-hero-wrapper">
       {block:ShowAvatar}
@@ -83,10 +141,6 @@
     <div class="tag-page text-center">Showing posts tagged <a class="link" href="{TagURL}">{Tag}</a></div>
     {/block:TagPage}
     {/block:IndexPage}
-    <!--<header id="header">-->
-    <!--    <div class="blog-title-wrapper content">-->
-    <!--    </div>-->
-    <!--</header>-->
     </div>
     <section id="posts" class="content clearfix {block:HideTitle}{block:HideDescription}no-title-desc {/block:HideDescription}{/block:HideTitle}{block:HideHeaderImage}no-image {/block:HideHeaderImage} {block:ShowAvatar}avatar-style-{AvatarShape}{/block:ShowAvatar} {block:HideAvatar}avatar-hidden{/block:HideAvatar} {block:IfShowNavigation}show-nav{/block:IfShowNavigation}">
       <div data-page-id="{CurrentPage}">
@@ -304,6 +358,9 @@
       <path fill="#fff" d="M2.344,7.656A1.344,1.344,0,1,1,1,9,1.345,1.345,0,0,1,2.344,7.656m0-1A2.344,2.344,0,1,0,4.688,9,2.344,2.344,0,0,0,2.344,6.656h0Z" transform="translate(0 -6.656)" />
       <path fill="#fff" d="M9,7.656A1.344,1.344,0,1,1,7.656,9,1.345,1.345,0,0,1,9,7.656m0-1A2.344,2.344,0,1,0,11.344,9,2.344,2.344,0,0,0,9,6.656H9Z" transform="translate(0 -6.656)" />
       <path fill="#fff" d="M15.656,7.656A1.344,1.344,0,1,1,14.313,9a1.345,1.345,0,0,1,1.344-1.344m0-1A2.344,2.344,0,1,0,18,9a2.344,2.344,0,0,0-2.344-2.344h0Z" transform="translate(0 -6.656)" />
+    </symbol>
+    <symbol id="icons-chevron-down" viewBox='0 0 18 11'>
+      <polyline points="17 1 9 10 1 1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
     </symbol>
   </svg>
 

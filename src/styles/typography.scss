@@ -90,13 +90,13 @@ h4 {
   color: $purple-light;
 }
 
-.caption {
+.caption.caption {
   margin-top: 0; // override default
   position: relative;
   top: -45px;
 }
 
-.footnote {
+.footnote.footnote {
   margin-top: 60px;
 
   + .footnote {

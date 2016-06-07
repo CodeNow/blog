@@ -29,7 +29,7 @@
   <script src="http://static.tumblr.com/hriofhd/Qj0m8pn7q/html5shiv.js"></script>
   <![endif]-->
   <link rel="stylesheet" href="https://runnable.com/styles/index.css">
-  <link rel="stylesheet" href="http://static.tumblr.com/mpxyjs6/43Yo7pamp/index.css">
+  <link rel="stylesheet" href="http://static.tumblr.com/mpxyjs6/tf4o821mg/index.css">
   <script>function updateLabel(e){var t=document.getElementsByClassName("label-text")[0];switch(e.target.getAttribute("value")){case"GitHub":t.innerHTML="GitHub Organization";break;case"Bitbucket":t.innerHTML="Bitbucket Team"}}function markInvalid(e){var t,a,n=e.target;if("INPUT"==n.tagName)t=n.classList.add("invalid");else for(t=n.getElementsByTagName("input"),a=0;a<t.length;a++)t[a].validity.valid||t[a].classList.add("invalid")}function shakeForm(e){for(var t=e.target;(t=t.parentElement)&&!t.classList.contains("modal"););t.classList.add("shake"),t.addEventListener("animationend",function(){t.classList.remove("shake"),t.removeEventListener("animationend",function(){})})}function makeDirty(e){e.target.classList.remove("pristine","invalid")}function formInvalid(e){markInvalid(e),shakeForm(e)}function toggleEditing(e,t){var a,n=e.getElementsByTagName("input"),i=e.getElementsByTagName("textarea")[0],s=e.getElementsByTagName("button")[0],r=document.getElementsByClassName("spinner-wrapper");if("disable"===t){if(n)for(a=0;a<n.length;a++)n[a].disabled=!0;i&&(i.disabled=!0),s.disabled=!0,s.innerHTML+='<div class="spinner-wrapper spinner-md"><svg viewbox="0 0 16 16" class="spinner"><circle cx="8" cy="8" r="7" stroke-linecap="round" class="path"></circle></svg></div>'}if("enable"===t){if(n)for(a=0;a<n.length;a++)n[a].disabled=!1;i&&(i.disabled=!1),s.disabled=!1,r[0].parentElement.removeChild(r[0])}}function xhrSubmit(e,t,a){var n,i=new XMLHttpRequest,s=document.getElementsByClassName("form-questionnaire")[0],r=document.getElementsByClassName("article-sign-up")[0],l=document.getElementsByClassName("article-questionnaire")[0],o=document.getElementsByClassName("article-confirm")[0];t.classList.contains("form-sign-up")?n="https://codenow.com/submit":t.classList.contains("form-questionnaire")&&(n="https://codenow.com/submitreason"),i.open("POST",n),i.setRequestHeader("Content-Type","application/json"),i.onreadystatechange=function(){4===i.readyState&&0===i.status&&(shakeForm(e),activeCampaignValidation('An unknown error occured. Please send us an email at <a class="link" href="mailto:support@runnable.com">support@runnable.com</a> for assistance.',t),toggleEditing(t,"enable"))},i.onload=function(){var a=JSON.parse(i.responseText),n=a.result_code,d=a.result_message;(-1===n||0===n)&&(shakeForm(e),activeCampaignValidation(d,t)),1===n&&(r.classList.contains("out")?(l.classList.add("out"),o.classList.add("in")):(s.addEventListener("change",makeDirty),s.addEventListener("submit",setupSubmitQuestionnaire({subscriber_id:a.subscriber_id,email:a.email})),r.classList.add("out"),l.classList.add("in"),fbq("track","Lead"),ga("send","event","signUp","submit"),goog_report_conversion())),toggleEditing(t,"enable")},i.send(a)}function submitSignUp(e){var t=e.target;if(e.preventDefault(),t.checkValidity()){var a,n=document.getElementsByName("scm"),i="";toggleEditing(t,"disable");for(var s=0;s<n.length;s++)n[s].checked&&(i=n[s].value);a={scm:i,organization:t[2].value,email:t[3].value},a=JSON.stringify(a),xhrSubmit(e,t,a)}}function setupSubmitQuestionnaire(e){return function(t){var a=t.target;if(t.preventDefault(),a.checkValidity()){var n;toggleEditing(a,"disable"),n={email:e.email,subscriber_id:e.subscriber_id,reason:a[0].value},n=JSON.stringify(n),xhrSubmit(t,a,n)}}}function activeCampaignValidation(e,t){var a=t.parentNode,n=a.getElementsByClassName("well-error")[0],i=a.getElementsByClassName("well-text")[0],s=e.substr(0,e.indexOf("."));switch(s){case"You selected a list that does not allow duplicates":e="That email has already been used to sign up.";break;case"Contact Email Address is not valid":e="That email address is not valid.";break;case"Your Organization or Team is invalid":e="We couldn’t find that organization or team."}i.innerHTML=e,n.setAttribute("style","display: flex !important")}function checkScroll(){var e=document.body;"#sign-up"===location.hash?e.classList.add("modal-open"):e.classList.remove("modal-open")}window.addEventListener("load",function(){var e,t,a=document.getElementsByClassName("form-sign-up")[0];document.getElementsByClassName("form-questionnaire")[0],document.getElementsByClassName("img-rounded");if(checkScroll(),window.addEventListener("hashchange",checkScroll),a)for(a.addEventListener("change",makeDirty),a.addEventListener("submit",submitSignUp),t=a.getElementsByTagName("input"),e=0;e<t.length;e++)t[e].addEventListener("invalid",formInvalid),t[e].classList.contains("input-radio")&&t[e].addEventListener("change",updateLabel)});</script>
 </head>
 
@@ -253,18 +253,18 @@
   {/block:IndexPage}
 
   <!-- cta -->
-  <div class="cta-wrapper">
-    <div class="cta">
-      <ul class="avatar-list">
+  <!-- <div class="cta-wrapper"> -->
+    <!-- <div class="cta"> -->
+      <!-- <ul class="avatar-list"> -->
         <!-- 12 avatars -->
-        <li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li>
-      </ul>
-      <p class="p text-center">From the brains behind Runnable, who bring you full-stack environments for GitHub branches.</p>
-      <a href="#sign-up">
-        <button class="btn btn-md green">Try it Free</button>
-      </a>
-    </div>
-  </div>
+        <!-- <li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li><li class="avatar"></li> -->
+      <!-- </ul> -->
+      <!-- <p class="p text-center">From the brains behind Runnable, who bring you full-stack environments for GitHub branches.</p> -->
+      <!-- <a href="#sign-up"> -->
+        <!-- <button class="btn btn-md green">Try it Free</button> -->
+      <!-- </a> -->
+    <!-- </div> -->
+  <!-- </div> -->
 
   <!--{block:PermalinkPage}-->
   <!--<div class="post-footer grid-container text-center">-->
@@ -275,18 +275,59 @@
 
   <!-- footer -->
   <footer class="grid-block vertical footer justify-spaced">
-    <div class="grid-block link-wrapper">
-    <a href="http://runnable.com/demo.html" class="btn btn-xs link strong">Request Demo</a>
-      <a href="http://runnable.com/product.html" class="btn btn-xs link strong">Product</a>
-      <a href="http://support.runnable.io" class="btn btn-xs link strong">Docs</a>
-      <a href="http://runnable.com/about.html" class="btn btn-xs link strong">About</a>
-      <a href="http://blog.runnable.com" class="btn btn-xs link strong">Blog</a>
-      <a href="http://blog.runnable.com/private/141107158076/tumblr_o43mfmwB671t3hjy4" class="btn btn-xs link strong">Pricing</a>
-      <a href="http://blog.runnable.com/private/141107137076/tumblr_o43mexUxVP1t3hjy4" class="btn btn-xs link strong">Security</a>
-      <a href="http://runnable.com/privacy.html" class="btn btn-xs link strong">Privacy</a>
-    </div>
-    <img class="grid-block img" src="http://runnable.com/images/runnabot-head.png" height="45" width="45">
-  </footer>
+    <a class="sign-up-box grid-block vertical well well-anchor" href="#sign-up">
+    <img class="img" src="http://runnable.com/images/runnabear-hello.png">
+      <p class="p">Runnable is <strong class="strong">free</strong> during our preview,<br class="hidden-xxxs">
+        including infrastructure costs!
+        <div class="btn btn-sm green">Sign Up</div>
+      </a>
+
+      <aside class="grid-block aside-support">
+        <div class="grid-block vertical justify-center support-text">
+          <p class="p strong">Our engineers are here for you.</p>
+          <p class="p">We can answer questions about Docker <br class="br">and help you set up your stack.</p>
+        </div>
+        <figure class="grid-block vertical figure shrink">
+          <div class="grid-block shrink bubble">
+            <img class="img float-left" src="http://runnable.com/images/logos/logo-slack.svg" height="18" width="18" alt="Slack">
+            <div class="grid-block vertical">
+              <div class="user">
+                <strong class="strong user-name">Jorge</strong>
+                <span class="user-time"> 4:19 PM</span>
+              </div>
+              <p class="p user-text">Can I run multiple commands?</p>
+            </div>
+          </div>
+          <div class="grid-block shrink bubble">
+            <img class="img float-left" src="http://runnable.com/images/runnabot-head.png" height="18" width="18" alt="Slack">
+            <div class="grid-block vertical">
+              <div class="user">
+                <strong class="strong user-name">Taylor</strong>
+                <span class="user-time"> 4:20 PM</span>
+              </div>
+              <p class="p user-text">Hi <span class="link-blue">@jorge</span>!
+                <br>Yes you can. Here’s how: …
+              </p>
+            </div>
+          </div>
+        </figure>
+      </aside>
+
+      <div class="grid-block link-wrapper">
+        <div class="grid-block vertical align-start">
+          <a href="http://runnable.com/demo.html" class="btn btn-xs link strong">Request Demo</a>
+          <a href="http://runnable.com/product.html" class="btn btn-xs link strong">Product</a>
+          <a href="http://support.runnable.io" class="btn btn-xs link strong">Docs</a>
+          <a href="http://runnable.com/about.html" class="btn btn-xs link strong">About</a>
+        </div>
+        <div class="grid-block vertical align-start">
+          <a href="http://blog.runnable.com" class="btn btn-xs link strong">Blog</a>
+          <a href="http://blog.runnable.com/private/141107158076/tumblr_o43mfmwB671t3hjy4" class="btn btn-xs link strong">Pricing</a>
+          <a href="http://blog.runnable.com/private/141107137076/tumblr_o43mexUxVP1t3hjy4" class="btn btn-xs link strong">Security</a>
+          <a href="http://runnable.com/privacy.html" class="btn btn-xs link strong">Privacy</a>
+        </div>
+      </div>
+    </footer>
 
   <!--the sign up modal-->
   <div class="modal-backdrop" id="sign-up">

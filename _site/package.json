@@ -1,0 +1,22 @@
+{
+  "name": "tumblr",
+  "version": "0.0.0",
+  "description": "runnable tumblr styles",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "~3.9.0",
+    "gulp-autoprefixer": "~2.3.1",
+    "gulp-sass": "~2.0.3",
+    "run-sequence": "^1.1.5"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "git": "^0.1.5",
+    "gulp-debug": "~2.0.1",
+    "gulp-newer": "~0.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeNow/tumblr.git"
+  }
+}

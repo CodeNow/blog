@@ -3,7 +3,7 @@ layout: post
 title: Finding the Root Cause of Elusive Frontend Errors
 author: ryan_k
 category: Engineering
-excerpt: Frontend applications always have a multitude of user interactions and flows for how a user can get to a particular state. Sometimes these states are not intended and errors happen. Errors can be incredibly difficult to track down, so a reliable process for finding the root cause of an error can save a lot of time and confusion. Our process involves using a few services in conjunction.
+excerpt: 'Frontend applications always have a multitude of user interactions and flows for how a user can get to a particular state. Sometimes these states are not intended and errors happen. Errors can be incredibly difficult to track down, so a reliable process for finding the root cause of an error can save a lot of time and confusion. Our process involves using a few services in conjunction.'
 ---
 
 Frontend applications always have a multitude of user interactions and flows for how a user can get to a particular state. Sometimes these states are not intended and errors happen. Errors can be incredibly difficult to track down, so a reliable process for finding the root cause of an error can save a lot of time and confusion. Our process involves using a few services in conjunction.

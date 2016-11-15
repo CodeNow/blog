@@ -13,7 +13,7 @@ layout: default
         <img class="margin-right-xxs avatar" src="{{ author.avatar }}" height="27" width="27">
         <span class="post-author text-gray">by {{ author.display_name }} {{ post.date | timeago }}</span>
       </div>
-      <p class="p margin-top-sm">{{ post.excerpt }}</p>
+      <p class="p article-body margin-top-sm">{{ post.excerpt }}</p>
       <a href="/blog{{ post.url }}" class="read-more">Keep reading</a>
     </article>
   {% endfor %}

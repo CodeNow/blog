@@ -169,6 +169,11 @@
     max-width: calc(100vw - 60px);
     transform: translateX(-50%);
   }
+
+  // captions
+  .caption {
+    font-style: italic;
+  }
 }
 
 .page-landing {

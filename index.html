@@ -11,7 +11,7 @@ layout: default
       <a class="h3 weight-strong" href="/blog{{ post.url }}">{{ post.title }}</a>
       <div class="grid-block margin-top-sm author">
         <img class="margin-right-xxs avatar" src="{{ author.avatar }}" height="27" width="27">
-        <span class="post-author text-gray">by {{ author.display_name }} 1 day ago</span>
+        <span class="post-author text-gray">by {{ author.display_name }} {{ post.date | timeago }}</span>
       </div>
       <p class="p margin-top-sm">{{ post.excerpt }}</p>
       <a href="/blog{{ post.url }}" class="read-more">Keep reading</a>

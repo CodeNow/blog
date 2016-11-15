@@ -1,7 +1,37 @@
 # Author details.
+anand_p:
+  display_name: Anand Patel
+  avatar: http://runnable.io/images/team/anandpatel.jpg
 anton_p:
   display_name: Anton Podviaznikov
   avatar: https://runnable.com/images/team/antonpodviaznikov.jpg
+bryan_k:
+  display_name: Bryan Kendall
+  avatar: http://runnable.io/images/team/bryankendall.jpg
+chris_n:
+  display_name: Chris Neill
+  avatar: http://runnable.io/images/team/chrisneill.jpg
+forrest_j:
+  display_name: Forrest Junod
+  avatar: http://runnable.io/images/team/chrisneill.jpg
+henry_m:
+  display_name: Henry Mollman
+  avatar: https://runnable.com/images/team/henrymollman.jpg
+jorge_s:
+  display_name: Jorge Silva
+  avatar: http://runnable.io/images/team/jorgesilva.jpg
+nathan_m:
+  display_name: Nathan Meyers
+  avatar: http://runnable.io/images/team/nathanmeyers.jpg
 ryan_k:
   display_name: Ryan Kahn
   avatar: http://runnable.io/images/team/ryankahn.jpg
+ryan_r:
+  display_name: Ryan Sandor Richards
+  avatar: http://runnable.io/images/team/ryanrichards.jpg
+sohail_a:
+  display_name: Sohail Ahmed
+  avatar: https://runnable.com/images/team/sohailahmed.jpg
+yash_k:
+  display_name: Yash Kumar
+  avatar: http://runnable.io/images/team/anandpatel.jpg

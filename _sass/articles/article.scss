@@ -165,6 +165,15 @@
   .well-anchor:last-child {
     margin-top: 75px;
   }
+
+  img {
+    height: auto;
+    margin-bottom: $sm;
+    margin-left: 50%;
+    margin-top: $lg;
+    max-width: calc(100vw - 60px);
+    transform: translateX(-50%);
+  }
 }
 
 .page-landing {
@@ -201,16 +210,6 @@
       @include media(sm) {
         margin-top: 60px;
       }
-    }
-  }
-
-  .img-centered {
-    display: block;
-    margin: 0 auto;
-
-    @include media(xxs) {
-      height: auto;
-      max-width: 100%;
     }
   }
 }

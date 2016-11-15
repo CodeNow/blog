@@ -4,7 +4,7 @@ layout: default
 
 {% include hero.html %}
 
-<section class="grid-block grid-container section-articles">
+<section class="grid-block col grid-container section-articles">
   {% for post in site.posts %}
     {% assign author = site.data.authors[post.author] %}
     <article class="article">

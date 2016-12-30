@@ -24,6 +24,7 @@ seo:
 markdown: kramdown
 
 gems:
+  - jekyll-paginate
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-timeago
@@ -64,3 +65,6 @@ jekyll_timeago:
   week: 'week'
   days: 'days'
   day: 'day'
+
+paginate: 8
+paginate_path: "/:num/"

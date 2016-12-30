@@ -5,7 +5,7 @@ layout: default
 {% include hero.html %}
 
 <section class="grid-block col grid-container section-articles">
-  {% for post in site.posts %}
+  {% for post in paginator.posts %}
     {% assign author = site.data.authors[post.author] %}
     <article class="article">
       <a class="h3 weight-strong" href="/blog{{ post.url }}">{{ post.title }}</a>
@@ -17,7 +17,8 @@ layout: default
       <a href="/blog{{ post.url }}" class="read-more">Keep reading</a>
     </article>
   {% endfor %}
-  <section class="grid-block col shrink justify-center align-center section-footer padding-lg">
+  <section class="grid-block col shrink justify-center align-center section-footer">
+    {% include pagination.html %}
     {% include mailchimp.html %}
   </section>
 </section>

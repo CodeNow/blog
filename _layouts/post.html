@@ -1,0 +1,17 @@
+---
+layout: default
+---
+
+<div class="grid-block col align-center hero">
+  <h1 class="h1 text-center weight-strong margin-top-sm">{{ page.title }}</h1>
+</div>
+
+<div class="grid-block grid-container col">
+  <article class="article article-body">
+    {{ content }}
+  </article>
+  <section class="grid-block col shrink justify-center align-center section-footer padding-lg">
+    <a class="grid-block shrink link text-center margin-bottom-lg" href="../">View All Posts</a>
+    {% include mailchimp.html %}
+  </section>
+</div>

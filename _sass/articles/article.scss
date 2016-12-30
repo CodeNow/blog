@@ -1,4 +1,4 @@
-.article-body {
+.article.article-body {
   position: relative;
   width: 100%;
 
@@ -174,42 +174,30 @@
   .caption {
     font-style: italic;
   }
-}
 
-.page-landing {
-
-  .ol,
-  .ul,
-  .p {
-    margin-bottom: 9px;
-  }
-
-  .ol,
-  .ul {
-    list-style-type: circle;
-    margin: 0;
-    padding-left: 21px;
-  }
-
-  .hr {
-    background: $gray-lighter;
-    border: 0;
-    height: 1px;
-    margin-bottom: 30px;
+  .pre-label {
+    background: $gray-lighterest;
+    border: $input-border solid $gray-lighter;
+    border-bottom: 0;
+    border-radius: $input-border-radius-lg $input-border-radius-lg 0 0;
+    font-size: 13px;
+    font-weight: $weight-bold;
     margin-top: 30px;
+    padding: 6px 12px;
 
-    @include media(xs) {
-      margin-left: 30px;
-      margin-right: 30px;
-      max-width: calc(100% - 60px);
+    + pre {
+      border-radius: 0 0 $input-border-radius-lg $input-border-radius-lg;
     }
+  }
 
-    &.hr-footer {
-      margin-top: 150px;
+  .footnote {
+    color: $gray;
+    font-size: 13px;
+    font-weight: $weight-normal;
+    margin-top: 60px;
 
-      @include media(sm) {
-        margin-top: 60px;
-      }
+    + .footnote {
+      margin-top: 20px;
     }
   }
 }

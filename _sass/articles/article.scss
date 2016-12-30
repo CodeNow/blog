@@ -1,20 +1,24 @@
-.article.article-body {
+.article-body {
   position: relative;
   width: 100%;
 
-  // vertical rythm
-  p,
-  blockquote,
-  pre,
-  ul,
-  ol,
-  dl,
-  figure,
-  .highlight {
-    margin-bottom: $md;
+  // be more specific than default css
+  &.article {
 
-    &:last-child {
-      margin-bottom: 0;
+    // vertical rythm
+    p,
+    blockquote,
+    pre,
+    ul,
+    ol,
+    dl,
+    figure,
+    .highlight {
+      margin-bottom: $md;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 

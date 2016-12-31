@@ -3,34 +3,46 @@ layout: default
 ---
 
 <div class="grid-block col align-center hero">
-  <h1 class="h3 text-center weight-light margin-top-sm">{{ page.title }}</h1>
+  <h1 class="h1 text-center weight-strong margin-top-sm">{{ page.title }}</h1>
 </div>
 
-<div class="info">
-  <div class="avatar"></div>
-  <div>by Nathan Meyers</div>
-  <div>1 week ago in Engineering</div>
-  <div class="grid-block grid-container col">
-    <div class="social-sharing" data-permalink="{{ page.legacy_url }}">
-      <a target="_blank" href="http://twitter.com/intent/tweet?url={{ page.legacy_url }}" class="share-twitter">
-        <img src="http://static.tumblr.com/b89zjri/xGno4vmz1/twitter.svg">
-        <span class="share-count text-gray strong small">0</span>
-      </a>
-      <a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url={{ page.legacy_url }}" class="share-linkedin">
-        <img src="http://static.tumblr.com/b89zjri/nwQo4vmyv/linkedin.svg">
-        <span class="share-count text-gray strong small">0</span>
-      </a>
-      <a target="_blank" href="#" class="share-hackernews">
-        <div class="hn-image"></div>
-        <span class="share-count text-gray strong small">0</span>
-      </a>
+<<<<<<< HEAD
+<!-- ======= -->
+<div class="grid-block grid-container col">
+  <div class="info">
+    <div class="avatar"></div>
+    <div>by Nathan Meyers</div>
+    <div>1 week ago in Engineering</div>
+    <div class="grid-block grid-container col">
+      <div class="social-sharing" data-permalink="{{ page.legacy_url }}">
+        <a target="_blank" href="http://twitter.com/intent/tweet?url={{ page.legacy_url }}" class="share-twitter">
+          <img src="http://static.tumblr.com/b89zjri/xGno4vmz1/twitter.svg">
+          <span class="share-count text-gray strong small">0</span>
+        </a>
+        <a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url={{ page.legacy_url }}" class="share-linkedin">
+          <img src="http://static.tumblr.com/b89zjri/nwQo4vmyv/linkedin.svg">
+          <span class="share-count text-gray strong small">0</span>
+        </a>
+        <a target="_blank" href="#" class="share-hackernews">
+          <div class="hn-image"></div>
+          <span class="share-count text-gray strong small">0</span>
+        </a>
+      </div>
     </div>
   </div>
+  <article class="article article-body">
+    {{ content }}
+  </article>
+  <section class="grid-block col shrink justify-center align-center section-footer padding-lg">
+    <a class="grid-block shrink link text-center margin-bottom-lg" href="../">View All Posts</a>
+    {% include mailchimp.html %}
+  </section>
 </div>
+<!-- >>>>>>> 4fb6750213fb96f3875247c19ca5ab91f3692fc0 -->
 
-<article class="article">
-  {{ content }}
-</article>
+<!-- <article class="article"> -->
+  <!-- {{ content }} -->
+<!-- </article> -->
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="social-buttons.js"></script>

@@ -4,17 +4,21 @@ layout: default
 
 {% include hero.html %}
 
-<section class="grid-block grid-container section-articles">
-  {% for post in site.posts %}
+<section class="grid-block col grid-container section-articles">
+  {% for post in paginator.posts %}
     {% assign author = site.data.authors[post.author] %}
     <article class="article">
       <a class="h3 weight-strong" href="/blog{{ post.url }}">{{ post.title }}</a>
       <div class="grid-block margin-top-sm author">
-        <img class="margin-right-xxs avatar" src="{{ author.avatar }}" height="27" width="27">
-        <span class="post-author text-gray">by {{ author.display_name }} 1 day ago</span>
+        <img class="margin-right-xxs avatar" src="{{ site.baseurl }}/images/{{ author.avatar }}" height="27" width="27">
+        <span class="post-author text-gray">by {{ author.display_name }} {{ post.date | timeago }}</span>
       </div>
-      <p class="p margin-top-sm">{{ post.excerpt }}</p>
+      <p class="p article-body margin-top-sm">{{ post.excerpt }}</p>
       <a href="/blog{{ post.url }}" class="read-more">Keep reading</a>
     </article>
   {% endfor %}
+  <section class="grid-block col shrink justify-center align-center section-footer">
+    {% include pagination.html %}
+    {% include mailchimp.html %}
+  </section>
 </section>

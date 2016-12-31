@@ -1,4 +1,37 @@
 # Author details.
+anand_p:
+  display_name: Anand Patel
+  avatar: authors/anandpatel.jpg
 anton_p:
   display_name: Anton Podviaznikov
-  avatar: https://runnable.com/images/team/antonpodviaznikov.jpg
+  avatar: authors/antonpodviaznikov.jpg
+bryan_k:
+  display_name: Bryan Kendall
+  avatar: authors/bryankendall.jpg
+chris_n:
+  display_name: Chris Neill
+  avatar: authors/chrisneill.jpg
+forrest_j:
+  display_name: Forrest Junod
+  avatar: authors/forrestjunod.jpg
+henry_m:
+  display_name: Henry Mollman
+  avatar: authors/henrymollman.jpg
+jorge_s:
+  display_name: Jorge Silva
+  avatar: authors/jorgesilva.jpg
+nathan_m:
+  display_name: Nathan Meyers
+  avatar: authors/nathanmeyers.jpg
+ryan_k:
+  display_name: Ryan Kahn
+  avatar: authors/ryankahn.jpg
+ryan_r:
+  display_name: Ryan Sandor Richards
+  avatar: authors/ryanrichards.jpg
+sohail_a:
+  display_name: Sohail Ahmed
+  avatar: authors/sohailahmed.jpg
+yash_k:
+  display_name: Yash Kumar
+  avatar: authors/yashkumar.jpg

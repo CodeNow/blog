@@ -4,10 +4,10 @@ title: Lessons Learned While Building Microservices Part II
 author: anton_p
 category: Engineering
 excerpt: In <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices" class="link">part I</a>, I explored the less-obvious advantages of the microservices architecture that we’ve discovered while building Runnable. In this part, I’ll explain how the microservices architecture creates happier and healthier teams.
+legacy_url: http://blog.runnable.com/post/152880543796/lessons-learned-while-building-microservices-part
 ---
 
-<div data-author="anton-podviaznikov"></div>
-
+<div class="legacy-url">http://blog.runnable.com/post/152880543796/lessons-learned-while-building-microservices-part</div>
 <p class="p">In <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices" class="link">part I</a>, I explored the less-obvious advantages of the microservices architecture that we’ve discovered while building Runnable. In this part, I’ll explain how the microservices architecture creates happier and healthier teams.</p>
 <h3 class="h3">Lesson #4: Microservices improve the onboarding story for new developers joining your team.</h3>
 <p class="p">When I came to Runnable two years ago, our architecture was mostly monolithic, aside from a few small microservices. Because of the inherent complexity of our product, it took me a long time to 1) understand the internals of our application, and 2) become a productive team member and produce some value.</p>

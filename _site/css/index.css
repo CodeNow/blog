@@ -1184,6 +1184,23 @@ input[type="radio"]:active, input[type="radio"]:checked { border-color: #834fab;
 .page-landing .img-centered { display: block; margin: 0 auto; }
 @media (max-width: 400px) { .page-landing .img-centered { height: auto; max-width: 100%; } }
 
+.info { align-items: center; display: flex; flex-direction: column; margin-top: 90px; }
+
+.avatar { background: #888; border-radius: 50%; height: 45px; margin-bottom: 15px; width: 45px; }
+
+.social-sharing { margin-top: 3px; }
+
+.social-sharing { flex: 1 1 auto; height: 30px; text-align: center; }
+
+.share-twitter, .share-linkedin, .share-hackernews { align-items: center; display: inline-flex; filter: grayscale(1); padding: 6px 0; text-decoration: none; vertical-align: top; }
+.share-twitter:not(:first-child), .share-linkedin:not(:first-child), .share-hackernews:not(:first-child) { margin-left: 15px; }
+.share-twitter:hover, .share-linkedin:hover, .share-hackernews:hover { filter: grayscale(0); }
+
+.hn-image { background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iNDAwcHgiIGhlaWdodD0iNDAwcHgiIHZpZXdCb3g9IjAgMCA0MDAgNDAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA0MDAgNDAwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxyZWN0IGZpbGw9IiNGMjY3MjIiIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIi8+DQo8Zz4NCgk8cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMjE0Ljg4NCwyMjYuNDg1djg0Ljc0N2gtMzAuOTI5di04NS4zNjVMMTE2LjUyOCw5OC4xMjhoMzYuNDk3bDM1LjI2LDcyLjY4NA0KCQljNC4zMyw4Ljk3LDguMzUxLDE3LjkzOSwxMS43NTMsMjcuNTI3YzMuNzExLTguNjYsNy43MzItMTcuNjMsMTIuMzcyLTI3LjIxOGwzNS44NzgtNzIuOTk0aDM0LjY0MUwyMTQuODg0LDIyNi40ODV6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==); background-size: 16px; height: 16px; width: 16px; }
+
+.share-count { margin-left: 3px; opacity: 0; transition: opacity .2s ease-in; }
+.share-count.is-loaded { opacity: 1; }
+
 .visible-xxxs, .visible-xxs, .visible-xs, .visible-sm, .visible-md, .visible-lg, .visible-xl { display: none; }
 
 @media (max-width: 350px) { .visible-xxxs { display: inherit; } }

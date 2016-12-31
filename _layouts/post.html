@@ -6,8 +6,31 @@ layout: default
   <h1 class="h3 text-center weight-light margin-top-sm">{{ page.title }}</h1>
 </div>
 
-<div class="grid-block grid-container col">
-  <article class="article">
-    {{ content }}
-  </article>
+<div class="info">
+  <div class="avatar"></div>
+  <div>by Nathan Meyers</div>
+  <div>1 week ago in Engineering</div>
+  <div class="grid-block grid-container col">
+    <div class="social-sharing" data-permalink="{{ page.legacy_url }}">
+      <a target="_blank" href="http://twitter.com/intent/tweet?url={{ page.legacy_url }}" class="share-twitter">
+        <img src="http://static.tumblr.com/b89zjri/xGno4vmz1/twitter.svg">
+        <span class="share-count text-gray strong small">0</span>
+      </a>
+      <a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url={{ page.legacy_url }}" class="share-linkedin">
+        <img src="http://static.tumblr.com/b89zjri/nwQo4vmyv/linkedin.svg">
+        <span class="share-count text-gray strong small">0</span>
+      </a>
+      <a target="_blank" href="#" class="share-hackernews">
+        <div class="hn-image"></div>
+        <span class="share-count text-gray strong small">0</span>
+      </a>
+    </div>
+  </div>
 </div>
+
+<article class="article">
+  {{ content }}
+</article>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="social-buttons.js"></script>

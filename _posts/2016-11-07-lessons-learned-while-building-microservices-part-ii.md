@@ -6,6 +6,8 @@ category: Engineering
 excerpt: 'In <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices" class="link">part I</a>, I explored the less-obvious advantages of the microservices architecture that we’ve discovered while building Runnable. In this part, I’ll explain how the microservices architecture creates happier and healthier teams.'
 ---
 
+<div class="legacy-url">http://blog.runnable.com/post/152880543796/lessons-learned-while-building-microservices-part</div>
+
 In [part I](http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices), I explored the less-obvious advantages of the microservices architecture that we’ve discovered while building Runnable. In this part, I’ll explain how the microservices architecture creates happier and healthier teams.
 
 ### Lesson #4: Microservices improve the onboarding story for new developers joining your team.

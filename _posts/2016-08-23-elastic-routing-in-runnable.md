@@ -4,6 +4,7 @@ title: Elastic Routing in Runnable
 author: ryan_k
 category: Engineering
 excerpt: 'Our service gives teams full-stack environments for every branch. This means we run all repository branches simultaneously, each on a different container. As new commits are pushed to a branch, we automatically rebuild its code on a new container. To make all of this useful, we give a URL to each branch that’s always connected to the container with the latest commit. Behind the scenes, our routing system dynamically switches the container that’s connected to the branch URL, which may have ended up on a different host to help distribute load across the instances we provision for every team.'
+legacy_url: http://blog.runnable.com/post/149340238426/elastic-routing-in-runnable
 ---
 
 ### An overview

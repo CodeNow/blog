@@ -4,6 +4,7 @@ title: Feature Flag Routes Safely with Express Middleware
 author: ryan_k
 category: Engineering
 excerpt: 'We had a new feature request come down the pipeline while we were testing Runnable with some of our early users — to allow teams to opt-in to our elastic URL routing behavior, as opposed to having it enabled by default. (We have a fairly complex URL routing system which would take its own blog post to explain. In short, it handles routing all user traffic to their respective Docker containers.) This system was one of the earlier services written when building out our infrastructure, and has gone through several bug fixes and tuning to get it working just right.'
+legacy_url: http://blog.runnable.com/post/146173707431/feature-flag-routes-safely-with-express-middleware
 ---
 
 <p class="p">We had a new feature request come down the pipeline while we were testing Runnable with some of our early users — to allow teams to opt-in to our elastic URL routing behavior, as opposed to having it enabled by default. (We have a fairly complex URL routing system which would take its own blog post to explain. In short, it handles routing all user traffic to their respective Docker containers.) This system was one of the earlier services written when building out our infrastructure, and has gone through several bug fixes and tuning to get it working just right.</p>

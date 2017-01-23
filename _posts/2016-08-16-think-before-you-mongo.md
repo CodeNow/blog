@@ -4,6 +4,7 @@ title: Think Before You Mongo
 author: nathan_m
 category: Engineering
 excerpt: 'I believe choosing the right database for your application is an even more important decision than choosing your programing language. Picking the wrong database can really hurt you down the road.<br><br>MongoDB is the go-to database for many NodeJS applications. It has its uses, but despite the hype, it’s probably not the best choice for your application’s main database. Many people choose Mongo for the same reason we did: its schema-less design makes it simple to set up. This enabled us to focus on quickly building out our MVP. But if you take this path, beware that you may be charging a large sum to your tech-debt card.'
+legacy_url: http://blog.runnable.com/post/149000201856/think-before-you-mongo
 ---
 
 I believe choosing the right database for your application is an even more important decision than choosing your programing language. Picking the wrong database can really hurt you down the road.

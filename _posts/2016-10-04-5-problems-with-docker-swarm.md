@@ -4,6 +4,7 @@ title: 5 Problems with Docker Swarm
 author: anand_p
 category: Engineering
 excerpt: 'When we first started deploying containers across multiple servers, we managed scheduling ourselves. We had to maintain cluster state and determine the best place to schedule a container. We had a solution, but it was not elegant or pretty. When Swarm came out, it promised to solve our scheduling woes. Unfortunately, using it in production hasn’t been as straightforward as we’d hoped. In this post, I’ll cover the problems we encountered and how we worked around them.'
+legacy_url: http://blog.runnable.com/post/151334076901/5-problems-with-docker-swarm
 ---
 
 When we first started deploying containers across multiple servers, we managed scheduling ourselves. We had to maintain cluster state and determine the best place to schedule a container. We had a solution, but it was not elegant or pretty. When Swarm came out, it promised to solve our scheduling woes. Unfortunately, using it in production hasn’t been as straightforward as we’d hoped. In this post, I’ll cover the problems we encountered and how we worked around them.

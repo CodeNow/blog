@@ -4,6 +4,7 @@ title: Runnable RC and Pricing
 author: yash_k
 category: Announcements
 excerpt: 'We’re very excited to announce that Runnable is now in Release Candidate. The progress we’ve made far exceeds our Beta and Preview releases, and will prepare us for the weeks ahead. Here’s what’s new:'
+legacy_url: http://blog.runnable.com/post/149405018916/runnable-rc-and-pricing
 ---
 
 We’re very excited to announce that Runnable is now in Release Candidate. The progress we’ve made far exceeds our Beta and Preview releases, and will prepare us for the weeks ahead. Here’s what’s new:

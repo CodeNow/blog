@@ -4,6 +4,7 @@ title: 5 Time-Saving Bash Scripts
 author: jorge_s
 category: Engineering
 excerpt: 'A good developer is a lazy developer. A good developer should always hate doing the same things over and over again. One of the best ways to embrace the laziness and be more efficient is through writing good shell scripts. In this blog post, I’ll show some of the tricks I’ve recently learned while writing some more complex bash scripts.<br><br><em>Note: In this post I’ll be talking specifically about bash, since it’s what I use and what I prepared all examples with, but most of it should work with other shells.</em>'
+legacy_url: http://blog.runnable.com/post/150987719051/5-time-saving-bash-scripts
 ---
 
 A good developer is a lazy developer. A good developer should always hate doing the same things over and over again. One of the best ways to embrace the laziness and be more efficient is through writing good shell scripts. In this blog post, I’ll show some of the tricks I’ve recently learned while writing some more complex bash scripts.

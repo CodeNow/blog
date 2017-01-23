@@ -4,6 +4,7 @@ title: Dropping Webhooks
 author: ryan_r
 category: Engineering
 excerpt: 'Auto-deploy is a really important feature of our product here at Runnable. It takes the tedium out of managing multiple testing and development environments. Via a <a class="link" href="https://developer.github.com/webhooks/" target="_blank">GitHub webhook</a>, we listen to push events that occur on our customers’ repositories and automatically deploy the changes to the Runnable Sandbox application.<br><br>A few weeks ago I ran into a situation that was rather troubling: a new branch I created didn’t show up in the app. Wondering if I had accidentally botched the command, I rechecked my terminal and confirmed that I had successfully pushed the branch to GitHub. A bit puzzled by the state of things, I decided to dig in and investigate the problem.'
+legacy_url: http://blog.runnable.com/post/142092495506/dropping-webhooks
 ---
 
 <p class="p">Auto-deploy is a really important feature of our product here at Runnable. It takes the tedium out of managing multiple testing and development environments. Via a <a class="link" href="https://developer.github.com/webhooks/" target="_blank">GitHub webhook</a>, we listen to push events that occur on our customers’ repositories and automatically deploy the changes to the Runnable Sandbox application.</p>

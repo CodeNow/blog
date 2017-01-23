@@ -4,6 +4,7 @@ title: 9 Common Dockerfile Mistakes
 author: jorge_s
 category: Engineering
 excerpt: 'We work with Dockerfiles on a daily basis; all the code we run for ourselves and for our customers, we run from a set of Dockerfiles. In this article, we’ll talk about what mistakes people commonly make, and how to write them better. For those of you who are Docker experts, a lot of the tips in this article will probably be pretty obvious and will just provoke a lot of head-nodding. But for beginner to intermediate developers, this will be a useful guide that will hopefully help clean and speed up your workflow.'
+legacy_url: http://blog.runnable.com/post/145895165446/9-common-dockerfile-mistakes
 ---
 
 <p class="p">We work with Dockerfiles on a daily basis; all the code we run for ourselves and for our customers, we run from a set of Dockerfiles. In this article, we’ll talk about what mistakes people commonly make, and how to write them better. For those of you who are Docker experts, a lot of the tips in this article will probably be pretty obvious and will just provoke a lot of head-nodding. But for beginner to intermediate developers, this will be a useful guide that will hopefully help clean and speed up your workflow.</p>

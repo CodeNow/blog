@@ -4,6 +4,7 @@ title: The Mysterious Case of the Leading Space
 author: chris_n
 category: Engineering
 excerpt: 'We had just performed an overhaul of how we handled logging across our services at Runnable. It appeared to work as intended — log files were being rotated and sent over to Loggly. I later learned we had a bug that was causing logs to be improperly formatted.<br><br>“Logs aren’t formatting correctly for me.” My fellow engineer showed me what looked like JSON, which is what our various services produce as log output.<br><br>“Looks OK to me,” I offered trepidatiously.<br><br>“You would think so, but when I pipe it into Bunyan, nothing happens.”<br><br>Sure enough, <a href="https://github.com/trentm/node-bunyan" class="link">Bunyan</a> wasn’t re-formatting the JSON as expected.'
+legacy_url: http://blog.runnable.com/post/143767821746/the-mysterious-case-of-the-leading-space
 ---
 
 <p class="p">We had just performed an overhaul of how we handled logging across our services at Runnable. It appeared to work as intended — log files were being rotated and sent over to Loggly. I later learned we had a bug that was causing logs to be improperly formatted.</p>

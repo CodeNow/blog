@@ -4,6 +4,7 @@ title: Event-driven Microservices Using RabbitMQ
 author: anand_p
 category: Engineering
 excerpt: 'Using the right patterns to communicate between microservices can help scale your application and solve most distributed systems problems. We started with direct HTTP calls for all communication, but decided to move to an event-driven system. This system changed the way we thought about interactions between services, forced scalable patterns, and increased our resilience.<br><br>We moved to using events over traditional HTTP communication for a few reasons. First, it forced decoupling of services. From our experience with HTTP, one service would make calls to every service it needed to, and that meant the original service would need a client library for every service it communicated with. The client library would ensure errors would not stop or block functionality, and would be consistent with each service.'
+legacy_url: http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq
 ---
 
 Using the right patterns to communicate between microservices can help scale your application and solve most distributed systems problems. We started with direct HTTP calls for all communication, but decided to move to an event-driven system. This system changed the way we thought about interactions between services, forced scalable patterns, and increased our resilience.

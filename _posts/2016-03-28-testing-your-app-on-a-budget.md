@@ -4,6 +4,7 @@ title: Testing your app on a budget
 author: forrest_j
 category: Engineering
 excerpt: 'Despite our best efforts bugs will be with us forever. Human error, limited data sets, and perhaps most importantly time keep us from finding all the issues. We must try. So we deploy numerous approaches to finding them. Which reminds me of the saying about advertising attributed to John Wanamaker.'
+legacy_url: http://blog.runnable.com/post/141863901521/testing-your-app-on-a-budget
 ---
 
 <p class="p">Despite our best efforts bugs will be with us forever. Human error, limited data sets, and perhaps most importantly time keep us from finding all the issues. We must try. So we deploy numerous approaches to finding them. Which reminds me of the saying about advertising attributed to John Wanamaker.</p>

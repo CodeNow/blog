@@ -4,6 +4,7 @@ title: 'Introducing Ponos: A RabbitMQ-based Worker Server'
 author: bryan_k
 category: Engineering
 excerpt: 'Our problem started out benign enough: we were dealing with third party endpoints that started dropping requests and we could no longer count on to be reliable. The immediate solution was to write retry logic in-place within our API server that instigated these calls, adding a layer of protection around the library that did not have its own retry logic. However, when put under load, this retry logic started becoming a bottleneck, holding onto unnecessary resources and creating race conditions we had never before seen. Debugging it started becoming nightmare-esque and maintaining it became nigh impossible.'
+legacy_url: http://blog.runnable.com/post/144321351856/introducing-ponos-a-rabbitmq-based-worker-server
 ---
 
 <p class="p">Our problem started out benign enough: we were dealing with third party endpoints that started dropping requests and we could no longer count on to be reliable. The immediate solution was to write retry logic in-place within our API server that instigated these calls, adding a layer of protection around the library that did not have its own retry logic. However, when put under load, this retry logic started becoming a bottleneck, holding onto unnecessary resources and creating race conditions we had never before seen. Debugging it started becoming nightmare-esque and maintaining it became nigh impossible.</p>

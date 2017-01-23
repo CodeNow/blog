@@ -4,6 +4,7 @@ title: Handling Errors with ES6
 author: jorge_s
 category: Engineering
 excerpt: 'Over the last couple of months, we’ve transitioned away from callback-style error handling. Instead, we’re handling our errors with ES6 features (mainly promises and classes). In this post, I’ll talk about why we’ve made this transition.'
+legacy_url: http://blog.runnable.com/post/148317397736/handling-errors-with-es6
 ---
 
 Over the last couple of months, we’ve transitioned away from callback-style error handling. Instead, we’re handling our errors with ES6 features (mainly promises and classes). In this post, I’ll talk about why we’ve made this transition.

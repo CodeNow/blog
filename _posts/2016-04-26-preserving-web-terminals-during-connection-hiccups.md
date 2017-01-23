@@ -4,6 +4,7 @@ title: Preserving web terminals during connection hiccups
 author: ryan_k
 category: Engineering
 excerpt: 'Sockets can be hard. Scaling out websockets can be even harder. At Runnable, we make use of websockets heavily — for notifying users that their containers are running, for implementing deployment messages, and for powering our terminals in the browser. Terminals are a tricky beast to tackle. I learned that a few weeks ago, when our users’ terminals were getting lost and reset based on uncontrollable network issues.'
+legacy_url: http://blog.runnable.com/post/143398925001/preserving-web-terminals-during-connection-hiccups
 ---
 
 <p class="p">Sockets can be hard. Scaling out websockets can be even harder. At Runnable, we make use of websockets heavily — for notifying users that their containers are running, for implementing deployment messages, and for powering our terminals in the browser. Terminals are a tricky beast to tackle. I learned that a few weeks ago, when our users’ terminals were getting lost and reset based on uncontrollable network issues.</p>

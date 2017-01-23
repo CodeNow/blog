@@ -1288,7 +1288,7 @@ input[type="radio"] {
 .main .article {
   margin: 0 auto;
   max-width: 720px;
-  padding: 75px 30px; }
+  padding: 60px 30px; }
   .main .article + .article {
     border-top: 1px solid #e6e6e6; }
   .main .article .h3 {
@@ -1624,43 +1624,23 @@ input[type="radio"] {
     .article-body .footnote + .footnote {
       margin-top: 20px; }
 
-.info {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  margin-top: 90px; }
+.post-details {
+  color: #888;
+  margin-top: 60px; }
+  .post-details .avatar {
+    border-radius: 50%;
+    margin-bottom: 15px; }
 
-.avatar {
-  background: #888;
-  border-radius: 50%;
-  height: 45px;
-  margin-bottom: 15px;
-  width: 45px; }
-
-.social-sharing {
-  margin-top: 3px; }
-
-.social-sharing {
-  flex: 1 1 auto;
-  height: 30px;
-  text-align: center; }
-
-.share-twitter,
-.share-linkedin,
-.share-hackernews {
+.share-item {
   align-items: center;
   display: inline-flex;
   filter: grayscale(1);
-  padding: 6px 0;
+  padding: 9px 0;
   text-decoration: none;
   vertical-align: top; }
-  .share-twitter:not(:first-child),
-  .share-linkedin:not(:first-child),
-  .share-hackernews:not(:first-child) {
+  .share-item + .share-item {
     margin-left: 15px; }
-  .share-twitter:hover,
-  .share-linkedin:hover,
-  .share-hackernews:hover {
+  .share-item:hover {
     filter: grayscale(0); }
 
 .hn-image {
@@ -1670,7 +1650,8 @@ input[type="radio"] {
   width: 16px; }
 
 .share-count {
-  margin-left: 3px;
+  margin-left: 6px;
+  min-width: 9px;
   opacity: 0;
   transition: opacity .2s ease-in; }
   .share-count.is-loaded {

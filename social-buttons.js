@@ -37,7 +37,7 @@ CSbuttons.init = function () {
 CSbuttons.socialSharing = function () {
   var buttons = CSbuttons.cache.$shareButtons,
     shareLinks = buttons.find('a'),
-    permalink = "http://runnable.com/blog" + buttons.attr('data-url'),
+    permalink = buttons.attr('data-url'),
     legacyUrl = buttons.attr('data-legacy-url');
 
   // Get share stats from respective APIs

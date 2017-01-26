@@ -4,6 +4,7 @@ title: Cost-efficient container scheduling with Docker Swarm
 author: anand_p
 category: Engineering
 excerpt: 'We run hundreds of thousands of containers across hundreds of servers a day. One of the biggest challenges we face is how to efficiently schedule containers. In this sense, scheduling is managing the allocation of containers to a set of servers in order to keep things running smoothly. Because the containers we schedule are components of our customers’ applications, we have to schedule them with no prior knowledge of their performance characteristics.'
+legacy_url: http://blog.runnable.com/post/147970274996/cost-efficient-container-scheduling-with-docker
 ---
 
 <p class="p">We run hundreds of thousands of containers across hundreds of servers a day. One of the biggest challenges we face is how to efficiently schedule containers. In this sense, scheduling is managing the allocation of containers to a set of servers in order to keep things running smoothly. Because the containers we schedule are components of our customers’ applications, we have to schedule them with no prior knowledge of their performance characteristics.</p>

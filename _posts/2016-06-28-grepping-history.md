@@ -4,6 +4,7 @@ title: Grepping History
 author: chris_n
 category: Engineering
 excerpt: 'In my estimation, the most useful Unix command will always and forever be <code class="monospace">grep</code>, but <code class="monospace">history</code> is also high on my list. Combined, the two form a dynamic duo that can be used to answer the question, “what did I come up with to solve x, y or z hacky problem from the command line?”'
+legacy_url: http://blog.runnable.com/post/146427543251/grepping-history
 ---
 
 <p class="p">In my estimation, the most useful Unix command will always and forever be <code class="monospace">grep</code>, but <code class="monospace">history</code> is also high on my list. Combined, the two form a dynamic duo that can be used to answer the question, “what did I come up with to solve x, y or z hacky problem from the command line?”</p>

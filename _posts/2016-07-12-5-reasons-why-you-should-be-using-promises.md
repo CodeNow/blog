@@ -4,6 +4,7 @@ title: 5 Reasons Why You Should Be Using Promises
 author: nathan_m
 category: Engineering
 excerpt: 'Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link" target="_blank">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link" target="_blank">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.'
+legacy_url: http://blog.runnable.com/post/147262856601/5-reasons-why-you-should-be-using-promises
 ---
 
 <p class="p">Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link" target="_blank">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link" target="_blank">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.</p>

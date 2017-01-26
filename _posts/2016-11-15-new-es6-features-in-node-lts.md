@@ -4,6 +4,7 @@ title: New ES6 Features in Node LTS
 author: jorge_s
 category: Engineering
 excerpt: 'A couple of weeks ago, Node.js released its latest LTS: version 6.9.0. I realized this was the case because one of our services broke. It used the <code>nodejs:lts</code> image and got upgraded by mistake. Inspired by this breaking of one of our services, I decided to dig into what was new in this version of Node. In this blog post, I’ll walk you through some of the new ES6 additions to Node and how they will change the code you write.'
+legacy_url: http://blog.runnable.com/post/153197291991/5-new-es6-features-in-node-lts
 ---
 
 A couple of weeks ago, Node.js released its latest LTS: version 6.9.0. I realized this was the case because one of our services broke. It used the `nodejs:lts` image and got upgraded by mistake. Inspired by this breaking of one of our services, I decided to dig into what was new in this version of Node. In this blog post, I’ll walk you through some of the new ES6 additions to Node and how they will change the code you write.

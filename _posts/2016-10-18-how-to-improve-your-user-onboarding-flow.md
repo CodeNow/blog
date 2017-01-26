@@ -4,6 +4,7 @@ title: How to Improve Your User Onboarding Flow
 author: sohail_a
 category: Engineering
 excerpt: 'No matter how high your <a href="https://en.wikipedia.org/wiki/Click-through_rate">CTR</a>s are on your advertising, it won’t translate into active users without an onboarding flow that helps users quickly understand the value of your product. This is what we’ve been focusing on now that Runnable is generally available. Here’s the approach we’ve been using to help more users “see the light”.'
+legacy_url: http://blog.runnable.com/post/151976507756/how-to-improve-your-user-onboarding-flow
 ---
 
 No matter how high your [CTR](https://en.wikipedia.org/wiki/Click-through_rate)s are on your advertising, it won’t translate into active users without an onboarding flow that helps users quickly understand the value of your product. This is what we’ve been focusing on now that Runnable is generally available. Here’s the approach we’ve been using to help more users “see the light”.

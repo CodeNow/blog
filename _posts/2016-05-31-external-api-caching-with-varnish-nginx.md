@@ -4,6 +4,7 @@ title: External API Caching with Varnish & Nginx
 author: ryan_r
 category: Engineering
 excerpt: 'We use a number of external services to handle data retrieval, monitoring, and reporting. The importance of each service depends on its role in our sandboxes product. For instance, it’s generally fine if we miss a few reports sent to Datadog but it is not okay if we are unable to reach the GitHub API. In this post, we’ll discuss the issues we’ve faced when interfacing with external services and dive into how we use Varnish Cache to handle them.'
+legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with-varnish-nginx
 ---
 
 <p class="p">We use a number of external services to handle data retrieval, monitoring, and reporting. The importance of each service depends on its role in our sandboxes product. For instance, it’s generally fine if we miss a few reports sent to Datadog but it is not okay if we are unable to reach the GitHub API. In this post, we’ll discuss the issues we’ve faced when interfacing with external services and dive into how we use Varnish Cache to handle them.</p>

@@ -4,6 +4,7 @@ title: 'Weave + Docker for Mac: The bridge between local and remote services'
 author: anand_p
 category: Engineering
 excerpt: 'Integration testing and debugging many microservices can be painful. Often, I need to debug a service on a staging environment. This article shows how we use Docker for Mac with Weave (an overlay network) to connect our local machine to our remote staging environments.<br><br>In my workflow, I usually create a WIP git commit, push it to staging, and try to debug with the Ubuntu server’s limited tools. I <em class="em">could</em> set up a bunch of SSH tunnels to connect to all the remote services, but our stack changes too frequently and finding IP addresses for each service is a pain. My dev machine is a Mac, so most of the tools we use locally don’t work on Linux.<br><br>I wanted something better that would speed up my dev and debugging flow. The first thing I tested with the Docker for Mac beta was Weave integration. Weave creates an overlay network to connect containers across multiple hosts together, which is very useful when distributing containers across a Swarm cluster.'
+legacy_url: http://blog.runnable.com/post/142665542481/weave-docker-for-mac-the-bridge-between-local
 ---
 
 <p>Integration testing and debugging many microservices can be painful. Often, I need to debug a service on a staging environment. This article shows how we use Docker for Mac with Weave (an overlay network) to connect our local machine to our remote staging environments.</p>

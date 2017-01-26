@@ -4,6 +4,7 @@ title: Blueprint Architecture for Managing Static Sites
 author: anton_p
 category: Engineering
 excerpt: 'I see Runnable as a very versatile, and therefore powerful, tool. It enables teams to deploy and run code on every commit. The concept sounds simple, but it lights up a vast number of not-so-obvious use cases.<br><br>For example, here’s how Runnable can be added to an existing revision workflow for static sites / blogs to improve how updates can be made.'
+legacy_url: http://blog.runnable.com/post/144847158716/blueprint-architecture-for-managing-static-sites
 ---
 
 <p class="p">I see Runnable as a very versatile, and therefore powerful, tool. It enables teams to deploy and run code on every commit. The concept sounds simple, but it lights up a vast number of not-so-obvious use cases.</p>

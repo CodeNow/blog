@@ -4,6 +4,7 @@ title: 'Runnable is now GA: Staging environments and microservices don’t mix.'
 author: yash_k
 category: Announcements
 excerpt: 'I’m excited to announce Runnable is now generally available. Runnable makes developing container-based applications a lot faster and easier.<br><br>Since we started in 2013, our vision has remained the same — make it easy for anyone to run code without worrying about infrastructure. As software teams around the globe adopt containers and microservices, we think the time is finally right for Runnable.'
+legacy_url: http://blog.runnable.com/post/150655663306/runnable-is-now-ga-staging-environments-and
 ---
 
 I’m excited to announce Runnable is now generally available. Runnable makes developing container-based applications a lot faster and easier.

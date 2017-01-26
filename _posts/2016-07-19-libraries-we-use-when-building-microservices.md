@@ -4,6 +4,7 @@ title: Libraries We Use When Building Microservices
 author: anton_p
 category: Engineering
 excerpt: 'Like any other generic solution, the microservices architecture has its tradeoffs; some things become easier and some become harder. When switching to microservices, one of the most common challenges is the question of where to put shared code.'
+legacy_url: http://blog.runnable.com/post/147612899961/libraries-we-use-when-building-microservices
 ---
 
 <p class="p">Like any other generic solution, the microservices architecture has its tradeoffs; some things become easier and some become harder. When switching to microservices, one of the most common challenges is the question of where to put shared code.</p>

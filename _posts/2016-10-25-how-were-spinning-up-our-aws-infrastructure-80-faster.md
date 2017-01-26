@@ -4,6 +4,7 @@ title: How We’re Spinning up Our AWS Infrastructure 80% Faster
 author: henry_m
 category: Engineering
 excerpt: 'After our announcement of general availability, our team started focusing on improving our onboarding flow. A key bottleneck was the time it took for us to spin up infrastructure for each new user. This could take up to ten minutes, delaying their initial exposure to our product. We knew we were facing a common problem: reducing the amount of time that it takes to add resources and servers to your infrastructure.'
+legacy_url: http://blog.runnable.com/post/152291441606/how-were-spinning-up-our-aws-infrastructure-80
 ---
 
 After our announcement of general availability, our team started focusing on improving our onboarding flow. A key bottleneck was the time it took for us to spin up infrastructure for each new user. This could take up to ten minutes, delaying their initial exposure to our product. We knew we were facing a common problem: reducing the amount of time that it takes to add resources and servers to your infrastructure.

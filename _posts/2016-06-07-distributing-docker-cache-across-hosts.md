@@ -4,6 +4,7 @@ title: Distributing Docker Cache across Hosts
 author: anand_p
 category: Engineering
 excerpt: 'Building and compiling code can take a huge hit on our time and resources. If you have dockerized your application, you may have noticed how much of a time-saver Docker cache is. Lengthy build commands can be cached and not have to be run at all! This works great when you’re building on a single host; however, once you start to scale up your Docker hosts, you start to lose that caching goodness.'
+legacy_url: http://blog.runnable.com/post/145362675491/distributing-docker-cache-across-hosts
 ---
 
 <p class="p">Building and compiling code can take a huge hit on our time and resources. If you have dockerized your application, you may have noticed how much of a time-saver Docker cache is. Lengthy build commands can be cached and not have to be run at all! This works great when you’re building on a single host; however, once you start to scale up your Docker hosts, you start to lose that caching goodness.</p>

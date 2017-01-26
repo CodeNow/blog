@@ -4,6 +4,7 @@ title: Running Runnable on Runnable
 author: forrest_j
 category: Engineering
 excerpt: 'It’s an exciting time for us. Our team adopted Docker early when building <a>Runnable CodeSnippets</a>, a collaborative place for developer learning. From there we took on the bigger challenge of providing <a class="link" href="http://runnable.com" target="_blank">development and test environments for teams</a>. All while in the backdrop of the <a class="link" href="http://www.zdnet.com/article/what-is-docker-and-why-is-it-so-darn-popular/" target="_blank">growth and early adoption of the container ecosystem</a>.'
+legacy_url: http://blog.runnable.com/post/141634984741/running-runnable-on-runnable
 ---
 
 <p class="p">It’s an exciting time for us. Our team adopted Docker early when building <a>Runnable CodeSnippets</a>, a collaborative place for developer learning. From there we took on the bigger challenge of providing <a class="link" href="http://runnable.com" target="_blank">development and test environments for teams</a>. All while in the backdrop of the <a class="link" href="http://www.zdnet.com/article/what-is-docker-and-why-is-it-so-darn-popular/" target="_blank">growth and early adoption of the container ecosystem</a>.</p>

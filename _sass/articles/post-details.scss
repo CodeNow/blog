@@ -4,7 +4,7 @@
 
   .avatar {
     border-radius: 50%;
-    margin-bottom: 15px;
+    margin-bottom: $sm;
   }
 }
 
@@ -12,12 +12,12 @@
   align-items: center;
   display: inline-flex;
   filter: grayscale(1);
-  padding: 9px 0;
+  padding: $xxs 0;
   text-decoration: none;
   vertical-align: top;
 
   + .share-item {
-    margin-left: 15px;
+    margin-left: $sm;
   }
 
   &:hover {

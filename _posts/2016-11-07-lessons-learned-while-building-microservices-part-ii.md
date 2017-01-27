@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Lessons Learned While Building Microservices Part II
+title: Lessons Learned While Building Microservices, Part II
 author: anton_p
 category: Engineering
 excerpt: 'In <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices" class="link">part I</a>, I explored the less-obvious advantages of the microservices architecture that we’ve discovered while building Runnable. In this part, I’ll explain how the microservices architecture creates happier and healthier teams.'

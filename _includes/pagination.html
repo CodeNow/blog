@@ -1,9 +1,9 @@
 <div class="grid-block shrink justify-center align-center padding-top-lg padding-bottom-lg col-xs">
   {% if paginator.previous_page %}
-    <a href="{{ site.baseurl }}{{ paginator.previous_page_path }}" class="p link shrink padding-sm">Newer Posts</a>
+    <a href="{{ paginator.previous_page_path }}" class="p link shrink padding-sm">Newer Posts</a>
   {% endif %}
 
   {% if paginator.next_page %}
-    <a href="{{ site.baseurl }}{{ paginator.next_page_path }}" class="p link shrink padding-sm">Older Posts</a>
+    <a href="{{ paginator.next_page_path }}" class="p link shrink padding-sm">Older Posts</a>
   {% endif %}
 </div>

@@ -2,7 +2,12 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="/">
+  {% if jekyll.environment == "development" %}
+    <base href="/blog/">
+  {% endif %}
+  {% if jekyll.environment == "production" %}
+    <base href="/slash-blog/">
+  {% endif %}
   <link rel="icon" type="image/png" href="{{site.baseurl}}/favicon.png">
   <link rel="stylesheet" href="//runnable.com/styles/index.css">
   <link rel="stylesheet" href="{{site.baseurl}}/css/index.css">

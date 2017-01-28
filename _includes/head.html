@@ -6,17 +6,18 @@
   <link rel="stylesheet" href="//runnable.com/styles/index.css">
   <link rel="stylesheet" href="{{ site.baseurl }}/css/index.css">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}{{ site.baseurl }}/feed.xml">
-  <meta property="og:image" content="https://s3-us-west-1.amazonaws.com/runnable-design/fb-image.png">
+  <meta property="og:image" content="//s3-us-west-1.amazonaws.com/runnable-design/fb-image.png">
   <meta name="description" content="The official blog from the team at Runnable.">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@getrunnable">
-  {% if page.excerpt != '' %}
-    <meta name="twitter:title" content="Runnablog">
+  {% if page.layout == 'post' %}
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
     {% else %}
-    <meta name="twitter:title" content="{{ page.excerpt | strip_html }}">
+    <meta name="twitter:title" content="Runnablog">
+    <meta name="twitter:description" content="The official blog from the team at Runnable.">
   {% endif %}
-  <meta name="twitter:description" content="The official blog from the team at Runnable.">
-  <meta name="twitter:image" content="https://s3-us-west-1.amazonaws.com/runnable-design/tw-image.png">
+  <meta name="twitter:image" content="//s3-us-west-1.amazonaws.com/runnable-design/tw-image.png">
   {% if jekyll.environment == "production" %}
     <script src="/js/segment.js"></script>
   {% endif %}

@@ -16,12 +16,17 @@
   text-decoration: none;
   vertical-align: top;
 
-  + .share-item {
-    margin-left: $sm;
+  &.hidden {
+    display: none;
   }
 
-  &:hover {
+  &:hover,
+  &:active {
     filter: grayscale(0);
+  }
+
+  + .share-item {
+    margin-left: $sm;
   }
 }
 

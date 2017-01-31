@@ -98,6 +98,9 @@ CSbuttons.socialSharing = function () {
           var shareCount = hackerNewsLink.getElementsByClassName('share-count')[0];
           shareCount.innerText = data.hits[0].points;
           shareCount.classList.add('is-loaded');
+          if (shareCount.innerText > 0) {
+            hackerNewsLink.classList.remove('hidden');
+          }
         },
         // error
         function(xhr) { console.error(xhr);}
@@ -113,6 +116,9 @@ CSbuttons.socialSharing = function () {
           var shareCount = hackerNewsLink.getElementsByClassName('share-count')[0];
           shareCount.innerText = data.hits[0].points;
           shareCount.classList.add('is-loaded');
+          if (shareCount.innerText > 0) {
+            hackerNewsLink.classList.remove('hidden');
+          }
         },
         // error
         function(xhr) { console.error(xhr);}

@@ -117,7 +117,6 @@ CSbuttons.socialSharing = function () {
           shareCount.innerText = data.hits[0].points;
           shareCount.classList.add('is-loaded');
           if (shareCount.innerText > 0) {
-            debugger;
             hackerNewsLink.classList.remove('hidden');
           }
         },

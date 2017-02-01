@@ -144,7 +144,8 @@
   }
 
   // link
-  a:not(.well-anchor) {
+  a:not(.well-anchor),
+  a:not(.btn) {
     color: currentColor;
     cursor: pointer;
     text-decoration: underline;
@@ -153,6 +154,10 @@
     &:active {
       text-decoration: none;
     }
+  }
+
+  a.btn {
+    text-decoration: none;
   }
 
   // utility

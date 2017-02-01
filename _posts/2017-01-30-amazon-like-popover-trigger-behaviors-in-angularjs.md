@@ -8,7 +8,9 @@ excerpt: 'Creating custom UI behavior in Angular can seem daunting. Once you kno
 
 ![popover animation](images/posts/popover-animation.gif)
 
-[[DEMO](https://jsfiddle.net/dominathan/007cvsr8/)]
+<div class="grid-block justify-center padding-md">
+  <a class="btn btn-lg gray" href="https://jsfiddle.net/dominathan/007cvsr8/">View Demo</a>
+</div>
 
 Creating custom UI behavior in Angular can seem daunting. Once you know how to break the problem down, its complexity can just fizzle away. In this tutorial, we’ll be exploring the use of mouse events, locations, and some simple geometry to add an on-hover popover menu to a button. Not just any simple on-hover behavior, but one that stays open if the user is heading toward the content.
 
@@ -163,4 +165,6 @@ function isOnPath(event) {
 
 The key to solving any problem is breaking it down into the smallest possible problems, and solving those one at a time. And that’s about it! Below, I’ve added a JSFiddle with the implementation. Try it out and play with it!
 
-[[DEMO](https://jsfiddle.net/dominathan/007cvsr8/)]
+<div class="grid-block justify-center padding-md">
+  <a class="btn btn-lg gray" href="https://jsfiddle.net/dominathan/007cvsr8/">View Demo</a>
+</div>

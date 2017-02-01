@@ -36,11 +36,13 @@ task :publish => [:generate] do
     Dir.chdir tmp
 
     system "git init"
+    system "git commit --allow-empty -m 'Blog Updated at #{Time.now.utc}'"
+    system "git checkout -b gh-pages"
     system "git add ."
     message = "Site updated at #{Time.now.utc}"
     system "git commit -m #{message.inspect}"
-    system "git remote add origin git@github.com:#{GITHUB_REPONAME}.git"
-    system "git push origin gh-pages --force"
+    # system "git remote add origin git@github.com:#{GITHUB_REPONAME}.git"
+    system "git push git@github.com:#{GITHUB_REPONAME}.git gh-pages --force"
 
     Dir.chdir pwd
   end

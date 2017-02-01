@@ -2,12 +2,11 @@
 layout: default
 ---
 
-<div class="grid-block col align-center hero">
-  <h1 class="h1 text-center weight-strong margin-top-sm">{{ page.title }}</h1>
-</div>
+<div class="grid-block col align-center hero hero-post"></div>
 
 <div class="grid-block grid-container col noscroll">
   <div class="grid-block align-center col post-details">
+    <h1 class="h1 text-center weight-strong margin-top-sm post-title">{{ page.title }}</h1>
     {% assign author = site.data.authors[page.author] %}
     <img class="avatar" src="images/{{ author.avatar }}" width="45" height="45">
     <div>by {{ author.display_name }}</div>

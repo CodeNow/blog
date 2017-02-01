@@ -1,17 +1,13 @@
 .hero {
 
-  &.hero-default {
-
-    .h1,
-    .h2,
-    .h3 {
-      max-width: 390px;
-    }
-  }
-
   .h1,
   .h2,
   .h3 {
-    max-width: 600px;
+    max-width: 390px;
   }
+}
+
+.hero-post {
+  height: 99px;
+  padding: 0;
 }

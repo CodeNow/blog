@@ -8,6 +8,13 @@
   }
 }
 
+.post-title {
+  color: $gray-dark;
+  line-height: 1.2;
+  margin-bottom: $md;
+  max-width: 600px;
+}
+
 .share-item {
   align-items: center;
   display: inline-flex;

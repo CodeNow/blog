@@ -45,6 +45,12 @@
   }
 }
 
+.page-landing .grid-container {
+  @media (min-width: $screen-xxs) {
+    width: 100%; // override inherited style
+  }
+}
+
 .section-articles {
 
   .ol,

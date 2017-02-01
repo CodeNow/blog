@@ -3,7 +3,7 @@ require "tmpdir"
 require "bundler/setup"
 require "jekyll"
 
-GH_PAGES_DIR = "dist"
+GH_PAGES_DIR = "_site"
 GITHUB_REPONAME = "CodeNow/blog"
 
 desc "Build Jekyll site for development"
@@ -23,14 +23,14 @@ desc "Generate blog files"
 task :generate do
   Jekyll::Site.new(Jekyll.configuration({
     "source"      => ".",
-    "destination" => "dist"
+    "destination" => "_site"
   })).process
 end
 
 desc "Generate and publish blog to gh-pages"
 task :publish => [:generate] do
   Dir.mktmpdir do |tmp|
-    cp_r "dist/.", tmp
+    cp_r "_site/.", tmp
 
     pwd = Dir.pwd
     Dir.chdir tmp

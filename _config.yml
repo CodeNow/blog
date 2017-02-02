@@ -9,7 +9,7 @@
 title: Runnable Blog
 email: support@runnable.com
 description: > # this means to ignore newlines until "baseurl:"
-  The official engineering blog from the team at Runnable
+  The official blog from the team at Runnable
 url: https://runnable.com # the base hostname & protocol for your site
 baseurl: /blog
 twitter:

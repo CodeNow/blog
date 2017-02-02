@@ -73,7 +73,7 @@ legacy_url: http://blog.runnable.com/post/155694013156/how-is-runnable-different
   <li class="li">
    <b>Elastic Hostnames for APIs and External Services:</b>
    APIs and externals services such as CDNs or Load Balancers present a challenge for CI tools. This is because every CI environment gets a unique hostname. APIs and External Services need to be reconfigured for that hostname for every test run. Environment variables are often tied to a hostname or an environment and also need to be reconfigured. This makes performing exhaustive End-to-End tests difficult.<br><br>
-   Runnable solves this problem with Elastic Hostnames. Every environment can share the same hostname and environment variables. With the help of an <a href="http://blog.runnable.com/post/149340238426/elastic-routing-in-runnable" class="link">HTTP proxy and a dynamic DNS server</a>, we can route traffic to the right set of containers for the branch you want to test or validate.
+   Runnable solves this problem with Elastic Hostnames. Every environment can share the same hostname and environment variables. With the help of an <a href="/blog/elastic-routing-in-runnable" class="link">HTTP proxy and a dynamic DNS server</a>, we can route traffic to the right set of containers for the branch you want to test or validate.
  </li>
   <li class="li">
    <b>Fast Build/Run Cycles:</b>

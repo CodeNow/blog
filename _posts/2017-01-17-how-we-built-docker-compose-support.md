@@ -3,13 +3,13 @@ layout: post
 title: How We Built Docker Compose Support
 author: anand_p
 category: Engineering
-excerpt: '<p class="p">In <a class="link" href="http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq">my previous post</a>, I went over how our event-driven architecture allows us to rapidly ship new features. This post covers how we used this model to ship a new feature: Docker Compose support.</p>
+excerpt: '<p class="p">In <a class="link" href="/blog/event-driven-microservices-using-rabbitmq">my previous post</a>, I went over how our event-driven architecture allows us to rapidly ship new features. This post covers how we used this model to ship a new feature: Docker Compose support.</p>
 
 <p class="p">Docker Compose enables our customers to build environments on Runnable using the same configuration they use to deploy to production, staging, or wherever they currently use Docker Compose. The best part? They get this with no additional setup.</p>'
 legacy_url: http://blog.runnable.com/post/155985933951/how-we-built-docker-compose-support
 ---
 
-<p class="p">In <a class="link" href="http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq">my previous post</a>, I went over how our event-driven architecture allows us to rapidly ship new features. This post covers how we used this model to ship a new feature: Docker Compose support.</p>
+<p class="p">In <a class="link" href="/blog/event-driven-microservices-using-rabbitmq">my previous post</a>, I went over how our event-driven architecture allows us to rapidly ship new features. This post covers how we used this model to ship a new feature: Docker Compose support.</p>
 
 <p class="p">Docker Compose enables our customers to build environments on Runnable using the same configuration they use to deploy to production, staging, or wherever they currently use Docker Compose. The best part? They get this with no additional setup.</p>
 

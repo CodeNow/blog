@@ -34,6 +34,6 @@ legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-s
 
 <p class="p"><a class="link" href="https://runnable.com/" target="_blank">Sign up to get started</a>. Each team gets its own dedicated EC2 infrastructure, so we’ll be screening sign-up requests and will activate accounts within 24–48 hours.</p>
 
-<p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="http://blog.runnable.com/private/141107158076/tumblr_o43mfmwB671t3hjy4" target="_blank">Learn more about pricing</a>.</p>
+<p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="/pricing/" target="_blank">Learn more about pricing</a>.</p>
 
 <p class="p">Setting up your sandbox with Runnable is simple. We scan your source code to automatically create Dockerfiles for you. If you’re already using Docker, we can import the Dockerfile into Runnable. <a class="link" href="http://support.runnable.io/" target="_blank">See our docs for more</a>.</p>

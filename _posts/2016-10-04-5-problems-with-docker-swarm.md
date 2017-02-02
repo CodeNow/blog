@@ -11,7 +11,7 @@ When we first started deploying containers across multiple servers, we managed s
 
 ### Swarm event stream
 
-Our architecture is [fully based on events](http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq), which makes Docker’s event stream a critical component for us. Swarm’s event stream API seemed like a perfect feature for us because we would no longer have to connect to each Docker daemon ourselves. But we ran into issues in production that we hadn’t seen in our testing.
+Our architecture is [fully based on events](/blog/event-driven-microservices-using-rabbitmq), which makes Docker’s event stream a critical component for us. Swarm’s event stream API seemed like a perfect feature for us because we would no longer have to connect to each Docker daemon ourselves. But we ran into issues in production that we hadn’t seen in our testing.
 
 First, the stream disconnected almost once every 30 minutes. We didn’t have time to dig into the root cause. Our initial thought was to just get events since the last event we received, after reconnecting. But the `--since` flag is [only supported on the Docker daemon API](http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fdocker%2Fswarm%2Fissues%2F1203&t=OWU0YzJkMDY2ZmZiZDU2Yjc2YmFiN2NhMTk3NWJiNzgyMDJhNWMwNixCSHp4TGpWWQ%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1), not on Swarm.
 
@@ -76,7 +76,7 @@ On minor releases, this API has added and removed tags, and arbitrarily added sp
 
 ### Scheduling constraints
 
-Out of the box, Swarm has useful [constraints and filters](http://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.docker.com%2Fswarm%2Fscheduler%2Ffilter%2F%23%2Fswarm-filters&t=OGI1MmNhOTE5OWIwMzk4YjU4YjdlMWJlMDRlMWQwZjgwZmRkNDI4MyxCSHp4TGpWWQ%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1). You can ask for CPU, labels, images, hard memory limits to find the place for a container to run. However they lack fractional CPU constraints and memory reservation limits. We created a quick workaround by [forking Swarm](http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2FCodeNow%2Fswarm&t=Nzg4M2RiODYyOTgxMTZlMDAwZTFjYzdiNGI2NDRhNTYzMTQxYTdkYyxCSHp4TGpWWQ%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1) and [adding soft limit scheduling](http://blog.runnable.com/post/147970274996/cost-efficient-container-scheduling-with-docker).
+Out of the box, Swarm has useful [constraints and filters](http://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.docker.com%2Fswarm%2Fscheduler%2Ffilter%2F%23%2Fswarm-filters&t=OGI1MmNhOTE5OWIwMzk4YjU4YjdlMWJlMDRlMWQwZjgwZmRkNDI4MyxCSHp4TGpWWQ%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1). You can ask for CPU, labels, images, hard memory limits to find the place for a container to run. However they lack fractional CPU constraints and memory reservation limits. We created a quick workaround by [forking Swarm](http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2FCodeNow%2Fswarm&t=Nzg4M2RiODYyOTgxMTZlMDAwZTFjYzdiNGI2NDRhNTYzMTQxYTdkYyxCSHp4TGpWWQ%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1) and [adding soft limit scheduling](/blog/cost-efficient-container-scheduling-with-docker).
 
 ### Manager Scaling
 

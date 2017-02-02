@@ -64,7 +64,7 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p id="footnote-1" class="footnote">1: Network latency is directly proportional to the distance between our datacenter and the external service’s datacenter. Request processing time depends on the implementation details of the service in question. <a href="#footnote-1-source" class="link">↩</a></p>
 
-<p id="footnote-2" class="footnote">2: One way we help is to <a href="/blog/introducing-ponos-a-rabbitmq-based-worker-server" class="link">exponentially backoff</a> requests to failing providers so as to avoid DOSing them when they are already buckling under load. <a href="#footnote-2-source" class="link">↩</a></p>
+<p id="footnote-2" class="footnote">2: One way we help is to <a href="introducing-ponos-a-rabbitmq-based-worker-server" class="link">exponentially backoff</a> requests to failing providers so as to avoid DOSing them when they are already buckling under load. <a href="#footnote-2-source" class="link">↩</a></p>
 
 <p id="footnote-3" class="footnote">3: <a href="https://www.varnish-cache.org/intro/index.html#intro" class="link">In-depth information on varnish</a> <a href="#footnote-3-source" class="link">↩</a></p>
 

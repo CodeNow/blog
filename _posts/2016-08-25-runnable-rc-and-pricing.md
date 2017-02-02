@@ -16,7 +16,7 @@ During our preview period, our team has doubled down on stability improvements. 
 1. We improved queue handling to prevent builds from getting backed up, resulting in faster builds and quicker container deployments.
 2. We’ve worked to make our state machine fault-tolerant, so containers always resolve to the correct branch commit and status.
 3. We improved failover handling to transparently resolve underlying EC2 failures.
-4. We shipped new [canaries](/blog/testing-your-app-on-a-budget) to ensure containers are always networked correctly.
+4. We shipped new [canaries](testing-your-app-on-a-budget) to ensure containers are always networked correctly.
 
 ### Usability improvements
 

@@ -36,4 +36,4 @@ legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-s
 
 <p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="/pricing/">Learn more about pricing</a>.</p>
 
-<p class="p">Setting up your sandbox with Runnable is simple. We scan your source code to automatically create Dockerfiles for you. If you’re already using Docker, we can import the Dockerfile into Runnable. <a class="link" href="http://support.runnable.io/">See our docs for more</a>.</p>
+<p class="p">Setting up your sandbox with Runnable is simple. We scan your source code to automatically create Dockerfiles for you. If you’re already using Docker, we can import the Dockerfile into Runnable. <a class="link" href="/docs/">See our docs for more</a>.</p>

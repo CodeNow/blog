@@ -74,7 +74,7 @@ Step 6 : CMD npm start
  ---&gt; 38fbb662b182
 Successfully built 38fbb662b182</code></pre>
 
-<p class="p">In the example above, you can see <code class="monospace">apt-get update &amp;&amp; apt-get install curl vim -y</code> and <code class="monospace">npm install</code> were cached (meaning they didn’t need to run). This saves considerable time, network, and compute resources for those who have several packages to install. This is a short example, but most Dockerfiles have many more dependencies installed before application code is added. You get all the caching goodness when all builds are run on the same host. The problem is if this host goes down, or if this build is run on a different host, you’re going to have to wait for the full build. You can read more about Docker caching <a href="https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache" class="link" target="_blank">in the documentation</a>.</p>
+<p class="p">In the example above, you can see <code class="monospace">apt-get update &amp;&amp; apt-get install curl vim -y</code> and <code class="monospace">npm install</code> were cached (meaning they didn’t need to run). This saves considerable time, network, and compute resources for those who have several packages to install. This is a short example, but most Dockerfiles have many more dependencies installed before application code is added. You get all the caching goodness when all builds are run on the same host. The problem is if this host goes down, or if this build is run on a different host, you’re going to have to wait for the full build. You can read more about Docker caching <a href="https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache" class="link">in the documentation</a>.</p>
 
 <p class="p">How do we get this wonderful Docker cache to all of our build servers?</p>
 
@@ -82,7 +82,7 @@ Successfully built 38fbb662b182</code></pre>
 
 <img src="http://static.tumblr.com/mpxyjs6/U54o87rzd/cache-1.png" class="post-graphic" width="480" height="360" alt="image">
 
-<p class="p">Before Docker version 1.10, distributing cache was easy with the <a href="https://hub.docker.com/_/registry/" class="link" target="_blank">Docker registry</a>. We ran a Docker registry container on each host backed by an S3 bucket. After every build, we pushed the image to the registry:</p>
+<p class="p">Before Docker version 1.10, distributing cache was easy with the <a href="https://hub.docker.com/_/registry/" class="link">Docker registry</a>. We ran a Docker registry container on each host backed by an S3 bucket. After every build, we pushed the image to the registry:</p>
 
 <pre class="pre monospace"><code class="monospace">docker push IMAGE</code></pre>
 
@@ -92,9 +92,9 @@ Successfully built 38fbb662b182</code></pre>
 
 <p class="p">After the pull completed, Docker would automatically use those image layers when looking up its cache.</p>
 
-<p class="p">Docker 1.10 <a href="https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#content-addressable-storage" class="link" target="_blank">changed</a> the way its images and image layers are addressed. This change removed the parent chain, meaning a simple <code class="monospace">docker pull</code> no longer primed the build cache.</p>
+<p class="p">Docker 1.10 <a href="https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#content-addressable-storage" class="link">changed</a> the way its images and image layers are addressed. This change removed the parent chain, meaning a simple <code class="monospace">docker pull</code> no longer primed the build cache.</p>
 
-<p class="p">Luckily Docker 1.11 gives us <a href="https://github.com/docker/docker/pull/21385" class="link" target="_blank">a solution</a> with <code class="monospace">docker load</code> and <code class="monospace">docker save</code>. <code class="monospace">docker save IMAGE [IMAGE...]</code> creates a tarred repository for a given image. In order to recreate the cache, we have to pass all layers referenced by the image to the save command:</p>
+<p class="p">Luckily Docker 1.11 gives us <a href="https://github.com/docker/docker/pull/21385" class="link">a solution</a> with <code class="monospace">docker load</code> and <code class="monospace">docker save</code>. <code class="monospace">docker save IMAGE [IMAGE...]</code> creates a tarred repository for a given image. In order to recreate the cache, we have to pass all layers referenced by the image to the save command:</p>
 
 <pre class="pre"><code class="monospace no-wrap">docker save &lt;IMAGE&gt; $(docker history -q &lt;IMAGE&gt;) &gt; image.tar</code></pre>
 
@@ -124,7 +124,7 @@ Successfully built 38fbb662b182</code></pre>
 
 <pre class="pre"><code class="monospace no-wrap">docker save &lt;IMAGE_NAME&gt; $(docker history -q &lt;IMAGE_NAME&gt;) &gt; /shared/image.tar</code></pre>
 
-<p class="p"><span class="em">Step 2:</span> We now can distribute image.tar by using one of the many file distribution methods available today. Some methods of distributing images are <a href="http://aws.amazon.com/s3/" class="link" target="_blank">Amazon’s S3</a>, <a href="https://aws.amazon.com/efs/" class="link" target="_blank">Amazon’s EFS</a>, and <a href="https://hub.docker.com/r/bittorrent/sync/" class="link" target="_blank">Bittorrent Sync</a>.</p>
+<p class="p"><span class="em">Step 2:</span> We now can distribute image.tar by using one of the many file distribution methods available today. Some methods of distributing images are <a href="http://aws.amazon.com/s3/" class="link">Amazon’s S3</a>, <a href="https://aws.amazon.com/efs/" class="link">Amazon’s EFS</a>, and <a href="https://hub.docker.com/r/bittorrent/sync/" class="link">Bittorrent Sync</a>.</p>
 
 <p class="p"><span class="em">Step 3:</span> Once the tar is distributed, we load it on the remote host:</p>
 
@@ -138,4 +138,4 @@ Successfully built 38fbb662b182</code></pre>
 
 <h3 class="h3">Future Fixes</h3>
 
-<p class="p">The registry method was the ideal way to transfer images and cache. From <a href="https://github.com/docker/docker/issues/20316" class="link" target="_blank">this issue on GitHub</a>, it looks like there are many people who agree. It’s possible that it might be brought back into the registry with certain flags; but in the meantime, we’ll continue to use the <code class="monospace">docker load</code> and <code class="monospace">docker save</code> method as part of our cache distribution.</p>
+<p class="p">The registry method was the ideal way to transfer images and cache. From <a href="https://github.com/docker/docker/issues/20316" class="link">this issue on GitHub</a>, it looks like there are many people who agree. It’s possible that it might be brought back into the registry with certain flags; but in the meantime, we’ll continue to use the <code class="monospace">docker load</code> and <code class="monospace">docker save</code> method as part of our cache distribution.</p>

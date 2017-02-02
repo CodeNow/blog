@@ -22,7 +22,7 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p class="p">Since we’ve moved to a microservice architecture, outbound requests can come from a variety of sources and it can be difficult to directly track and optimize our usage. Furthermore, even if we were able to achieve an optimal minimum, the number of external requests in our system is directly proportional to number of active users. This means as we grow we will make more requests, and eventually we will hit the limits set forth by our external service providers.</p>
 
-<p class="p">There were many ways we could go about solving the rate limiting problem, but the one that seemed most promising (and familiar) was to use a distributed HTTP cache, like <a href="https://www.varnish-cache.org/" class="link" target="_blank">Varnish Cache</a>.</p>
+<p class="p">There were many ways we could go about solving the rate limiting problem, but the one that seemed most promising (and familiar) was to use a distributed HTTP cache, like <a href="https://www.varnish-cache.org/" class="link">Varnish Cache</a>.</p>
 
 <h3 class="h3">Caching Outside of the Box</h3>
 
@@ -38,11 +38,11 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p class="p"><span class="strong">Latency</span> is a problem that can be directly solved by putting varnish between internal services and external APIs <a href="#footnote-4" class="link" id="footnote-4-source">[4]</a>. Given that the data remains relatively static (persists longer than a minute or two), one can bypass external requests entirely. This has the effect of dramatically reducing latency when fetching external resources <a href="#footnote-5" class="link" id="footnote-5-source">[5]</a>.</p>
 
-<p class="p">We can partially address the problem of <span class="strong">availability</span> by way of a “<a href="https://www.varnish-cache.org/trac/wiki/VCLExampleGrace" class="link" target="_blank">grace periods</a>”. Roughly under certain circumstances (such as when it cannot reach backends) one can configure Varnish to serve stale content even if it has been purged or expired from the cache. This means that if the external service is having an outage, you can still get stale “responses” from the service and do as much as you can until things settle down.</p>
+<p class="p">We can partially address the problem of <span class="strong">availability</span> by way of a “<a href="https://www.varnish-cache.org/trac/wiki/VCLExampleGrace" class="link">grace periods</a>”. Roughly under certain circumstances (such as when it cannot reach backends) one can configure Varnish to serve stale content even if it has been purged or expired from the cache. This means that if the external service is having an outage, you can still get stale “responses” from the service and do as much as you can until things settle down.</p>
 
 <p class="p">Finally, <span class="strong">rate limiting</span> is addressed in the exact same way as latency. If you have a decent cache hit ratio in Varnish, then you necessarily make fewer requests to the external service. This means that your service has much more breathing room to work with before hitting any eventual rate limits.</p>
 
-<p class="p">From this perspective it’s pretty clear that Varnish is an excellent tool for the job. But there are still a couple of problems. First, we haven’t actually solved the rate limiting problem, but only made it less pressing by giving ourselves a bit more headroom. Second, Varnish does not handle SSL <a href="#footnote-6" class="link" id="footnote-6-source">[6]</a>, and nearly all external APIs one might want to leverage require the use of the <a href="https://en.wikipedia.org/wiki/HTTPS" class="link" target="_blank">HTTPS protocol</a> for secure communication.</p>
+<p class="p">From this perspective it’s pretty clear that Varnish is an excellent tool for the job. But there are still a couple of problems. First, we haven’t actually solved the rate limiting problem, but only made it less pressing by giving ourselves a bit more headroom. Second, Varnish does not handle SSL <a href="#footnote-6" class="link" id="footnote-6-source">[6]</a>, and nearly all external APIs one might want to leverage require the use of the <a href="https://en.wikipedia.org/wiki/HTTPS" class="link">HTTPS protocol</a> for secure communication.</p>
 
 <h3 class="h3">Putting It All Together: NGINX + Multiple NATs</h3>
 
@@ -64,14 +64,14 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p id="footnote-1" class="footnote">1: Network latency is directly proportional to the distance between our datacenter and the external service’s datacenter. Request processing time depends on the implementation details of the service in question. <a href="#footnote-1-source" class="link">↩</a></p>
 
-<p id="footnote-2" class="footnote">2: One way we help is to <a href="/blog/introducing-ponos-a-rabbitmq-based-worker-server" class="link" target="_blank">exponentially backoff</a> requests to failing providers so as to avoid DOSing them when they are already buckling under load. <a href="#footnote-2-source" class="link">↩</a></p>
+<p id="footnote-2" class="footnote">2: One way we help is to <a href="/blog/introducing-ponos-a-rabbitmq-based-worker-server" class="link">exponentially backoff</a> requests to failing providers so as to avoid DOSing them when they are already buckling under load. <a href="#footnote-2-source" class="link">↩</a></p>
 
-<p id="footnote-3" class="footnote">3: <a href="https://www.varnish-cache.org/intro/index.html#intro" class="link" target="_blank">In-depth information on varnish</a> <a href="#footnote-3-source" class="link">↩</a></p>
+<p id="footnote-3" class="footnote">3: <a href="https://www.varnish-cache.org/intro/index.html#intro" class="link">In-depth information on varnish</a> <a href="#footnote-3-source" class="link">↩</a></p>
 
-<p id="footnote-4" class="footnote">4: Traditionally one uses it to reduce processing time for HTML rendering (via rails, php, etc.), but companies such as <a href="www.fastly.com" class="link" target="_blank">Fastly</a> even use Varnish to help reduce network latency! <a href="#footnote-4-source" class="link">↩</a></p>
+<p id="footnote-4" class="footnote">4: Traditionally one uses it to reduce processing time for HTML rendering (via rails, php, etc.), but companies such as <a href="www.fastly.com" class="link">Fastly</a> even use Varnish to help reduce network latency! <a href="#footnote-4-source" class="link">↩</a></p>
 
 <p id="footnote-5" class="footnote">5: By default one usually only caches HTTP GET and HEAD requests, as it often does not make sense to cache routes that perform resource mutation. <a href="#footnote-5-source" class="link">↩</a></p>
 
-<p id="footnote-6" class="footnote">6: There are some <a href="https://www.varnish-cache.org/docs/trunk/phk/ssl_again.html" class="link" target="_blank">very good reasons</a> as to why this is the case <a href="#footnote-6-source" class="link">↩</a></p>
+<p id="footnote-6" class="footnote">6: There are some <a href="https://www.varnish-cache.org/docs/trunk/phk/ssl_again.html" class="link">very good reasons</a> as to why this is the case <a href="#footnote-6-source" class="link">↩</a></p>
 
-<p id="footnote-7" class="footnote">7: Here’s an example <a href="https://gist.github.com/rsandor/2dce300e5bd8f23f1084faf27b43ca24" class="link" target="_blank">SSL initiation configuration for NGINX</a> <a href="#footnote-7-source" class="link">↩</a></p>
+<p id="footnote-7" class="footnote">7: Here’s an example <a href="https://gist.github.com/rsandor/2dce300e5bd8f23f1084faf27b43ca24" class="link">SSL initiation configuration for NGINX</a> <a href="#footnote-7-source" class="link">↩</a></p>

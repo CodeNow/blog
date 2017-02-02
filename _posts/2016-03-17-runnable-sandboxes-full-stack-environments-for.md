@@ -3,17 +3,17 @@ layout: post
 title: 'Runnable Sandboxes: Full-stack environments for every GitHub branch'
 author: yash_k
 category: Engineering
-excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/" target="_blank">homepage</a> to learn more, or read on.'
+excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/">homepage</a> to learn more, or read on.'
 legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-stack-environments-for
 ---
 
-<p class="p intro">Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/" target="_blank">homepage</a> to learn more, or read on.</p>
+<p class="p intro">Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/">homepage</a> to learn more, or read on.</p>
 
 <h3 class="h3">What?</h3>
 
 <p class="p">Runnable creates full-stack environments for every branch across all your GitHub repositories. These environments can be used to integrate and test branches end-to-end, before they’re merged into master.</p>
 
-<p class="p">Watch the <a class="link" href="https://youtu.be/mBR-_5dXH4w">90 second video</a> and browse through our <a class="link" href="https://runnable.com/product.html" target="_blank">feature tour</a>.</p>
+<p class="p">Watch the <a class="link" href="https://youtu.be/mBR-_5dXH4w">90 second video</a> and browse through our <a class="link" href="https://runnable.com/product.html">feature tour</a>.</p>
 
 <h2>Why?</h2>
 
@@ -32,8 +32,8 @@ legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-s
 <li class="li"><p class="p"><strong class="strong">Simpler dev environments with our CLI</strong> — As a project gets larger, it’s hard to maintain an up-to-date local environment that includes all your services, components and data.</p><p class="p">With Runnable, teams don’t have to maintain a complex development environment. Developers can pull individual components or services locally and connect to the rest of the stack on Runnable. We provide a CLI that lets you SSH into your containers and sync files straight from your terminal.</p><p class="p">Runnable ensures your stack is always up-to-date and ready to test end-to-end.</p></li>
 </ol><h2 class="h2">How?</h2>
 
-<p class="p"><a class="link" href="/" target="_blank">Sign up to get started</a>. Each team gets its own dedicated EC2 infrastructure, so we’ll be screening sign-up requests and will activate accounts within 24–48 hours.</p>
+<p class="p"><a class="link" href="/">Sign up to get started</a>. Each team gets its own dedicated EC2 infrastructure, so we’ll be screening sign-up requests and will activate accounts within 24–48 hours.</p>
 
-<p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="/pricing/" target="_blank">Learn more about pricing</a>.</p>
+<p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="/pricing/">Learn more about pricing</a>.</p>
 
-<p class="p">Setting up your sandbox with Runnable is simple. We scan your source code to automatically create Dockerfiles for you. If you’re already using Docker, we can import the Dockerfile into Runnable. <a class="link" href="http://support.runnable.io/" target="_blank">See our docs for more</a>.</p>
+<p class="p">Setting up your sandbox with Runnable is simple. We scan your source code to automatically create Dockerfiles for you. If you’re already using Docker, we can import the Dockerfile into Runnable. <a class="link" href="http://support.runnable.io/">See our docs for more</a>.</p>

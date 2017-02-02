@@ -13,7 +13,7 @@ legacy_url: http://blog.runnable.com/post/144847158716/blueprint-architecture-fo
 
 <h3 class="h3">Context</h3>
 
-<p class="p">Let’s say you’ve picked your favorite static site generator from <a class="link" target="_blank" href="https://www.staticgen.com/">this list</a>, and you’ve set up your blog / static site and have everything running locally. Now you need to deploy your site somewhere. There are plenty of options including <a class="link" target="_blank" href="https://aws.amazon.com/s3/">Amazon S3</a>, <a class="link" target="_blank" href="https://surge.sh/">Surge</a>, and <a class="link" target="_blank" href="https://www.firebase.com/docs/hosting/">Firebase Hosting</a>. You’re able to manually deploy your site easily enough from your local machine to your favorite provider, or you use continuous integration tools and deploy your site automatically with a flow like this:</p>
+<p class="p">Let’s say you’ve picked your favorite static site generator from <a class="link"href="https://www.staticgen.com/">this list</a>, and you’ve set up your blog / static site and have everything running locally. Now you need to deploy your site somewhere. There are plenty of options including <a class="link"href="https://aws.amazon.com/s3/">Amazon S3</a>, <a class="link"href="https://surge.sh/">Surge</a>, and <a class="link"href="https://www.firebase.com/docs/hosting/">Firebase Hosting</a>. You’re able to manually deploy your site easily enough from your local machine to your favorite provider, or you use continuous integration tools and deploy your site automatically with a flow like this:</p>
 
 <ol class="ol"><li class="li">Push your content or revisions to the master branch on GitHub</li>
   <li class="li">CI/CD tools build/generate assets for static site</li>
@@ -42,7 +42,7 @@ legacy_url: http://blog.runnable.com/post/144847158716/blueprint-architecture-fo
 <p class="p">The only addition to this setup is Runnable. Here’s how the flow changes:</p>
 
 <ol class="ol"><li class="li">Create a branch on GitHub and open a PR</li>
-  <li class="li">Edit your content on GitHub. Tools like <a class="link" target="_blank" href="https://prose.io/">Prose.io</a> can make this easier.</li>
+  <li class="li">Edit your content on GitHub. Tools like <a class="link"href="https://prose.io/">Prose.io</a> can make this easier.</li>
   <li class="li">Open / Share a link running your changes that Runnable adds on the PR page. That link can be sent to anyone for reviewing content, visual regressions, CSS problems or layout issues.<a id="footnote-1-source" class="link" href="#footnote-1">[1]</a></li>
   <li class="li">Merge the PR with your changes into the master branch.</li>
   <li class="li">CI/CD tool is triggered to publish new version of your static site to production</li>

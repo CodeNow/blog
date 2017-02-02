@@ -41,7 +41,7 @@ E?I&amp;???#(eq??jUzlz?KJ?2}?u??Uf???9?s?]SU
 [... more binary data garbage]</code></pre>
 
 
-<p class="p">This command pipes my shell history into a simple <code class="monospace"><a href="https://www.gnu.org/software/gawk/manual/gawk.html" class="link" target="_blank">awk</a></code> program that compares each line to the longest known line. It registers the value of the current longest line into a variable, which is then printed once all the lines in my history have been searched.</p>
+<p class="p">This command pipes my shell history into a simple <code class="monospace"><a href="https://www.gnu.org/software/gawk/manual/gawk.html" class="link">awk</a></code> program that compares each line to the longest known line. It registers the value of the current longest line into a variable, which is then printed once all the lines in my history have been searched.</p>
 
 <p class="p">In this case, my <code class="monospace">tcsh</code> history seems to contain some binary data. I’ll have to clean that up, first by running the find command as root and piping it into the Unix utility <code class="monospace">strings</code>, which converts binary data to ASCII:</p>
 

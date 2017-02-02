@@ -21,12 +21,12 @@ legacy_url: http://blog.runnable.com/post/142665542481/weave-docker-for-mac-the-
     <p>Remote docker-engine. I used the latest engine (v1.10.3).</p>
   </li>
   <li class="li">
-    <p><a class="link" href="https://github.com/weaveworks/weave#installation" target="_blank">Weave binary</a> on local and remote machine:</p>
+    <p><a class="link" href="https://github.com/weaveworks/weave#installation">Weave binary</a> on local and remote machine:</p>
     <p class="monospace"><code>sudo curl -L git.io/weave -o /usr/local/bin/weave</code></p>
     <p class="monospace"><code>sudo chmod a+x /usr/local/bin/weave</code></p>
   </li>
   <li class="li">
-    <p><a class="link" href="https://beta.docker.com/" target="_blank">Docker for Mac</a> installed locally (similar steps can be followed if connecting from a Linux machine).</p>
+    <p><a class="link" href="https://beta.docker.com/">Docker for Mac</a> installed locally (similar steps can be followed if connecting from a Linux machine).</p>
   </li>
 </ol>
 
@@ -45,7 +45,7 @@ legacy_url: http://blog.runnable.com/post/142665542481/weave-docker-for-mac-the-
   <li class="li">
     <p>Launch Weave proxy:</p>
     <p class="monospace"><code>weave launch-proxy</code></p>
-    <p>This proxy will automatically attach your IP address. More info <a class="link" href="http://docs.weave.works/weave/latest_release/proxy.html" target="_blank">here</a>.</p>
+    <p>This proxy will automatically attach your IP address. More info <a class="link" href="http://docs.weave.works/weave/latest_release/proxy.html">here</a>.</p>
   </li>
 </ol><p class="strong">Local machine:</p>
 <ol class="ol"><li class="li">
@@ -102,7 +102,7 @@ legacy_url: http://blog.runnable.com/post/142665542481/weave-docker-for-mac-the-
   <li class="li">
     <p>Create a port forward container</p>
     <p class="monospace"><code>docker run -e REMOTE_HOST=remote-mongo -e REMOTE_PORT=27017 -p 27017:80 -d djfaze/port-forward</code></p>
-    <p>In order to gain access to the remote machine, we need to set up a simple port forwarding container on our local machine. I used <a class="link" href="https://hub.docker.com/r/djfaze/port-forward/" target="_blank">this image</a>, which requires the following options to be passed to the <span class="monospace"><code>docker run</code></span> command:</p>
+    <p>In order to gain access to the remote machine, we need to set up a simple port forwarding container on our local machine. I used <a class="link" href="https://hub.docker.com/r/djfaze/port-forward/">this image</a>, which requires the following options to be passed to the <span class="monospace"><code>docker run</code></span> command:</p>
     <ol class="ul"><li class="li">
         <p class="monospace"><code>-e REMOTE_HOST=&lt;remote_container_name&gt;</code></p>
         <p>where <span class="monospace"><code>remote_container_name</code></span> is set to the hostname or Weave IP you want to forward to. Since we started the remote container with <span class="monospace"><code>--name=remote-mongo</code></span>, Weave DNS will resolve that name to the Weave IP address.</p>

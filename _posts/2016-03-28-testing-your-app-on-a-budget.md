@@ -25,7 +25,7 @@ legacy_url: http://blog.runnable.com/post/141863901521/testing-your-app-on-a-bud
 
 <p class="p">So how do you optimize your automation coverage? I assume most people reading this are familiar with the <a class="link" href="http://martinfowler.com/bliki/TestPyramid.html">test pyramid</a>. As soon as you see it, it makes perfect sense. It’s an embodiment of not only good ratios, ala the food pyramid, but that time is precious. The base of the pyramid is unit testing. Unit gives you focused testing on the smallest possible code. Faster tests with less complexity give you more opportunity to fix issues and easier problems to identify. As you go up the pyramid it gets slower and more complicated.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/kLro4sdcz/pyramid.png" width="570" height="420" alt="Test Pyramid">
+<img class="img post-graphic" src="images/posts/pyramid.png" width="570" height="420" alt="Test Pyramid">
 
 <p>Even when you don’t live up to the gold standard, the model gives direction on how to tailor your tests or refactor your code.</p>
 
@@ -43,7 +43,7 @@ legacy_url: http://blog.runnable.com/post/141863901521/testing-your-app-on-a-bud
 
 <p class="p">One other approach that economizes on the tight time constraints are synthetic transactions or canary tests. In a small team or product it's likely not worth spending time on rich end to end tests. The product, feature, or technology are all more likely to change. Instead focus on a small set of tests you can run on your production environment. You can use them to alert on any production issue. The value of investment vs. customer experience aligns perfectly.  Obviously you should run them before you deploy but they primarily monitor production quality.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/TBao4sdgp/canary.png" width="570" height="540" alt="Canary Example">
+<img class="img post-graphic" src="images/posts/canary.png" width="570" height="540" alt="Canary Example">
 
 <p class="caption">An illustrated example of a canary, inspired by what Runnable uses.</p>
 

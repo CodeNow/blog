@@ -13,7 +13,7 @@ legacy_url: http://blog.runnable.com/post/142665542481/weave-docker-for-mac-the-
 
 <p>I wanted something better that would speed up my dev and debugging flow. The first thing I tested with the Docker for Mac beta was Weave integration. Weave creates an overlay network to connect containers across multiple hosts together, which is very useful when distributing containers across a Swarm cluster.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/7uEo5ibgb/weave-graphic.png" width="840" height="400" class="img post-graphic" alt="image">
+<img src="images/posts/weave-graphic.png" width="840" height="400" class="img post-graphic" alt="image">
 
 <h3 class="h3">Requirements:</h3>
 

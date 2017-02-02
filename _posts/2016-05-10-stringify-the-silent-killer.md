@@ -59,7 +59,7 @@ Asdasd: { A58l9Zdq1rwWBzJBug4C4eKS819PE7vX:
 
 <p class="p">Let’s try something ridiculous, just to illustrate: Factor 3, Depth 3. You can test this on the CodeSnippet by running the server, and adjusting the query parameters in the sandbox URL: <code class="monospace">/diy?factor=3&amp;depth=3&amp;random=true</code>. Because of how much work this request will do, you may need to try it multiple times to beat the timeout.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/4zto6xwbf/bitmap.png" class="img post-graphic" width="660" height="180" alt="image">
+<img src="images/posts/bitmap.png" class="img post-graphic" width="660" height="180" alt="image">
 
 <p class="caption">If you’re following along, place the query parameter here.</p>
 

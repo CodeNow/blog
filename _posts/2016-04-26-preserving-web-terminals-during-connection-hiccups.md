@@ -29,7 +29,7 @@ legacy_url: http://blog.runnable.com/post/143398925001/preserving-web-terminals-
 
 <p class="p">When a request to connect to a container comes through, that request will come with an ID of the terminal connection it’s configured to use. If a terminal connection exists with this ID, we just re-connect the user to their existing terminal connection. (If not, we create a new connection and assign it an ID.) With this approach, all their history is maintained and their experience is seamless. The front end keeps track of its terminal session using local storage, and when a connection becomes severed, it attempts to reconnect to the same terminal session. The kicker? This solution also added a nice little feature of preserving terminal sessions when reloading the page.</p>
 
-<img class="post-graphic" src="http://static.tumblr.com/mpxyjs6/MQco687ac/socket-graphic.png" width="897" height="391" alt="image">
+<img class="post-graphic" src="images/posts/socket-graphic.png" width="897" height="391" alt="image">
 
 <p class="p">Our socket servers are now in charge of connecting to existing pipes instead of always creating new ones. In order to keep the existing pipes around, we built a small in-memory cache that has a last-used timer on it. If a terminal doesn’t have any messages in a set period of time, we close the connection and clean up some memory footprint.</p>
 

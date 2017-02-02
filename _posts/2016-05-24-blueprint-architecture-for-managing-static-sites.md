@@ -20,7 +20,7 @@ legacy_url: http://blog.runnable.com/post/144847158716/blueprint-architecture-fo
   <li class="li">CI/CD tools push assets to your favorite hosting provider</li>
 </ol>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/4Lpo7o8sb/static-before.png" width="470" height="276" alt="image">
+<img class="img post-graphic" src="images/posts/static-before.png" width="470" height="276" alt="image">
 
 <p class="caption">This workflow, while straightforward, lacks a simple solution for testing and sharing in-progress work.</p>
 
@@ -48,7 +48,7 @@ legacy_url: http://blog.runnable.com/post/144847158716/blueprint-architecture-fo
   <li class="li">CI/CD tool is triggered to publish new version of your static site to production</li>
 </ol>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/Qrzo7o8t5/static-after.png" width="470" height="276" alt="image">
+<img class="img post-graphic" src="images/posts/static-after.png" width="470" height="276" alt="image">
 
 <p class="caption">With Runnable, every branch runs on a container with its own endpoint for testing and sharing.</p>
 

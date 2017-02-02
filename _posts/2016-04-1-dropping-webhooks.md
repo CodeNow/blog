@@ -25,9 +25,9 @@ legacy_url: http://blog.runnable.com/post/142092495506/dropping-webhooks
 
 <li class="li"><p class="p">A worker server that dequeued jobs, deferred the logic to the API, and retried if something went wrong</p></li></ol>
 
-<img class="img img-wide hidden-xs post-graphic" src="http://static.tumblr.com/b89zjri/zoWo55850/drake-wide.png" width="920" height="600" alt="image">
+<img class="img img-wide hidden-xs post-graphic" src="images/posts/drake-wide.png" width="920" height="600" alt="image">
 
-<img class="img visible-xs post-graphic" src="http://static.tumblr.com/b89zjri/aAso55859/drake-tall.png" alt="image" width="720" height="960">
+<img class="img visible-xs post-graphic" src="images/posts/drake-tall.png" alt="image" width="720" height="960">
 
 <p>I was very pleased with the solution. First, we didn’t have to undertake a large and lengthy refactor of an existing implementation. Second, we weren’t going to be arbitrarily scaling the API to handle a simple corner-case. And finally, it gave a us a place to start if we wanted to move the logic out of the API.</p>
 

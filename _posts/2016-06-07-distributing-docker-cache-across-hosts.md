@@ -80,7 +80,7 @@ Successfully built 38fbb662b182</code></pre>
 
 <h3 class="h3">Copious Caching</h3>
 
-<img src="http://static.tumblr.com/mpxyjs6/U54o87rzd/cache-1.png" class="post-graphic" width="480" height="360" alt="image">
+<img src="images/posts/cache-1.png" class="post-graphic" width="480" height="360" alt="image">
 
 <p class="p">Before Docker version 1.10, distributing cache was easy with the <a href="https://hub.docker.com/_/registry/" class="link">Docker registry</a>. We ran a Docker registry container on each host backed by an S3 bucket. After every build, we pushed the image to the registry:</p>
 
@@ -108,7 +108,7 @@ Successfully built 38fbb662b182</code></pre>
 
 <h4 class="h4">Method #1: Direct Transfer</h4>
 
-<img src="http://static.tumblr.com/mpxyjs6/HIQo87rzh/cache-2.png" class="post-graphic" width="480" height="241" alt="image">
+<img src="images/posts/cache-2.png" class="post-graphic" width="480" height="241" alt="image">
 
 <p class="p">We can directly transfer these images from host to host. Since the output of <code class="monospace">docker save</code> is a stream, and <code class="monospace">docker load</code> can also take in a stream, we can simply pipe the streams together. Note that the target Docker engine must be exposed on a port and that port must be accessible by the sending Docker engine.</p>
 
@@ -118,7 +118,7 @@ Successfully built 38fbb662b182</code></pre>
 
 <p class="p">The above method works great when you have a static list of hosts, but maintaining that list becomes harder when you have ephemeral hosts. To better handle dynamic hosts we thought of a distributed file store solution. In this method, we’d start by saving these images as files, and then distribute them across all Docker hosts, and finally load this file into the Docker engine.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/YCpo87rzk/cache-3.png" class="post-graphic" width="480" height="360" alt="image">
+<img src="images/posts/cache-3.png" class="post-graphic" width="480" height="360" alt="image">
 
 <p class="p"><span class="em">Step 1:</span> On the Docker host where the image was first built, we convert the image to a tar file:</p>
 

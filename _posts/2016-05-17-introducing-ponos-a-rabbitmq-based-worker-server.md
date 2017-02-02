@@ -21,13 +21,13 @@ legacy_url: http://blog.runnable.com/post/144321351856/introducing-ponos-a-rabbi
 
 <p class="p">We implemented two messaging patterns right away. First was the <span class="em">Task Queue</span>, where one queue is used to provide jobs to a worker or distribute jobs among multiple workers. We use this pattern for tasks including sending notifications to GitHub.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/5gIo7afgr/task_queue.png" width="532" height="250" alt="image">
+<img class="img post-graphic" src="images/posts/task_queue.png" width="532" height="250" alt="image">
 
 <p class="caption">The Task Queue</p>
 
 <p class="p">The second pattern was the <span class="em">Event Queue</span>, a fanout exchange where multiple queues receive jobs from one job being published. We use this pattern when we want multiple parts of our application to execute different tasks in response to a single event. Runnable uses this pattern in multiple capacities managing container lifecycles.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/miTo7afgj/event_queue.png" width="718" height="310" alt="image">
+<img class="img post-graphic" src="images/posts/event_queue.png" width="718" height="310" alt="image">
 
 <p class="caption">The Event Queue</p>
 

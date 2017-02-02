@@ -28,13 +28,13 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p class="p">Varnish is a very fast “caching HTTP reverse proxy” <a href="#footnote-3" class="link" id="footnote-3-source">[3]</a> that has seen a lot of success as an in-datacenter frontend for any HTTP based service (APIs, web servers, etc.). In the standard use-case one simply sets a varnish server in front of one or many backend web services, customizes how caching and proxying works via a VCL configuration, then sets memory limits on the LRU cache during the daemon start.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/RT3o810co/varnish-1.png" class="img post-graphic" width="427" height="150" alt="image">
+<img src="images/posts/varnish-1.png" class="img post-graphic" width="427" height="150" alt="image">
 
 <p class="p">Once running, Varnish will handle all incoming requests on behalf of the application server. When the first request is made to a cacheable resource, it will forward the request to the application server, cache the response, and then send the response back to the end user. Subsequent requests to the same resource will bypass application server entirely and Varnish will simply respond with the cached content. Finally after a manual purge, timeout, or via LRU, the content for the resource will be removed from the cache, and the cycle will begin anew.</p>
 
 <p class="p">By flipping this standard use case around, using the right VCL configuration, and relying on some advanced Varnish features, we can address all three problems discussed in the previous section.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/KM1o810cy/varnish-2.png" class="img post-graphic" width="430" height="150" alt="image">
+<img src="images/posts/varnish-2.png" class="img post-graphic" width="430" height="150" alt="image">
 
 <p class="p"><span class="strong">Latency</span> is a problem that can be directly solved by putting varnish between internal services and external APIs <a href="#footnote-4" class="link" id="footnote-4-source">[4]</a>. Given that the data remains relatively static (persists longer than a minute or two), one can bypass external requests entirely. This has the effect of dramatically reducing latency when fetching external resources <a href="#footnote-5" class="link" id="footnote-5-source">[5]</a>.</p>
 
@@ -48,7 +48,7 @@ legacy_url: http://blog.runnable.com/post/144975295096/external-api-caching-with
 
 <p class="p">While Varnish doesn’t handle SSL, there is another HTTP proxy that does: NGINX. To make this work, we setup an Nginx instance that translates incoming HTTP traffic from Varnish to HTTPS traffic outbound to the external service. Then Nginx performs the SSL decryption of the response and sends it back to Varnish via HTTP.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/jl6o810dx/varnish-3.png" class="img post-graphic" width="560" height="205" alt="image">
+<img src="images/posts/varnish-3.png" class="img post-graphic" width="560" height="205" alt="image">
 
 <p class="p">By using the two proxies together, one allows each to do what they do best. Furthermore the solution is actually rather trivial to implement with NGINX <a href="#footnote-7" class="link" id="footnote-7-source">[7]</a>.</p>
 

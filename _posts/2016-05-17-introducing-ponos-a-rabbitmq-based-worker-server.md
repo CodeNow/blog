@@ -15,19 +15,19 @@ legacy_url: http://blog.runnable.com/post/144321351856/introducing-ponos-a-rabbi
 
 <h3 class="h3">The Dawn of Queues</h3>
 
-<p class="p">The new age of queues started an inquiry into how to use queues correctly. We discovered quickly how to use single queues to perform tasks, but wanted to be able to send messages to multiple consumers and do more complex message passing. One resource we found to be invaluable was an <a href="https://leanpub.com/rmq-patterns" class="link" target="_blank">ebook</a> written about RabbitMQ patterns. Taking the new knowledge of these patterns and the framework from our first task server, a new tool was born we affectionately called “Ponos”.</p>
+<p class="p">The new age of queues started an inquiry into how to use queues correctly. We discovered quickly how to use single queues to perform tasks, but wanted to be able to send messages to multiple consumers and do more complex message passing. One resource we found to be invaluable was an <a href="https://leanpub.com/rmq-patterns" class="link">ebook</a> written about RabbitMQ patterns. Taking the new knowledge of these patterns and the framework from our first task server, a new tool was born we affectionately called “Ponos”.</p>
 
-<p class="p"><a href="https://github.com/Runnable/ponos" class="link" target="_blank">Ponos</a> is our opinionated worker server that we used to consolidate our ideas about these paradigms. The idea behind it has always been simple: developers write how a job is handled, throw errors when a job is impossible to complete, and simply finish successfully to complete a job.</p>
+<p class="p"><a href="https://github.com/Runnable/ponos" class="link">Ponos</a> is our opinionated worker server that we used to consolidate our ideas about these paradigms. The idea behind it has always been simple: developers write how a job is handled, throw errors when a job is impossible to complete, and simply finish successfully to complete a job.</p>
 
 <p class="p">We implemented two messaging patterns right away. First was the <span class="em">Task Queue</span>, where one queue is used to provide jobs to a worker or distribute jobs among multiple workers. We use this pattern for tasks including sending notifications to GitHub.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/5gIo7afgr/task_queue.png" width="532" height="250" alt="image">
+<img class="img post-graphic" src="images/posts/task_queue.png" width="532" height="250" alt="image">
 
 <p class="caption">The Task Queue</p>
 
 <p class="p">The second pattern was the <span class="em">Event Queue</span>, a fanout exchange where multiple queues receive jobs from one job being published. We use this pattern when we want multiple parts of our application to execute different tasks in response to a single event. Runnable uses this pattern in multiple capacities managing container lifecycles.</p>
 
-<img class="img post-graphic" src="http://static.tumblr.com/mpxyjs6/miTo7afgj/event_queue.png" width="718" height="310" alt="image">
+<img class="img post-graphic" src="images/posts/event_queue.png" width="718" height="310" alt="image">
 
 <p class="caption">The Event Queue</p>
 
@@ -39,4 +39,4 @@ legacy_url: http://blog.runnable.com/post/144321351856/introducing-ponos-a-rabbi
 
 <p class="p">Since creating Ponos, we have integrated it into several projects at Runnable. We use Ponos when interfacing with external and internal services that we know may be slightly unreliable. Ponos has provided us a very clean, sane platform for us to develop.</p>
 
-<p class="p">If you would like to know more about Ponos, you can view <a href="https://github.com/Runnable/ponos" class="link" target="_blank">the source</a> on GitHub and <a href="https://npmjs.com/packages/ponos" class="link" target="_blank">install it</a> using npm!</p>
+<p class="p">If you would like to know more about Ponos, you can view <a href="https://github.com/Runnable/ponos" class="link">the source</a> on GitHub and <a href="https://npmjs.com/packages/ponos" class="link">install it</a> using npm!</p>

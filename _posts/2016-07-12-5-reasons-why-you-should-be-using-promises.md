@@ -3,15 +3,15 @@ layout: post
 title: 5 Reasons Why You Should Be Using Promises
 author: nathan_m
 category: Engineering
-excerpt: 'Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link" target="_blank">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link" target="_blank">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.'
+excerpt: 'Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.'
 legacy_url: http://blog.runnable.com/post/147262856601/5-reasons-why-you-should-be-using-promises
 ---
 
-<p class="p">Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link" target="_blank">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link" target="_blank">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.</p>
+<p class="p">Promises are amazing! The concept has been around for decades, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="link">but they are finally here in ES6</a>! Before we switched to promises, our code was full of confusing callback tricks and <a href="https://github.com/caolan/async" class="link">async</a>. Switching to promises made our code easier to read, understand, and test. There are so many reasons to love promises, but here are my top five.</p>
 
 <h3 class="h3">5. Synchronously asynchronous</h3>
 
-<p class="p">Being able to write synchronous-looking asynchronous code has always been a struggle. Without promises, or installing a <a href="https://github.com/caolan/async" class="link" target="_blank">library</a> to make it a little better you usually get something like this:</p>
+<p class="p">Being able to write synchronous-looking asynchronous code has always been a struggle. Without promises, or installing a <a href="https://github.com/caolan/async" class="link">library</a> to make it a little better you usually get something like this:</p>
 
 <pre class="pre"><code class="monospace no-wrap">asyncCall('hello', () =&gt; {
   asyncCall2('hello', () =&gt; {
@@ -45,7 +45,7 @@ legacy_url: http://blog.runnable.com/post/147262856601/5-reasons-why-you-should-
 
 <p class="p">Those functions don’t seem like much, but they work the same way. When used together, these promise functions can do almost anything.</p>
 
-<p class="p">If you’d like even more amazingness, you should look at <a href="http://bluebirdjs.com/" class="link" target="_blank">Bluebird</a>, a promises library that we use in several of our modules. It has great, time-saving functions; some of my favorites are <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.some.html" class="link" target="_blank">.some</a></code>, <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.reduce.html" class="link" target="_blank">.reduce</a></code>, and <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.props.html" class="link" target="_blank">.props</a></code>.</p>
+<p class="p">If you’d like even more amazingness, you should look at <a href="http://bluebirdjs.com/" class="link">Bluebird</a>, a promises library that we use in several of our modules. It has great, time-saving functions; some of my favorites are <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.some.html" class="link">.some</a></code>, <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.reduce.html" class="link">.reduce</a></code>, and <code class="monospace"><a href="http://bluebirdjs.com/docs/api/promise.props.html" class="link">.props</a></code>.</p>
 
 <h3 class="h3">4. Promise Error handling is Fantastic</h3>
 
@@ -114,7 +114,7 @@ db.fetchFilePathAsync(fileId)
 
 <p class="p">If you want to just eat up an error and keep going, just return in the .catch function. If you want to pass along the error to the promise consumer, all you need to do is rethrow it, and you’re good.</p>
 
-<p class="p">Bluebird has something amazing called <a href="http://bluebirdjs.com/docs/api/catch.html#filtered-catch" class="link" target="_blank">Filtered Catch</a>, which lets you catch specific errors. It’s one of the key things that makes ponos work so well.</p>
+<p class="p">Bluebird has something amazing called <a href="http://bluebirdjs.com/docs/api/catch.html#filtered-catch" class="link">Filtered Catch</a>, which lets you catch specific errors. It’s one of the key things that makes ponos work so well.</p>
 
 <h3 class="h3">3. Promises can be used as a valueStore</h3>
 

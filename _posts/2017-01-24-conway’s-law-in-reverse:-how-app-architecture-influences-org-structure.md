@@ -3,11 +3,11 @@ layout: post
 title: Conway’s Law in Reverse&#58; How App Architecture Influences Org Structure
 author: anton_p
 category: Engineering
-excerpt: 'In my previous two <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices-part" class="link">blog</a> <a href="http://blog.runnable.com/post/152880543796/lessons-learned-while-building-microservices-part" class="link">posts</a>, I explored how Runnable’s architecture evolved over the last two years. There’s no one-size-fits-all solution, but the microservices approach has yielded a lot of benefits for us. In this post, I’ll talk about how Conway’s law has worked in reverse for us, and what the results of that look like.'
+excerpt: 'In my previous two <a href="lessons-learned-while-building-microservices-part-i" class="link">blog</a> <a href="lessons-learned-while-building-microservices-part-ii" class="link">posts</a>, I explored how Runnable’s architecture evolved over the last two years. There’s no one-size-fits-all solution, but the microservices approach has yielded a lot of benefits for us. In this post, I’ll talk about how Conway’s law has worked in reverse for us, and what the results of that look like.'
 legacy_url: http://blog.runnable.com/post/156299805556/conways-law-in-reverse-how-app-architecture
 ---
 
-<p class="p">In my previous two <a href="http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices-part" class="link">blog</a> <a href="http://blog.runnable.com/post/152880543796/lessons-learned-while-building-microservices-part" class="link">posts</a>, I explored how Runnable’s architecture evolved over the last two years. There’s no one-size-fits-all solution, but the microservices approach has yielded a lot of benefits for us. In this post, I’ll talk about how Conway’s law has worked in reverse for us, and what the results of that look like.</p>
+<p class="p">In my previous two <a href="lessons-learned-while-building-microservices-part-i" class="link">blog</a> <a href="lessons-learned-while-building-microservices-part-ii" class="link">posts</a>, I explored how Runnable’s architecture evolved over the last two years. There’s no one-size-fits-all solution, but the microservices approach has yielded a lot of benefits for us. In this post, I’ll talk about how Conway’s law has worked in reverse for us, and what the results of that look like.</p>
 
 <p class="p"><a href="https://en.wikipedia.org/wiki/Conway's_law" class="link">Conway’s law</a> says that a company’s software architecture usually reflects its organizational structure. So if our architecture changed in the last couple years, does it mean that our organizational structure also changed? I would say yes. Here’s how it happened.</p>
 

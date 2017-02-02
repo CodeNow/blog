@@ -107,7 +107,7 @@ This is an arithmetic operation. Since everything in bash is treated as a string
 
 ### 4. Working with JSON
 
-Recently, I’ve found myself dealing more and more with JSON in the command line. Reading plain JSON without any formatting/indentation is really hard, so whenever I have display JSON I just add [`jq`](http://t.umblr.com/redirect?z=https%3A%2F%2Fstedolan.github.io%2Fjq%2F&t=NmU5ZTg4ZTMzMjVkNjQ5NDczMWYwMzI5ZDkwNTA4MmZkOTg0YjA4NixuWHhBWDVZZA%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1) at the end in order to get a much nicer and easier to read output. Another alternative to this that works without installing dependencies is `python -m json.tool`, which formats JSON but doesn’t add any coloring or provide as nice of an API for extracting data from it.
+Recently, I’ve found myself dealing more and more with JSON in the command line. Reading plain JSON without any formatting/indentation is really hard, so whenever I have display JSON I just add [`jq`](https://stedolan.github.io/jq/) at the end in order to get a much nicer and easier to read output. Another alternative to this that works without installing dependencies is `python -m json.tool`, which formats JSON but doesn’t add any coloring or provide as nice of an API for extracting data from it.
 
 An example for this is getting a user by their GitHub ID. In my `.bash_profile`, I’ve added the following function:
 
@@ -128,7 +128,7 @@ Another cool thing you can do is use these tools with your clipboard. If you wan
 
 ### 5. Using `noti` for notifications
 
-One of my favorite new tools to use in the command line is [`noti`](http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fvariadico%2Fnoti&t=NTczMjE1YTY0OGE3NGNhZjMwMDM5NjgzNzgyNzg4ZjhiOTA3NTgzNixuWHhBWDVZZA%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1), which provides native notifications for when a process is finished (amongst other things). Whenever I run a deploy, I make sure to run `noti`. Combined with the example from tip #1 (Programmatically declaring aliases), we can actually get notified after all our deploys by just adding the `noti` command at the beginning of our alias declaration:
+One of my favorite new tools to use in the command line is [`noti`](https://github.com/variadico/noti), which provides native notifications for when a process is finished (amongst other things). Whenever I run a deploy, I make sure to run `noti`. Combined with the example from tip #1 (Programmatically declaring aliases), we can actually get notified after all our deploys by just adding the `noti` command at the beginning of our alias declaration:
 
 {% highlight javascript %}
 export ENVS='delta gamma epsilon stage'

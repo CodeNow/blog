@@ -16,7 +16,7 @@ During our preview period, our team has doubled down on stability improvements. 
 1. We improved queue handling to prevent builds from getting backed up, resulting in faster builds and quicker container deployments.
 2. We’ve worked to make our state machine fault-tolerant, so containers always resolve to the correct branch commit and status.
 3. We improved failover handling to transparently resolve underlying EC2 failures.
-4. We shipped new [canaries](http://blog.runnable.com/post/141863901521/testing-your-app-on-a-budget) to ensure containers are always networked correctly.
+4. We shipped new [canaries](testing-your-app-on-a-budget) to ensure containers are always networked correctly.
 
 ### Usability improvements
 
@@ -47,6 +47,6 @@ Our three pricing plans align with your application’s complexity:
 * **Starter** — up to 2 configuration templates; $9 per user/month
 * **Standard** — up to 7 configuration templates; $29 per user/month
 * **Plus** — up to 15 configuration templates; $49 per user/month
-A configuration template is a service such as a repository or a database. An Enterprise plan is in the works for teams that require more than 15 configuration templates or need to keep code behind their firewall. Visit our [Pricing page](https://runnable.com/pricing) for more details. One final note: teams that sign up before Runnable announces general availability will be eligible to receive 50% off for 6 months.
+A configuration template is a service such as a repository or a database. An Enterprise plan is in the works for teams that require more than 15 configuration templates or need to keep code behind their firewall. Visit our [Pricing page](/pricing/) for more details. One final note: teams that sign up before Runnable announces general availability will be eligible to receive 50% off for 6 months.
 
 A Release Candidate may be a bit outdated for a SaaS company, but we feel it best describes our current state. Thank you for using Runnable during our beta and Preview. We couldn’t have reached this milestone without you, and we hope you share some of the excitement we have towards the weeks ahead as we move closer to general availability.

@@ -3,11 +3,11 @@ layout: post
 title: Embracing Event-Driven Microservices
 author: sohail_a
 category: Engineering
-excerpt: 'A few months ago, <a href="http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq" class="link">Anand discussed</a> the benefits of transitioning from traditional HTTP communication to event-driven microservices. He noted how this transition decoupled our services, forced scalable patterns, and increased our resilience. Here, we’ll detail the lessons we learned when we re-implemented our <a href="https://en.wikipedia.org/wiki/Cron" class="link">Cron-esque</a> scheduler service, Khronos.'
+excerpt: 'A few months ago, <a href="event-driven-microservices-using-rabbitmq" class="link">Anand discussed</a> the benefits of transitioning from traditional HTTP communication to event-driven microservices. He noted how this transition decoupled our services, forced scalable patterns, and increased our resilience. Here, we’ll detail the lessons we learned when we re-implemented our <a href="https://en.wikipedia.org/wiki/Cron" class="link">Cron-esque</a> scheduler service, Khronos.'
 legacy_url: http://blog.runnable.com/post/154101163771/embracing-event-driven-microservices
 ---
 
-<p class="p">A few months ago, <a href="http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq" class="link">Anand discussed</a> the benefits of transitioning from traditional HTTP communication to event-driven microservices. He noted how this transition decoupled our services, forced scalable patterns, and increased our resilience. Here, we’ll detail the lessons we learned when we re-implemented our <a href="https://en.wikipedia.org/wiki/Cron" class="link">Cron-esque</a> scheduler service, Khronos.</p>
+<p class="p">A few months ago, <a href="event-driven-microservices-using-rabbitmq" class="link">Anand discussed</a> the benefits of transitioning from traditional HTTP communication to event-driven microservices. He noted how this transition decoupled our services, forced scalable patterns, and increased our resilience. Here, we’ll detail the lessons we learned when we re-implemented our <a href="https://en.wikipedia.org/wiki/Cron" class="link">Cron-esque</a> scheduler service, Khronos.</p>
 
 <h3 class="h3">Keeping Microservices Domain Specific</h3>
 

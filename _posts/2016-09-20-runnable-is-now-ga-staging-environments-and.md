@@ -25,8 +25,8 @@ To be able to build and operate parts of your application independently, you nee
 
 Our idea is simple: whenever a developer creates a new git branch for their feature or hotfix, they get a full-stack environment on-demand. They can use this environment to test and integrate their code without being bottlenecked on a central staging environment. They can run end-to-end Selenium tests anytime, and share their progress with a PM, QA person or another developer.
 
-Environments on Runnable are always available and up-to-date with the latest code changes. You can spin up as many environments as your team needs at [a low, predictable cost](https://runnable.com/pricing/).
+Environments on Runnable are always available and up-to-date with the latest code changes. You can spin up as many environments as your team needs at [a low, predictable cost](/pricing/).
 
 ### Check it out today.
 
-Runnable is generally available as of today with a 14-day free trial. All new signups before September 30th are eligible for a 25% discount. [Try it out for yourself](https://runnable.com/signup/).
+Runnable is generally available as of today with a 14-day free trial. All new signups before September 30th are eligible for a 25% discount. [Try it out for yourself](/signup/).

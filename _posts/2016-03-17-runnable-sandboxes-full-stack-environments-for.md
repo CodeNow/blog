@@ -3,11 +3,11 @@ layout: post
 title: 'Runnable Sandboxes: Full-stack environments for every GitHub branch'
 author: yash_k
 category: Engineering
-excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="https://runnable.com/" target="_blank">homepage</a> to learn more, or read on.'
+excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/" target="_blank">homepage</a> to learn more, or read on.'
 legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-stack-environments-for
 ---
 
-<p class="p intro">Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="https://runnable.com/" target="_blank">homepage</a> to learn more, or read on.</p>
+<p class="p intro">Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/" target="_blank">homepage</a> to learn more, or read on.</p>
 
 <h3 class="h3">What?</h3>
 
@@ -32,7 +32,7 @@ legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-s
 <li class="li"><p class="p"><strong class="strong">Simpler dev environments with our CLI</strong> — As a project gets larger, it’s hard to maintain an up-to-date local environment that includes all your services, components and data.</p><p class="p">With Runnable, teams don’t have to maintain a complex development environment. Developers can pull individual components or services locally and connect to the rest of the stack on Runnable. We provide a CLI that lets you SSH into your containers and sync files straight from your terminal.</p><p class="p">Runnable ensures your stack is always up-to-date and ready to test end-to-end.</p></li>
 </ol><h2 class="h2">How?</h2>
 
-<p class="p"><a class="link" href="https://runnable.com/" target="_blank">Sign up to get started</a>. Each team gets its own dedicated EC2 infrastructure, so we’ll be screening sign-up requests and will activate accounts within 24–48 hours.</p>
+<p class="p"><a class="link" href="/" target="_blank">Sign up to get started</a>. Each team gets its own dedicated EC2 infrastructure, so we’ll be screening sign-up requests and will activate accounts within 24–48 hours.</p>
 
 <p class="p">Once your account is provisioned, it’s 100% free to use during our preview period. <a class="link" href="/pricing/" target="_blank">Learn more about pricing</a>.</p>
 

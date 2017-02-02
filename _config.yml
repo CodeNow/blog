@@ -49,9 +49,9 @@ sass:
 
 jekyll_timeago:
   depth: 1 # Level of detail
-  today: 'today'
-  yesterday: 'yesterday'
-  tomorrow: 'tomorrow'
+  today: 'Today'
+  yesterday: 'Yesterday'
+  tomorrow: 'Tomorrow'
   and: 'and'
   suffix: 'ago'
   prefix: ''

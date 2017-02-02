@@ -11,7 +11,7 @@ Frontend applications always have a multitude of user interactions and flows for
 
 ### Raw Error Reporting
 
-Raw error reporting is the foundation for any error handling process. Without it, we don’t know when an error has occurred. For this, we use [Rollbar](http://t.umblr.com/redirect?z=https%3A%2F%2Frollbar.com%2F&t=NGFkODdkMzJhMmY5YTYzZmMyMjA4YTJlMWFkNDUzNjdjZDJlOTRiOCxGSVIwZ0xxZw%3D%3D&b=t%3ANYUWSMP8glLS4tRmPIbrNA&m=1) and [TrackJS](https://trackjs.com/). They serve similar purposes, but each has its own strength.
+Raw error reporting is the foundation for any error handling process. Without it, we don’t know when an error has occurred. For this, we use [Rollbar](https://rollbar.com/). They serve similar purposes, but each has its own strength.
 
 Rollbar reports errors to our team through its Slack integration. It also triggers [PagerDuty](https://www.pagerduty.com/) alerts for particularly important errors. When addressing a particular error, it helps us identify when a bug was introduced and how often it happens. Rollbar lets us see global trends across particular deploys, which helps us identify the specific code version that introduced a given bug. We use Rollbar in all our microservices, so our reporting logic is consistent across the board.
 

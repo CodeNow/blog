@@ -27,7 +27,6 @@ gems:
   - jekyll-paginate
   - jekyll-seo-tag
   - jekyll-sitemap
-  - jekyll-timeago
 
 permalink: /:title
 defaults:
@@ -46,25 +45,6 @@ defaults:
 
 sass:
   sass_dir: _sass/
-
-jekyll_timeago:
-  depth: 1 # Level of detail
-  today: 'Today'
-  yesterday: 'Yesterday'
-  tomorrow: 'Tomorrow'
-  and: 'and'
-  suffix: 'ago'
-  prefix: ''
-  suffix_future: ''
-  prefix_future: 'in'
-  years: 'years'
-  year: 'year'
-  months: 'months'
-  month: 'month'
-  weeks: 'weeks'
-  week: 'week'
-  days: 'days'
-  day: 'day'
 
 paginate: 8
 paginate_path: "/:num/"

@@ -3,11 +3,11 @@ layout: post
 title: 'Stringify: The Silent Killer'
 author: nathan_m
 category: Engineering
-excerpt: 'How much do you log (in your application)? Do you use tools like <a class="link" href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a> to make your logs easier to read? Do you Stringify everything and print it straight to console.log()? If so, logging may be the reason why you’re having trouble reducing your app’s average route response time to under <a href="https://developers.google.com/speed/docs/insights/Server" class="link" target="_blank">200ms</a>.<br><br>When we first started implementing a unified logging system throughout our API, we didn’t anticipate how something as simple as logging to console could possibly slow down our system. Our data models were in their infancy; they barely had actual data on them, so it became common to just Stringify the whole object into the log. It sounded like such a great idea! Investigating bugs was easier since we had a record of the entire data object during each step of our flow.<br><br>But then things started to change…'
+excerpt: 'How much do you log (in your application)? Do you use tools like <a class="link" href="https://github.com/trentm/node-bunyan">Bunyan</a> to make your logs easier to read? Do you Stringify everything and print it straight to console.log()? If so, logging may be the reason why you’re having trouble reducing your app’s average route response time to under <a href="https://developers.google.com/speed/docs/insights/Server" class="link">200ms</a>.<br><br>When we first started implementing a unified logging system throughout our API, we didn’t anticipate how something as simple as logging to console could possibly slow down our system. Our data models were in their infancy; they barely had actual data on them, so it became common to just Stringify the whole object into the log. It sounded like such a great idea! Investigating bugs was easier since we had a record of the entire data object during each step of our flow.<br><br>But then things started to change…'
 legacy_url: http://blog.runnable.com/post/144116915546/stringify-the-silent-killer
 ---
 
-<p class="p">How much do you log (in your application)? Do you use tools like <a class="link" href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a> to make your logs easier to read? Do you Stringify everything and print it straight to console.log()? If so, logging may be the reason why you’re having trouble reducing your app’s average route response time to under <a href="https://developers.google.com/speed/docs/insights/Server" class="link" target="_blank">200ms</a>.</p>
+<p class="p">How much do you log (in your application)? Do you use tools like <a class="link" href="https://github.com/trentm/node-bunyan">Bunyan</a> to make your logs easier to read? Do you Stringify everything and print it straight to console.log()? If so, logging may be the reason why you’re having trouble reducing your app’s average route response time to under <a href="https://developers.google.com/speed/docs/insights/Server" class="link">200ms</a>.</p>
 
 <p class="p">When we first started implementing a unified logging system throughout our API, we didn’t anticipate how something as simple as logging to console could possibly slow down our system. Our data models were in their infancy; they barely had actual data on them, so it became common to just Stringify the whole object into the log. It sounded like such a great idea! Investigating bugs was easier since we had a record of the entire data object during each step of our flow.</p>
 
@@ -17,7 +17,7 @@ legacy_url: http://blog.runnable.com/post/144116915546/stringify-the-silent-kill
 
 <p class="p">While investigating, I discovered that some of our models that were printed were bigger than we realized — <span class="em">megabytes</span> in size. We were logging our API to death.</p>
 
-<p class="p">Let’s look at some real data. I wrote a quick test service to simulate the behavior we encountered. The <a class="link" href="https://github.com/Nathan219/stringifying-test-server/tree/master" target="_blank">source</a> is on GitHub, and you can follow along on <a class="link" href="http://code.runnable.com/Vylbc4oFfhdx_zGx/are-you-wasting-your-time-just-printing-out-logs-nodejs-for-node-js-and-hello-world" target="_blank">CodeSnippets</a>.</p>
+<p class="p">Let’s look at some real data. I wrote a quick test service to simulate the behavior we encountered. The <a class="link" href="https://github.com/Nathan219/stringifying-test-server/tree/master">source</a> is on GitHub, and you can follow along on <a class="link" href="http://code.runnable.com/Vylbc4oFfhdx_zGx/are-you-wasting-your-time-just-printing-out-logs-nodejs-for-node-js-and-hello-world">CodeSnippets</a>.</p>
 
 <p class="p">In this server, we build random objects composed of smaller random objects. The objects have 1 × 10<sup class="sup">factor</sup> properties that are populated with sub-objects with (factor − 1) and (depth − 1). If we set factor to 2 and depth to 2, for example, it creates an object like the following:</p>
 
@@ -59,7 +59,7 @@ Asdasd: { A58l9Zdq1rwWBzJBug4C4eKS819PE7vX:
 
 <p class="p">Let’s try something ridiculous, just to illustrate: Factor 3, Depth 3. You can test this on the CodeSnippet by running the server, and adjusting the query parameters in the sandbox URL: <code class="monospace">/diy?factor=3&amp;depth=3&amp;random=true</code>. Because of how much work this request will do, you may need to try it multiple times to beat the timeout.</p>
 
-<img src="http://static.tumblr.com/mpxyjs6/4zto6xwbf/bitmap.png" class="img post-graphic" width="660" height="180" alt="image">
+<img src="images/posts/bitmap.png" class="img post-graphic" width="660" height="180" alt="image">
 
 <p class="caption">If you’re following along, place the query parameter here.</p>
 

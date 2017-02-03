@@ -3,7 +3,7 @@ layout: post
 title: Using a Slack Bot to Improve Customer Support
 author: sohail_a
 category: Engineering
-excerpt: 'We rely heavily on <a href="https://slack.com/" class="link" target="_blank">Slack</a> for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With <a href="https://scotch.io/tutorials/building-a-slack-bot-with-node-js-and-chuck-norris-super-powers#create-a-new-bot-on-your-slack-organization" class="link" target="_blank">some light reading</a> and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues.'
+excerpt: 'We rely heavily on <a href="https://slack.com/" class="link">Slack</a> for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With <a href="https://scotch.io/tutorials/building-a-slack-bot-with-node-js-and-chuck-norris-super-powers#create-a-new-bot-on-your-slack-organization" class="link">some light reading</a> and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues.'
 legacy_url: http://blog.runnable.com/post/148678111226/using-a-slack-bot-to-improve-customer-support
 ---
 

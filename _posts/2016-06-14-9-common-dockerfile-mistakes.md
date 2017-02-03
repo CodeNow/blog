@@ -17,7 +17,7 @@ legacy_url: http://blog.runnable.com/post/145895165446/9-common-dockerfile-mista
 
 <p class="p">Another issue is with running <code class="monospace">apt-get update</code> in a different line than running your <code class="monospace">apt-get install</code> command. The reason why this is bad is because a line with only <code class="monospace">apt-get update</code> will get cached by the build and won't actually run every time you need to run <code class="monospace">apt-get install</code>. Instead, make sure you run <code class="monospace">apt-get update</code> in the same line with all the packages to ensure all are updated correctly.</p>
 
-<p class="p">The <code class="monospace">apt-install</code> in the <a href="https://github.com/docker-library/golang/blob/master/1.7/Dockerfile#L4" class="link" target="_blank">Golang Dockerfile</a> is a good example of how this should be done:</p>
+<p class="p">The <code class="monospace">apt-install</code> in the <a href="https://github.com/docker-library/golang/blob/master/1.7/Dockerfile#L4" class="link">Golang Dockerfile</a> is a good example of how this should be done:</p>
 
 <pre class="pre"><code class="monospace no-wrap"># From https://github.com/docker-library/golang
 RUN apt-get update &amp;&amp; \

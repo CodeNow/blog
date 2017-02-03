@@ -28,17 +28,17 @@ legacy_url: http://blog.runnable.com/post/147612899961/libraries-we-use-when-bui
 
 <p class="p">Here is the list of those technical concerns with the specific libraries we use:</p>
 
-<ul class="ul"><li class="li"><p class="p">Monitoring (<a href="https://github.com/Runnable/monitor-dog" class="link" target="_blank">monitor dog</a>) — Reports data to Datadog in a normalized way; e.g. prefixing each event with the service name.</p></li>
+<ul class="ul"><li class="li"><p class="p">Monitoring (<a href="https://github.com/Runnable/monitor-dog" class="link">monitor dog</a>) — Reports data to Datadog in a normalized way; e.g. prefixing each event with the service name.</p></li>
 
-<li class="li"><p class="p">Error handling (<a href="https://github.com/Runnable/error-cat" class="link" target="_blank">error cat</a>) — Provides a error hierarchy that can be extended by each service and reports errors to Rollbar.</p></li>
+<li class="li"><p class="p">Error handling (<a href="https://github.com/Runnable/error-cat" class="link">error cat</a>) — Provides a error hierarchy that can be extended by each service and reports errors to Rollbar.</p></li>
 
-<li class="li"><p class="p">Configuration (<a href="https://github.com/Runnable/loadenv" class="link" target="_blank">loadenv</a>) — Ensures that every microservice loads environment variables in the same way.</p></li>
+<li class="li"><p class="p">Configuration (<a href="https://github.com/Runnable/loadenv" class="link">loadenv</a>) — Ensures that every microservice loads environment variables in the same way.</p></li>
 
-<li class="li"><p class="p">Worker server (<a href="https://github.com/Runnable/ponos" class="link" target="_blank">ponos</a>) — A common worker server with standard monitoring and error reporting built-in.</p></li>
+<li class="li"><p class="p">Worker server (<a href="https://github.com/Runnable/ponos" class="link">ponos</a>) — A common worker server with standard monitoring and error reporting built-in.</p></li>
 
-<li class="li"><p class="p">Docker/Swarm client (<a href="https://github.com/Runnable/loki" class="link" target="_blank">loki</a>) — A Docker/Swarm client library with standard monitoring built-in.</p></li>
+<li class="li"><p class="p">Docker/Swarm client (<a href="https://github.com/Runnable/loki" class="link">loki</a>) — A Docker/Swarm client library with standard monitoring built-in.</p></li>
 
-<li class="li"><p class="p">Validation (<a href="https://github.com/hapijs/joi" class="link" target="_blank">joi</a>) — A validation library for email addresses, dates, etc.</p></li>
+<li class="li"><p class="p">Validation (<a href="https://github.com/hapijs/joi" class="link">joi</a>) — A validation library for email addresses, dates, etc.</p></li>
 </ul><h3 class="h3">Conclusion</h3>
 
 <p class="p">It’s important to be aware of when your code is a bad fit for a library. Here are few general rules of thumb:</p>

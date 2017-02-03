@@ -11,10 +11,10 @@ layout: default
       <a class="h3 weight-strong" href="/blog{{ post.url }}">{{ post.title }}</a>
       <div class="grid-block margin-top-sm author">
         <img class="margin-right-xxs avatar" src="{{ site.baseurl }}/images/{{ author.avatar }}" height="27" width="27">
-        <span class="post-author text-gray">by {{ author.display_name }} {{ post.date | timeago }}</span>
+        <span class="post-author text-gray">by {{ author.display_name }} <time>{{ post.date | date: "%Y%m%d"}}</time></span>
       </div>
       <p class="p article-body margin-top-sm">{{ post.excerpt }}</p>
-      <a href="/blog{{ post.url }}" class="read-more">Keep reading</a>
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Keep reading</a>
     </article>
   {% endfor %}
   <section class="grid-block col shrink justify-center align-center section-footer">
@@ -22,3 +22,6 @@ layout: default
     {% include mailchimp.html %}
   </section>
 </section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="{{ site.baseurl }}/js/post-time.js"></script>

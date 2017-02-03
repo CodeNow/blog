@@ -3,11 +3,11 @@ layout: post
 title: Lessons Learned While Building Microservices, Part I
 author: anton_p
 category: Engineering
-excerpt: 'The microservices architecture, like any solution, has its <a href="http://blog.runnable.com/post/147612899961/libraries-we-use-when-building-microservices" class="link">tradeoffs</a>. Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.'
+excerpt: 'The microservices architecture, like any solution, has its <a href="libraries-we-use-when-building-microservices" class="link">tradeoffs</a>. Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.'
 legacy_url: http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices-part
 ---
 
-The microservices architecture, like any solution, has its [tradeoffs](http://blog.runnable.com/post/147612899961/libraries-we-use-when-building-microservices). Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.
+The microservices architecture, like any solution, has its [tradeoffs](libraries-we-use-when-building-microservices). Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.
 
 ### Migrating API to Node v4
 
@@ -19,7 +19,7 @@ After Node 4 was released, we immediately began using it to write new services, 
 
 Having API running on Node 4 with all of its nice new JavaScript features would have been nice, but that wasn’t enough for us to allocate the engineering time needed to complete the migration.
 
-We use a [couple of libraries](http://blog.runnable.com/post/147612899961/libraries-we-use-when-) almost universally across our microservices. One of them is [Ponos](http://blog.runnable.com/post/144321351856/introducing-ponos-a-rabbitmq-based-worker-server) — our RabbitMQ based worker server. Ponos was rewritten with Node 4 in mind, and used in any services which were also using Node 4.
+We use a [couple of libraries](libraries-we-use-when-) almost universally across our microservices. One of them is [Ponos](introducing-ponos-a-rabbitmq-based-worker-server) — our RabbitMQ based worker server. Ponos was rewritten with Node 4 in mind, and used in any services which were also using Node 4.
 
 Recently, we added a very important feature to Ponos: Transaction ID (TID) support, which is an identifier that allows us to track event flows across all of our services. All our new services had TID support immediately, except our most important service, API.
 
@@ -45,7 +45,7 @@ This situation shackles your team to your existing architecture and style. And i
 
 It didn’t take us long to begin adopting a microservices-based architecture, and that changed this pattern. Our team started **to explore** different libraries and techniques more on their own.
 
-This is how we switched to Promises. Someone just implemented them in a new service they wrote, and showed its advantages to the team. Then Promises were adopted across the team and our services as the standard way to write async code. The same happened with our Node 4 migration, and with our [PostgreSQL usage](http://blog.runnable.com/post/149000201856/think-before-you-mongo). Using PostgreSQL for one of our services allowed us to build some engineering and operation expertise, which led us to choose PostgreSQL for our new user and organizations management service.
+This is how we switched to Promises. Someone just implemented them in a new service they wrote, and showed its advantages to the team. Then Promises were adopted across the team and our services as the standard way to write async code. The same happened with our Node 4 migration, and with our [PostgreSQL usage](think-before-you-mongo). Using PostgreSQL for one of our services allowed us to build some engineering and operation expertise, which led us to choose PostgreSQL for our new user and organizations management service.
 
 ***Lesson #3:** Microservices promote trying out new technologies. They enable experimentation with patterns and tools.*
 

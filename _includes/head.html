@@ -1,11 +1,4 @@
 <head>
-  {% if page.layout == 'post' %}
-    <title>{{ page.title }} — Runnablog</title>
-    <meta name="twitter:title" content="{{ page.title }}">
-    <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
-    {% else %}
-    <title>Runnablog</title>
-  {% endif %}
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,18 +7,17 @@
   <link rel="stylesheet" href="{{ site.baseurl }}/css/index.css">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}{{ site.baseurl }}/feed.xml">
   <meta property="og:image" content="//s3-us-west-1.amazonaws.com/runnable-design/fb-image.png">
-  <meta name="description" content="The official blog from the team at Runnable.">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@getrunnable">
+  <meta name="description" content="{{ site.description }}">
   {% if page.layout == 'post' %}
     <meta name="twitter:title" content="{{ page.title }}">
     <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
     {% else %}
-    <meta name="twitter:title" content="Runnablog">
-    <meta name="twitter:description" content="The official blog from the team at Runnable.">
+    <meta name="twitter:title" content="{{ site.title }}">
+    <meta name="twitter:description" content="{{ site.description }}">
   {% endif %}
   <meta name="twitter:image" content="https://s3-us-west-1.amazonaws.com/runnable-design/tw-image.png">
   {% if jekyll.environment == "production" %}
     <script src="/js/segment.js"></script>
   {% endif %}
+  {% seo %}
 </head>

@@ -6,8 +6,8 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Runnable Blog
-email: support@runnable.com
+title: Runnablog
+email: blog@runnable.com
 description: > # this means to ignore newlines until "baseurl:"
   The official blog from the team at Runnable
 url: https://runnable.com # the base hostname & protocol for your site

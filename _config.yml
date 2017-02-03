@@ -38,6 +38,13 @@ defaults:
       layout: page
       seo:
         type: blog
+  -
+    scope:
+      path: ""
+      type: posts
+    values:
+      seo:
+        type: BlogPosting
 
 sass:
   sass_dir: _sass/

@@ -15,6 +15,14 @@
   max-width: 600px;
 }
 
+.time-capitalize {
+  display: inline-block;
+
+  &::first-letter {
+    text-transform: capitalize;
+  }
+}
+
 .share-item {
   align-items: center;
   display: inline-flex;

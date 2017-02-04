@@ -1,5 +1,5 @@
 # Slash Blog
-The official engineering blog from the team at Runnable.
+The official blog from the team at Runnable.
 
 [https://runnable.com/blog](https://runnable.com/blog/)
 

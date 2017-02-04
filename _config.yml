@@ -6,17 +6,17 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Runnable Blog
-email: support@runnable.com
-description: > # this means to ignore newlines until "baseurl:"
-  The official engineering blog from the team at Runnable
+title: Runnablog
+email: blog@runnable.com
+description: The official blog from the team at Runnable
 url: https://runnable.com # the base hostname & protocol for your site
 baseurl: /blog
 twitter:
   username: GetRunnable
 facebook:
   publisher: Runnable
-
+author:
+  twitter: GetRunnable
 seo:
   type: blog
 
@@ -35,13 +35,15 @@ defaults:
       path: "" # an empty string here means all files in the project
     values:
       layout: page
+      seo:
+        type: blog
   -
     scope:
       path: ""
-      type: "posts"
+      type: posts
     values:
       seo:
-        type: blog
+        type: BlogPosting
 
 sass:
   sass_dir: _sass/

@@ -74,11 +74,11 @@ CSbuttons.socialSharing = function () {
 
   if (linkedinLink) {
     linkedinTotal = 0;
-    $.getJSON('http://www.linkedin.com/countserv/count/share?url=' + legacyUrl + '&callback=?')
+    $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + legacyUrl + '&callback=?')
       .done(function(data) {
         linkedinTotal += data.count;
       });
-    $.getJSON('http://www.linkedin.com/countserv/count/share?url=' + permalink + '&callback=?')
+    $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + permalink + '&callback=?')
       .done(function(data) {
         linkedinTotal += data.count;
         var shareCount = linkedinLink.getElementsByClassName('share-count')[0];
@@ -91,7 +91,7 @@ CSbuttons.socialSharing = function () {
     if (legacyUrl) {
       loadJSON(
         // path
-        'http://hn.algolia.com/api/v1/search?query=' + legacyUrl + '&restrictSearchableAttributes=url',
+        'https://hn.algolia.com/api/v1/search?query=' + legacyUrl + '&restrictSearchableAttributes=url',
         // success
         function(data) {
           hackerNewsLink.href = "https://news.ycombinator.com/item?id=" + data.hits[0].objectID;
@@ -109,7 +109,7 @@ CSbuttons.socialSharing = function () {
     if (!legacyUrl) {
       loadJSON(
         // path
-        'http://hn.algolia.com/api/v1/search?query=' + permalink + '&restrictSearchableAttributes=url',
+        'https://hn.algolia.com/api/v1/search?query=' + permalink + '&restrictSearchableAttributes=url',
         // success
         function(data) {
           hackerNewsLink.href = "https://news.ycombinator.com/item?id=" + data.hits[0].objectID;

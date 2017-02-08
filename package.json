@@ -1,6 +1,6 @@
 {
   "name": "tumblr",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "runnable tumblr styles",
   "main": "gulpfile.js",
   "dependencies": {

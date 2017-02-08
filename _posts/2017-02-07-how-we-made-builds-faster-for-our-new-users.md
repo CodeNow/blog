@@ -10,7 +10,7 @@ We’re always trying to [eliminate points of drop-off](http://blog.runnable.com
 
 The first thing a user experiences in Runnable is our demo. Our app builds environments for git branches. We want users to see what that’s like right off the bat, so we start them off with a demo application. Since it’s tied to a repository on their own GitHub account, we can’t build it in advance, which means they have to wait for it to build.
 
-On average, building this demo application would take two minutes, while some faster builds took only one minute. But we saw that one in four users who started their first build would drop off before the one-minute mark. To get more people to see the demo, we were going to have to speed up our builds. Recently we applied some unconventional methods to make this happen.
+On average, building this demo application would take two minutes, while some faster builds took only one minute. But we saw that one in four users who started their first build would drop off before the one-minute mark. To get more people to see the demo, we were going to have to speed up our builds.
 
 ### Our first attempt: Baking Docker images into our AMIs
 

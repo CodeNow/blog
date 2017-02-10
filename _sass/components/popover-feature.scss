@@ -1,0 +1,38 @@
+.popover-feature {
+  right: -((316px / 2) - 20); // width / 2 - arrow
+  top: 0;
+  width: 316px;
+
+  &.popover-hover-wrapper {
+    transform: none;
+  }
+
+  .popover {
+    line-height: 1.4;
+    white-space: normal;
+  }
+
+  .a {
+    border-radius: $input-border-radius;
+    color: $gray-dark;
+    cursor: pointer;
+
+    &:hover,
+    &:active {
+      color: $purple-light;
+    }
+  }
+
+  .img {
+    margin-right: $sm;
+  }
+
+  // override .page-landing default
+  .p.p {
+    margin-bottom: 0;
+  }
+
+  .small {
+    opacity: .75;
+  }
+}

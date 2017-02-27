@@ -180,6 +180,12 @@
     transform: translateX(-50%);
   }
 
+  .img-bordered {
+    border: 1px solid $gray-lightest;
+    border-radius: $input-border-radius-lg;
+    box-shadow: 0 2px 15px rgba($black,.05);
+  }
+
   // captions
   .caption {
     color: $gray;

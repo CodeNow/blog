@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Why We Stopped Worrying and Loved the Pipeline'
+title: 'Pipelines vs. MapReduce to Speed Up Data Aggregation in MongoDB'
 author: henry_m
 category: Engineering
 excerpt: '<p class="p">There has been a lot of protest related to pipelines recently, but there is one that we can all agree brings value and profit to our work: the MongoDB <a class="link" href="https://docs.mongodb.com/manual/core/aggregation-pipeline/">Aggregation Pipeline</a>. When MongoDB v2.2 was released, this performant method of data aggregation was introduced that utilizes stages to filter data and perform operations like grouping, sorting and transforming the output of each operator. This framework is an alternative to Mongo’s MapReduce functionality, and the output can be piped to a new collection or used to update specific documents.
@@ -110,4 +110,3 @@ Some things to keep in mind:
 > Pipeline stages are limited to 100MB of RAM by default, so to prevent an error if that limit is exceeded the allowDiskUse option must be used.
 
 > To make full use of MongoDB indexes, the $match operator must be used at the beginning of the pipeline. Using it any later would waste the optimizations that the Aggregation Pipeline can apply to the query.
-

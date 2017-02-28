@@ -4,6 +4,7 @@ title: 'Amazon-like Popover Trigger Behaviors in AngularJS'
 author: nathan_m
 category: Engineering
 excerpt: 'Creating custom UI behavior in Angular can seem daunting. Once you know how to break the problem down, its complexity can just fizzle away. In this tutorial, we’ll be exploring the use of mouse events, locations, and some simple geometry to add an on-hover popover menu to a button. Not just any simple on-hover behavior, but one that stays open if the user is heading toward the content.'
+legacy_url: http://blog.runnable.com/post/156606409746/amazon-like-popover-trigger-behaviors-in-angularjs
 ---
 
 ![popover animation](images/posts/popover-animation.gif)

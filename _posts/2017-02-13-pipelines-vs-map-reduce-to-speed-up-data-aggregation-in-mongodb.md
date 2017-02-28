@@ -110,4 +110,3 @@ Some things to keep in mind:
 > Pipeline stages are limited to 100MB of RAM by default, so to prevent an error if that limit is exceeded the allowDiskUse option must be used.
 
 > To make full use of MongoDB indexes, the $match operator must be used at the beginning of the pipeline. Using it any later would waste the optimizations that the Aggregation Pipeline can apply to the query.
-

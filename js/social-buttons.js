@@ -112,9 +112,11 @@ CSbuttons.socialSharing = function () {
         'https://hn.algolia.com/api/v1/search?query=' + permalink + '&restrictSearchableAttributes=url',
         // success
         function(data) {
-          hackerNewsLink.href = "https://news.ycombinator.com/item?id=" + data.hits[0].objectID;
           var shareCount = hackerNewsLink.getElementsByClassName('share-count')[0];
-          shareCount.innerText = data.hits[0].points;
+          if (data.hits[0]) {
+            hackerNewsLink.href = "https://news.ycombinator.com/item?id=" + data.hits[0].objectID;
+            shareCount.innerText = data.hits[0].points;
+          }
           shareCount.classList.add('is-loaded');
           if (shareCount.innerText > 0) {
             hackerNewsLink.classList.remove('hidden');

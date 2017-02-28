@@ -14,7 +14,7 @@ For most development teams, user experience (UX) is one of the most critical fac
 
 Runnable solves this problem by building full-stack preview environments for every code change. And with Runnable Environments for JIRA, everyone on the team can instantly track and access new features at any time.
 
-<img src="images/posts/jira-ss-1.png" width="680" height="546">
+<img src="images/posts/jira-ss-1.png" width="653" height="546">
 
 As soon as a developer starts progress on a JIRA ticket and creates a branch, Runnable builds an isolated, full-stack environment for that feature. This allows product managers and designers to engage with this feature and collaborate with the developer directly from JIRA.
 
@@ -33,7 +33,7 @@ Runnable also runs any test — including functional and end-to-end tests 
 ### How it works
 Runnable Environments for JIRA is an Atlassian Connect add-on for JIRA Cloud. Similar to the DVCS Connector for JIRA, our integration looks for JIRA issue keys in your branch names to display related Runnable information in the “Environments” panel.
 
-<img src="images/posts/jira-ss-3.png" width="672" height="331" class="img-bordered">
+<img src="images/posts/jira-ss-3.png" width="600" class="img-bordered">
 
 The Environments panel always displays the current build status, latest test results, and links to your Runnable environment.
 

@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
   if (timeEl) {
     for (i = 0; i < timeEl.length; i++) {
-      timeEl[i].innerHTML = moment(timeEl[i].innerHTML, 'YYYYMMDD').fromNow();
+      timeEl[i].innerHTML = moment(timeEl[i].innerHTML, 'YYYYMMDDhh').fromNow();
     }
   }
 });

@@ -58,6 +58,7 @@
   pre {
     overflow-x: auto;
     padding: $sm;
+    word-wrap: normal;
 
     > code {
       background-color: transparent;

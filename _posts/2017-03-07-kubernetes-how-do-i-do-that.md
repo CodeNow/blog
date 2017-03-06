@@ -11,7 +11,7 @@ Kubernetes (lovingly referred to as “K8s”, “K8”, or even “the Kubes”
 In this post, we’ll set up an app, database, and secrets while learning the basic concepts behind Kubernetes: Pods, Deployments, and Services. The files for this post can be accessed in the [GitHub repo](https://github.com/thejsj/kubernetes-blog-post) and have been tested using [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/), which we’ll use to explain how some of these concepts are applied. If you want to set up this sample application in your Kubernetes cluster, be sure to check out the [README in the Github repo](https://github.com/thejsj/kubernetes-blog-post#kubernetes-how-do-i-do-that), for detailed instructions on how to do so.
 
 
-### I want to deploy my app. How do I do that?
+### How do I deploy my app?
 
 When you want to run an application on Kubernetes, you should use a Deployment. Deployments run your containers (in what’s called a Pod), restart your container when it fails, and let you specify the number of replicas for those Pods (a replica set). Kubernetes is different from solutions like Docker Compose in that it only understands images. For you to deploy your application, you’ll need to first create an image and push it to a registry reachable by your Kubernetes cluster. The easiest way is to create an account at [Docker Hub](https://hub.docker.com/) and push your images there (the following deployment file works because the image is publicly available on Docker Hub). It’s important to specify the labels in the metadata section of your Deployment, because that's how we’ll identify the container we expose outside our cluster.
 
@@ -37,7 +37,7 @@ spec:
             value: "8000"
 ```
 
-### I want to talk to my app. How do I do that?
+### How do I talk to my app?
 
 After setting up our application, we can go to the dashboard and confirm that it's running. Because we created a Deployment for it, we’ll have a running Deployment, a replica set, and 3 Pods (specified through the replicas property). Even though our application is running, we can’t access our application externally. That’s the default behavior in Kubernetes—Pods are not accessible unless a “Service” is created for them which allow access to the container through the use of labels.
 
@@ -75,7 +75,7 @@ spec:
           servicePort: 8000
 ```
 
-### I want to deploy my database. How should I do that?
+### How do I deploy my database?
 
 To create a database that we can use with our application, we first have to create a Deployment for it. Like our app, we want to run our database from an image with a predefined number of replicas and we want our Pod to auto-restart in case of failure. The only difference from our app Deployment is that we’re going to pass a volume to the container, so our data persists in case of a container restart. If we wanted to persist this volume across Pods then we could use a persistent volume.
 
@@ -112,7 +112,7 @@ spec:
         emptyDir: {}
 ```
 
-### I want my database to talk to my app. How do I do that?
+### How can my database talk to my app?
 
 Now that we have an application and a database running, we can have our application talk to our database to make queries. In order to do that, we’ll also be creating a Service (like we did with our application). The Service will make our Deployment available inside our Kubernetes cluster, but unreachable outside the cluster (which is actually the default behavior for Services).  This service is almost identical to our application’s service, except for the lack of `NodePort` and `type` properties.
 
@@ -149,7 +149,7 @@ spec:
             value: rethinkdb-db-access # Add name of new host
 ```
 
-### I want to store and use secrets. How do I do that?
+### How do I store and use secrets?
 
 Kubernetes provides its own ways to store secrets at a cluster and namespace level. The first way is to declare a secret using a yaml or json file which follows a structure similar to how we declare Deployments and Services:
 

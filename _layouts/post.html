@@ -10,7 +10,7 @@ layout: default
     {% assign author = site.data.authors[page.author] %}
     <img class="avatar" src="images/{{ author.avatar }}" width="45" height="45">
     <div>by {{ author.display_name }}</div>
-    <div><time class="time-capitalize" datatime="{{ post.date | date: '%Y%m%d%I' }}">{{ page.date | date: "%Y%m%d%I"}}</time> in {{ page.category }}</div>
+    <div><time class="time-capitalize" datatime="{{ post.date }}">{{ page.date }}</time> in {{ page.category }}</div>
     <div class="grid-block social-sharing" data-url="https://runnable.com/blog{{ page.url }}" data-legacy-url="{{ page.legacy_url }}">
       <a target="_blank" href="https://twitter.com/intent/tweet?text={{ page.title }}&url=https://runnable.com/blog{{ page.url }}&via=GetRunnable" class="share-item share-twitter">
         <img src="images/logos/logo-twitter.svg" width="20" height="20">

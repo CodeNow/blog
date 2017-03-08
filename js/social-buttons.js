@@ -74,10 +74,12 @@ CSbuttons.socialSharing = function () {
 
   if (linkedinLink) {
     linkedinTotal = 0;
-    $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + legacyUrl + '&callback=?')
-      .done(function(data) {
-        linkedinTotal += data.count;
-      });
+    if (legacyUrl) {
+      $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + legacyUrl + '&callback=?')
+        .done(function(data) {
+          linkedinTotal += data.count;
+        });
+    }
     $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + permalink + '&callback=?')
       .done(function(data) {
         linkedinTotal += data.count;

@@ -4,7 +4,7 @@ title: 'Kubernetes: How Do I Do That?'
 author: jorge_s
 category: Engineering
 excerpt: '<p class="p">Kubernetes (lovingly referred to as “K8s”, “K8”, or even “the Kubes”) is becoming the most widely adopted container cluster manager out there. At a very basic level, Kubernetes provides an abstraction layer over containers that allows developers to organize all the different layers of their application through Kubernetes configurations. The challenge with Kubernetes is that you need to understand when and how to correctly use the abstractions it provides. '
-date: 2017-03-07 18:30:00 -0800
+date: 2017-03-06 18:30:00 -0800
 ---
 
 Kubernetes (lovingly referred to as “K8s”, “K8”, or even “the Kubes”) is becoming the most widely adopted container cluster manager out there. At a very basic level, Kubernetes provides an abstraction layer over containers that allows developers to organize all the different layers of their application through Kubernetes configurations. The challenge with Kubernetes is that you need to understand when and how to correctly use the abstractions it provides.

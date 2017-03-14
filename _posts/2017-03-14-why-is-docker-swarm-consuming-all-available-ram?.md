@@ -4,6 +4,7 @@ title: 'Why is Docker Swarm consuming all available RAM?'
 author: anand_p
 category: Engineering
 excerpt: 'A few weeks ago we were alerted that Docker Swarm was using over 8GB of RAM. Our investigation led us to discover an unexpected factor that determines its memory usage. After a bit of graphing and math, we were able to locate the code behind this unexpected behavior.'
+date: 2017-03-13 22:00:00 -0800
 ---
 
 A few weeks ago we were alerted that Docker Swarm was using over 8GB of RAM. Our investigation led us to discover an unexpected factor that determines its memory usage. After a bit of graphing and math, we were able to locate the code behind this unexpected behavior.

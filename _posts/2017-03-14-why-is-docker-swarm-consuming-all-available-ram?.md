@@ -41,7 +41,7 @@ The dump showed us that most of the traffic was made up of container inspect dat
 
 <img src="images/posts/swarm-all-containers.png" width="900" height="325">
 
-There was a correlation here too. Using this graph, we found the ratio of memory per container to be around 12KB. We knew most of the network traffic was made up of inspect data, so we did a Docker inspect on our containers and confirmed the average size to be around 12KB per container. This strongly suggested that we had found the reason for our memory increase.
+There was a correlation here too. Using this graph, we found the ratio of memory per container to be around 12kB. We knew most of the network traffic was made up of inspect data, so we did a Docker inspect on our containers and confirmed the average size to be around 12kB per container. This strongly suggested that we had found the reason for our memory increase.
 
 Now it was obvious to us that Swarm stores the inspect object for each container in memory, whether it’s started or stopped. This make sense because otherwise Swarm would have to inspect all the Docker hosts to get the inspect data.
 

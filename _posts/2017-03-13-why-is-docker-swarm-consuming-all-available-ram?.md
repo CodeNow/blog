@@ -23,7 +23,7 @@ At first we thought it was a memory leak, and simply redeployed the Docker Swarm
 
 <img src="images/posts/swarm-cpu.png" width="900" height="325">
 
-First we looked at CPU usage. It was increasing when memory was, but CPU usage does not normally correlate to RAM usage, so we classified this as a symptom rather than the root cause. We needed to find something that could be mapped to memory usage, like holding a file in memory.
+First we looked at CPU usage. It was increasing when memory was, but CPU usage does not normally cause RAM usage, so we classified this as a symptom rather than the root cause. We needed to find something that could be mapped to memory usage, like holding a file in memory.
 
 <img src="images/posts/swarm-running-containers.png" width="900" height="325">
 

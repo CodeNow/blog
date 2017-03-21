@@ -4,7 +4,7 @@ title: Common Promise Anti-Patterns and How to Avoid Them
 author: ryan_k
 category: Engineering
 excerpt: 'Engineers making the move from callbacks to promises make common mistakes and introduce anti-patterns into their codebase. During my time working with promises at Runnable, I’ve identified a few common anti-patterns people use that cause issues maintaining the codebase. As I go through these anti-patterns I’ll explain what the pattern is, how to avoid it, and then take it a step further using <a href="http://bluebirdjs.com/docs/getting-started.html" class="link">Bluebird</a> to make the code cleaner.'
-legacy_url: http://blog.runnable.com/post/154695425511/promise-anti-patterns
+legacy_url: http://blog.runnable.com/post/154695425511/
 ---
 
 <p class="p">Engineers making the move from callbacks to promises make common mistakes and introduce anti-patterns into their codebase. During my time working with promises at Runnable, I’ve identified a few common anti-patterns people use that cause issues maintaining the codebase. As I go through these anti-patterns I’ll explain what the pattern is, how to avoid it, and then take it a step further using <a href="http://bluebirdjs.com/docs/getting-started.html" class="link">Bluebird</a> to make the code cleaner.</p>

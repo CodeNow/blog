@@ -44,6 +44,6 @@ Along with the swag, we gave away two DJI Mavic Pro drones! Thanks to everyone w
 
 <p class="caption"><img src="images/posts/cloud-next-drones.jpg" width="660" height="400">Source: <a href="https://twitter.com/GetRunnable/status/841425415185059840/photo/1">@GetRunnable</a></p>
 
-### Next up: DockerCon
+### Next Up: DockerCon
 
 We left Google Cloud Next excited by the comments and feedback we collected around both our core product and our Kubernetes integration. We can’t wait for DockerCon. If you’re heading to Austin next month, stop by our booth (E11) to say “Hi” and run through a demo of Runnable. You might just take something memorable back with you.

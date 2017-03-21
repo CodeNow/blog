@@ -4,7 +4,7 @@ title: 'Runnable Unveils Kubernetes Integration @ Google Cloud Next'
 author: sundip_p
 category: Announcements
 excerpt: 'Last week, the Runnable team attended Google Cloud Next and had the privilege to speak with tons of developers and DevOps professionals. We kicked off the conference with the announcement of support for Kubernetes on Google Cloud Platform. We also gave away a ton of swag and sparked several meaningful relationships. A big thanks to everyone who stopped by our booth and said hi! It was awesome to meet and talk to so many of you.'
-date: 2017-03-20 18:00:00 -0800
+date: 2017-03-20 17:00:00 -0800
 ---
 
 Last week, the Runnable team attended Google Cloud Next and had the privilege to speak with tons of developers and DevOps professionals. We kicked off the conference with the announcement of support for Kubernetes on Google Cloud Platform. We also gave away a ton of swag and sparked several meaningful relationships. A big thanks to everyone who stopped by our booth and said “Hi”! It was awesome to meet and talk to so many of you.

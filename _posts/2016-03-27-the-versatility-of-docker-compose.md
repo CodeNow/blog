@@ -46,9 +46,7 @@ version: '2'
 
 Multi-repo setup has several options.
 
-##### Option 1:
-
-Option number one is to use a single Compose file just to run applications using images (and build images independently).
+**Option number one** is to use a single Compose file just to run applications using images (and build images independently).
 
 ```yaml
 version: '2'
@@ -62,9 +60,7 @@ services:
   ...
 ```
 
-##### Option 2:
-
-Option number two is to use one Compose file per repo/service. In this case, each Compose file will build one corresponding service and use images for other services.
+**Option number two** is to use one Compose file per repo/service. In this case, each Compose file will build one corresponding service and use images for other services.
 
 ```yaml
 version: '2'
@@ -78,9 +74,7 @@ services:
   ...
 ```
 
-##### Option 3:
-
-Option number three is to have one global Compose file and use remote builds instead of images. This way Compose will *build* and *run* the whole stack.
+**Option number three** is to have one global Compose file and use remote builds instead of images. This way Compose will *build* and *run* the whole stack.
 
 ```yaml
 version: '2'

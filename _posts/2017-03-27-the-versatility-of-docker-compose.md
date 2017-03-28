@@ -4,7 +4,7 @@ title: 'The Versatility of Docker Compose'
 author: anton_p
 category: Engineering
 excerpt: '<div class="p">According to the <a href="https://docs.docker.com/compose/">official documentation</a>, Docker Compose is, “a tool for defining and running multi-container Docker applications.” However, I think one important detail is missing. Compose can also build your multi-container Docker applications.</div><div class="p">What is interesting is that Compose build and run functionality can be used completely independently. It isn’t opinionated, allowing it to be used it for different use cases and setups.</div><div class="p">I’m going to show you some of those use cases and how Compose can be beneficial in pretty much every setup.</div>'
-date: 2017-03-27 18:30:00 -0800
+date: 2017-03-27 17:30:00 -0800
 ---
 
 According to the <a href="https://docs.docker.com/compose/">official documentation</a>, Docker Compose is, “a tool for defining and running multi-container Docker applications.” However, I think one important detail is missing. Compose can also *build* your multi-container Docker applications.

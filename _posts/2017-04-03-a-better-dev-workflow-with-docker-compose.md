@@ -27,7 +27,7 @@ services:
     links:
       - "db"
     environment:
-      MONGODB_HOST: db
+      - MONGODB_HOST: db
   web:
     build: .
     ports:
@@ -35,7 +35,7 @@ services:
     links:
       - "api"
     environment:
-      API_HOST: api
+      - API_HOST: api
 ```
 
 This file “composes” all three tiers of our application (web, api, and db) in on easy-to-read file. In this example, our Compose file is tracked in the web repository. It builds the web repo from its local Dockerfile, and the api service is built from a Dockerfile in a remote git repository. This differs from production Compose files, which typically use pre-built images.

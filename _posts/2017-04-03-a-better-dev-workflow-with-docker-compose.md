@@ -96,7 +96,7 @@ services:
   web:
     ...
     volumes:
-      - ..:/app
+      - .:/app
 ```
 
 This greatly speeds up development, but it makes your Compose environments non-idempotent and thus less portable.

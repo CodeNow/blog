@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 'Monoliths, Microservices, and Fish'
+title: Monoliths, Microservices, and Fish
 author: damien_h
 category: Engineering
-excerpt: 'I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it's taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.'
+excerpt: 'I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it’s taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.'
 date: 2017-04-10 18:30:00 -0800
 ---
 
-I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it's taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.
+I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it’s taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.
 
 ### Whale Babel
 
@@ -15,7 +15,7 @@ In traditional monoliths, I used a wide range of communication protocols. The sp
 
 ### Babel Fish
 
-At Runnable we’re running dozens of services; some with entirely different technology stacks. Thanks to a [central communication manager](http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq), They all talk to each other without translation and we know when one service speaks or listens. If our user service needs to know when the payment service has processed a user, it tells our communication manager, “hey let me know when the pay service updates a user's billing information”.
+At Runnable we’re running dozens of services; some with entirely different technology stacks. Thanks to a [central communication manager](http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq), They all talk to each other without translation and we know when one service speaks or listens. If our user service needs to know when the payment service has processed a user, it tells our communication manager, “hey let me know when the pay service updates a user’s billing information”.
 
 ### Small Ponds
 

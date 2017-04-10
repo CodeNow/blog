@@ -45,5 +45,6 @@ With Runnable’s central approach, tracking down bad smells becomes much easier
 
 None of these shifts necessarily require microservices or event-driven communication. You can have an approval board, documentation, registries, etc., but they all cost time and energy. With a microservice event-driven architecture, they are baked into how you code. You will speak one language, and you will like it.
 
-Gone Fishing,
-Damien
+*Gone Fishing,*
+<br>
+*Damien*

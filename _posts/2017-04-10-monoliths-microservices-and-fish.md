@@ -15,7 +15,7 @@ In traditional monoliths, I used a wide range of communication protocols. The sp
 
 ### Babel Fish
 
-At Runnable we’re running dozens of services; some with entirely different technology stacks. Thanks to a [central communication manager](http://blog.runnable.com/post/150022242931/event-driven-microservices-using-rabbitmq), They all talk to each other without translation and we know when one service speaks or listens. If our user service needs to know when the payment service has processed a user, it tells our communication manager, “hey let me know when the pay service updates a user’s billing information”.
+At Runnable we’re running dozens of services; some with entirely different technology stacks. Thanks to a [central communication manager](event-driven-microservices-using-rabbitmq), They all talk to each other without translation and we know when one service speaks or listens. If our user service needs to know when the payment service has processed a user, it tells our communication manager, “hey let me know when the pay service updates a user’s billing information”.
 
 ### Small Ponds
 

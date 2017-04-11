@@ -4,7 +4,7 @@ title: Monoliths, Microservices, and Fish
 author: damien_h
 category: Engineering
 excerpt: 'I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it’s taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.'
-date: 2017-04-10 18:30:00 -0800
+date: 2017-04-10 17:30:00 -0800
 ---
 
 I recently joined Runnable, a service that’s built on a service and event-driven architecture. Having come from a series of monoliths, it’s taken some adjustments, some of which go well beyond simple syntax. Using microservices and events changed the way I think.

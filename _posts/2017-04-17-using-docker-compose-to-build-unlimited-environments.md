@@ -14,7 +14,7 @@ Our team is excited to announce enhanced support for Docker Compose just in time
 
 While continuous integration (aka CI) has been a standard process for software development teams for decades, many have yet to fully unlock the potential of using Docker.
 
-The concept of CI originated back when monolithic code bases needed to merge smaller units of code more frequently. And while CI tooling has evolved to automate the building and testing of code changes, teams still need to deploy to some staging or testing environment in order to see their changes working together — better known as CD.
+The concept of CI originated back when monolithic code bases needed to merge smaller units of code more frequently. And while CI tooling has evolved to automate the building and testing of code changes, teams still need to deploy to some staging or testing environment in order to see their changes working together — better known as CD.
 
 Most of us are quite comfortable with this process; however, two trends are throwing a wrinkle in the traditional CI/CD workflow:
 

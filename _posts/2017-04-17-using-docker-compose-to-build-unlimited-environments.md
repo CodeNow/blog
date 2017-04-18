@@ -37,7 +37,7 @@ Using the configuration defined in your Compose file, Runnable automatically cre
 
 Each environment is built from the Docker Compose configuration in its respective branch, so you’ll always know how your Runnable environment is defined. Developers can easily modify the Compose file on the branch level in order to deploy new services or specific commits to their staging environment.
 
-For example, if you need to test your code with a component that is in development, simply modify the compose.yml file to point to a specific branch and/or commit. Runnable will quickly rebuild your staging environment to match your configuration.
+For example, if you need to test your code with a component that is in development, simply modify the compose.yml file to point to a specific branch and / or commit. Runnable will quickly rebuild your staging environment to match your configuration.
 
 ### Testing with Docker Compose
 
@@ -49,6 +49,6 @@ Configure your testing-specific Compose file to run any type of test against a f
 
 ### Use Compose on Runnable Today
 
-With enhanced support for Docker Compose, it’s never been easier for developers to create staging and testing environments on-demand using Runnable. [Try Runnable today](/) and let us know what you think.
+With enhanced support for Docker Compose, it’s never been easier for developers to create staging and testing environments on-demand using Runnable. [Try Runnable today](//runnable.com) and let us know what you think.
 
 And if you’re in Austin, TX this week, be sure to stop by our booth (E11) at DockerCon.

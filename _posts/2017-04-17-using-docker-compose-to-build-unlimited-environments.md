@@ -16,10 +16,10 @@ While continuous integration (aka CI) has been a standard process for software d
 
 The concept of CI originated back when monolithic code bases needed to merge smaller units of code more frequently. And while CI tooling has evolved to automate the building and testing of code changes, teams still need to deploy to some staging or testing environment in order to see their changes working together — better known as CD.
 
-Most of us are quite comfortable with this process; however, two trends are throwing a wrinkle in the traditional CI/CD workflow:
+Most of us are quite comfortable with this process; however, two trends are throwing a wrinkle in the traditional CI / CD workflow:
 
-1. Proliferation of services: For modern dev teams building services (and microservices), integrating components is far more important than building them. Services are already broken down into smaller sets of code, so building and testing them individually is fairly trivial. However, there is a much greater importance for teams to validate the integration of multiple services, which happens much too late in the CI/CD pipeline.
-2. Limited Environments: Most teams have a rigid pipeline with a finite number of staging and testing environments. While some automation exists, setting up new environments can be slow and costly, and often not worth the incremental overhead of managing configurations.
+1. **Proliferation of services:** For modern dev teams building services (and microservices), integrating components is far more important than building them. Services are already broken down into smaller sets of code, so building and testing them individually is fairly trivial. However, there is a much greater importance for teams to validate the integration of multiple services, which happens much too late in the CI / CD pipeline.
+2. **Limited Environments:** Most teams have a rigid pipeline with a finite number of staging and testing environments. While some automation exists, setting up new environments can be slow and costly, and often not worth the incremental overhead of managing configurations.
 
 These two trends create a bottleneck for teams, as developers must coordinate their integration testing on shared staging environments.
 

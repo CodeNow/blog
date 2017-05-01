@@ -4,7 +4,7 @@ title: 'How to Scale Architecture Using the DR-CoN Pattern'
 author: henry_m
 category: Engineering
 excerpt: 'Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.'
-date: 2017-04-27 17:30:00 -0800
+date: 2017-05-01 17:30:00 -0800
 ---
 
 Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.

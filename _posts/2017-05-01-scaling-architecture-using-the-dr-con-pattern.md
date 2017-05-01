@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 'Scaling Architecture Using the DR-CoN Pattern'
+title: 'How to Scale Architecture Using the DR-CoN Pattern'
 author: henry_m
 category: Engineering
-excerpt: 'Every scalable architecture needs to manage service discovery and application scaling. We approach this need by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can automate this process using this pattern.'
+excerpt: 'Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.'
 date: 2017-04-27 17:30:00 -0800
 ---
 
-Every scalable architecture needs to manage service discovery and application scaling. We approach this need by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can automate this process using this pattern.
+Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.
 
 Our microservice architecture is built using Docker, and we use Nginx proxies to handle incoming traffic. This is a common setup for handling web requests with both technologies gaining in popularity. Internally, we also employ Hashicorp’s Consul as a service discovery application and key-value store, though it can also be used to provide DNS services. It can insert values into configuration files with Consul Template, and create dynamic policies and manage credentials with Vault.
 
@@ -15,7 +15,7 @@ To keep the infrastructure updated, services need to be automatically registered
 
 ### A Running Example
 
-In this post, we will manage a redundant configuration of scaled applications to handle load, or prevent an outage. To do this, we need to continually rewrite the Nginx configuration file, nginx.conf, to include all the routing information, then reload Nginx to configure one end-point for multiple services and provide load-balancing and high-availability.
+In the following example, we will manage a redundant configuration of scaled applications to handle load, or prevent an outage. To do this, we need to continually rewrite the Nginx configuration file, nginx.conf, to include all the routing information, then reload Nginx to configure one end-point for multiple services and provide load-balancing and high-availability.
 
 To run this yourself, please check out a few [files from GitHub](https://github.com/henrymollman/DR-CoN-example). The Docker Compose file will create a cluster of five containers that will load balance two sample Todo web applications:
 

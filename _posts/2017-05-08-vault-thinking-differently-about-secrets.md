@@ -1,9 +1,9 @@
 ---
 layout: post
-title: 'Vault: Thinking Differently about Secrets'
+title: 'Vault: Thinking Differently About Secrets'
 author: ryan_k
 category: Engineering
-excerpt: 'Vault is a service developed by the fine engineers at Hashicorp, which is designed to safely secure any data you want: passwords, SSL certificates, application tokens, etc. Aptly named, it can be sealed by any authorized user, but can only be unsealed with the use of n keys (3 by default), so in the event of a breach a single bad actor can’t gain access to the system.'
+excerpt: 'Vault is a service developed by the fine engineers at Hashicorp, which is designed to safely secure any data you want: passwords, SSL certificates, application tokens, etc. Aptly named, it can be sealed by any authorized user, but can only be unsealed with the use of <em>n</em> keys (3 by default), so in the event of a breach a single bad actor can’t gain access to the system.'
 date: 2017-05-08 15:00:00 -0800
 ---
 

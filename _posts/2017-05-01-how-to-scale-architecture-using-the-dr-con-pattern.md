@@ -32,6 +32,7 @@ To run this yourself, please check out a few [files from GitHub](https://github.
 
 The other services built are a Consul server, Registrator application, and an Nginx server that will also use Consul Template to populate the following template file:
 
+    {% raw %}
     upstream app {
       least_conn;
       {{range service "web"}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=5s weight=1;
@@ -48,6 +49,7 @@ The other services built are a Consul server, Registrator application, and an Ng
         proxy_set_header X-Real-IP $remote_addr;
       }
     }
+    {% endraw %}
 
 The template file is based on the Go Template format used in the Go language, and will insert web applications with the service name “web”, configured in the Docker Compose file above, into a configuration readable by Nginx. This is configured with the following Consul Template command:
 

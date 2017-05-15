@@ -5,21 +5,16 @@
   // be more specific than default css
   &.article {
 
-    // vertical rythm
+    // vertical rhythm
+    h4,
+    h5,
+    h6,
     p,
-    blockquote,
-    pre,
     ul,
     ol,
     dl,
-    figure,
-    .highlight,
-    .highlighter-rouge {
-      margin-bottom: $md;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
+    figure {
+      margin: $sm 0;
     }
   }
 
@@ -40,36 +35,39 @@
   }
 
   // code
-  pre,
-  code {
-    background-color: $gray-lighterest;
-    border: 1px solid $gray-lighter;
-    border-radius: $input-border-radius-lg;
-    font-size: 16px;
-    white-space: pre;
-  }
-
-  code {
-    background: $gray-lightest;
-    font-weight: $weight-normal;
-    padding: 1px 5px;
-  }
-
   pre {
+    background-color: $gray-lightest;
+    border-radius: $input-border-radius-lg;
+    font-size: 15px;
+    margin: $md 0;
     overflow-x: auto;
     padding: $sm;
-    word-wrap: normal;
 
     > code {
-      background-color: transparent;
-      border: 0;
+      background: transparent;
+      color: inherit;
       padding-left: 0;
       padding-right: 0;
     }
   }
 
+  code {
+    background-color: $purple-light-faded;
+    border: 0;
+    border-radius: $input-border-radius;
+    color: $purple-light;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 1.4;
+    padding: 0 5px;
+
+    &.orange {
+      background: $orange-lightest;
+      color: $orange-dark;
+    }
+  }
+
   p code {
-    white-space: normal;
     word-break: break-word;
   }
 
@@ -78,6 +76,71 @@
 
     .highlighter-rouge & {
       background: $gray-lighterest;
+    }
+  }
+
+  // fancy code blocks
+  .pre-header {
+    background-color: $gray-lighter;
+    border-radius: $input-border-radius $input-border-radius 0 0;
+    color: $gray;
+    padding: $xs $sm;
+
+    + pre,
+    + .highlighter-rouge > pre,
+    + [data-picker-toggle],
+    + [data-picker-toggle] > pre,
+    + [data-picker-toggle] + [data-picker-toggle],
+    + [data-picker-toggle] + [data-picker-toggle] > pre {
+      border-radius: 0 0 $input-border-radius $input-border-radius;
+      margin-top: 0;
+    }
+
+    .btn {
+      font-weight: $weight-bold;
+
+      &:hover {
+        background: rgba($white,.5);
+      }
+
+      &:active,
+      &.active {
+        background: $white;
+      }
+
+      + .btn {
+        margin-left: 6px;
+      }
+    }
+
+    .monospace {
+      @extend %text-overflow;
+      display: block;
+      flex: 1 1 auto;
+      font-size: 11px;
+
+      &:not(:only-child) {
+        margin-left: 6px;
+        text-align: right;
+      }
+    }
+  }
+
+  .code-overflow {
+    background-color: $gray-lightest;
+    color: $gray;
+    font-size: 27px;
+    height: 21px;
+    line-height: 3px;
+    margin: -($md + $input-border-radius-lg) 0;
+    padding: 0 $sm;
+    position: relative;
+    text-align: center;
+    z-index: 1;
+
+    &.code-end {
+      border-radius: 0 0 $input-border-radius-lg $input-border-radius-lg;
+      margin-bottom: 0;
     }
   }
 

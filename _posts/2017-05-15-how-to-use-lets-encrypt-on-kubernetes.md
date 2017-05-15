@@ -4,7 +4,7 @@ title: 'How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs
 author: jorge_s
 category: Engineering
 excerpt: 'HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.'
-date: 2017-05-14 17:00:00 -0800
+date: 2017-05-15 17:00:00 -0800
 ---
 
 HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.
@@ -117,7 +117,7 @@ spec:
 
 Now that our Ingress is setup, we can look for the IP address for this Ingress controller by running a `describe` on our Ingres resource (`kubectl describe ing kubernetes-demo-app-ingress-service`). You’ll see the IP address for this Ingress in the “address” entry.
 
-![]()
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss1.png){:width="1200"}
 
 You can now add an A record for this IP address, or test it by adding the IP address and host to your /etc/hosts (if you’re using Minikube, this works automatically).If you’re using Google Cloud Platform (GCP) or AWS we’ll still need to add a couple of things to make this work.
 
@@ -125,15 +125,15 @@ You can now add an A record for this IP address, or test it by adding the IP add
 
 If you’re using GCP and try to access your host, you might get something like this:
 
-![]()
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss2.png){:width="750"}
 
 A great way to debug some of these errors is by running a `describe` on your Ingress resource. The “Events” section will show you some of the problems with your Ingres controller:
 
-![]()
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss3.png){:width="1200"}
 
 In order for our Ingress controller to work in the GCP Ingress controller, there are still two things we need to do: we need to add health checks to the Pod, and we need to add a Node port to the Nginx service.
 
-The GCP will not route traffic if the Pod is unhealthy or its health status is unknown. So to verify that our Pod is healthy, we need to add a health route. We’ll do this through an HTTP GET request to “/” in order to assert that we get a 200 response.
+The GCP will not route traffic if the Pod is unhealthy or its health status is unknown. So to verify that our Pod is healthy, we need to add a health route. We’ll do this through an HTTP GET request to `/` in order to assert that we get a 200 response.
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -182,7 +182,7 @@ spec:
 
 You should now be able to (finally) go to your service over the internet and get back a correct response.
 
-![]()
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss4.png){:width="750"}
 
 ### Generating Certs
 
@@ -345,8 +345,8 @@ metadata:
 
 After doing this, you can now access your page through HTTPS!
 
-![]()
-![]()
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss5.png){:width="750"}
+![]({{ site.baseurl}}/images/posts/2017-05-15-ss6.png){:width="750"}
 
 ### Conclusion
 

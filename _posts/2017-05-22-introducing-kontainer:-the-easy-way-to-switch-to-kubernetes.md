@@ -11,7 +11,7 @@ date: 2017-05-22 17:30:00 -0800
 
 Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called K8), the best container orchestration tool around. K8 configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to K8, I’ve created a tool for you!
 
-### Why this project
+### Why This Project
 
 After getting familiar with [the basics of K8](https://runnable.com/blog/kubernetes-how-do-i-do-that), we decided to make the switch. I knew I needed to make a few files for each container: a Deployment to describe what to run, a Service to help with service discovery, and a ConfigMap to inject configuration.
 
@@ -19,7 +19,7 @@ But we had 20+ microservices, and the K8 docs are massive, which made it hard to
 
 I decided to create a new tool that will take an existing container and create all the resources necessary to get it up and running in K8.
 
-### How does it work?
+### How Does It Work?
 
 [Kontainer](https://github.com/anandkumarpatel/kontainer) inspects your Docker container and creates a deployment resource for you with the correct environment variables, ports, and Docker image. If ports are exposed, it creates a service based on the container name. And if volumes are mounted, it reads them and turns them into ConfigMaps.
 

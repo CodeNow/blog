@@ -3,21 +3,21 @@ layout: post
 title: 'Introducing Kontainer: The Easy Way to Switch to Kubernetes'
 author: anand_p
 category: Engineering
-excerpt: 'Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called K8), the best container orchestration tool around. K8 configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to K8, I’ve created a tool for you!'
+excerpt: 'Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called K8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to K8s, I’ve created a tool for you!'
 date: 2017-05-22 17:30:00 -0800
 ---
 
 ### Why Kubernetes
 
-Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called K8), the best container orchestration tool around. K8 configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to K8, I’ve created a tool for you!
+Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called K8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to K8s, I’ve created a tool for you!
 
 ### Why This Project
 
-After getting familiar with [the basics of K8](https://runnable.com/blog/kubernetes-how-do-i-do-that), we decided to make the switch. I knew I needed to make a few files for each container: a Deployment to describe what to run, a Service to help with service discovery, and a ConfigMap to inject configuration.
+After getting familiar with [the basics of K8s](https://runnable.com/blog/kubernetes-how-do-i-do-that), we decided to make the switch. I knew I needed to make a few files for each container: a Deployment to describe what to run, a Service to help with service discovery, and a ConfigMap to inject configuration.
 
-But we had 20+ microservices, and the K8 docs are massive, which made it hard to find out how to create the right resources for each one. There's [a tool](http://kompose.io/) that'll do it for you if your app has a Docker Compose file, but we didn’t use Compose, so we needed another solution.
+But we had 20+ microservices, and the K8s docs are massive, which made it hard to find out how to create the right resources for each one. There's [a tool](http://kompose.io/) that'll do it for you if your app has a Docker Compose file, but we didn’t use Compose, so we needed another solution.
 
-I decided to create a new tool that will take an existing container and create all the resources necessary to get it up and running in K8.
+I decided to create a new tool that will take an existing container and create all the resources necessary to get it up and running in K8s.
 
 ### How Does It Work?
 
@@ -27,19 +27,19 @@ This tool works with any Docker container, regardless of how you built it. This 
 
 ### Example
 
-Enough explanation, let's check it out! I’m assuming you have `docker` and `kubectl` installed and pointed to an existing K8 cluster on your system. This example will use a simple file server application which exposes a port and uses a bind mounted file. You can follow along by using these commands in your terminal.
+Enough explanation, let's check it out! I’m assuming you have `docker` and `kubectl` installed and pointed to an existing K8s cluster on your system. This example will use a simple file server application which exposes a port and uses a bind mounted file. You can follow along by using these commands in your terminal.
 
 1. Create a file:
     ```shell
     echo "Hello" > served-file
     ```
 
-2. Run a simple file server container. This is the application we’ll create K8 resources for:
+2. Run a simple file server container. This is the application we’ll create K8s resources for:
     ```shell
     docker run -d -p 8080:8080 -v `pwd`/served-file:/served/file anandkumarpatel/serve-file
     ```
 
-3. Run Kontainer to generate K8 files for the file server:
+3. Run Kontainer to generate K8s files for the file server:
     ```shell
     docker run -it -v /:/host -v `pwd`/out:/output -v /var/run/docker.sock:/var/run/docker.sock anandkumarpatel/kontainer
     ```
@@ -50,7 +50,7 @@ Let’s take a look at [what Kontainer generated](https://gist.github.com/anandk
 - `./Service`: Provides simple load balancing and a static hostname for service discovery.
 - `./ConfigMap`: Contains the contents of the served file.
 
-These files will work out of the box! You can run `kubectl create -f` on all the files in the `out` folder to get this app running inside of K8.
+These files will work out of the box! You can run `kubectl create -f` on all the files in the `out` folder to get this app running inside of K8s.
 
 ### Conclusion
 

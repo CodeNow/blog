@@ -31,17 +31,17 @@ Enough explanation, let's check it out! I’m assuming you have `docker` and `ku
 
 1. Create a file:
     ```shell
-    $ echo "Hello" > served-file
+    echo "Hello" > served-file
     ```
 
 2. Run a simple file server container. This is the application we’ll create K8 resources for:
     ```shell
-    $ docker run -d -p 8080:8080 -v `pwd`/served-file:/served-file anandkumarpatel/serve-file
+    docker run -d -p 8080:8080 -v `pwd`/served-file:/served-file anandkumarpatel/serve-file
     ```
 
 3. Run Kontainer to generate K8 files for the file server:
     ```shell
-    $ docker run -it -v /:/host -v `pwd`/out:/output -v /var/run/docker.sock:/var/run/docker.sock anandkumarpatel/kontainer
+    docker run -it -v /:/host -v `pwd`/out:/output -v /var/run/docker.sock:/var/run/docker.sock anandkumarpatel/kontainer
     ```
 
 Let’s take a look at [what Kontainer generated](https://gist.github.com/anandkumarpatel/90f95c3e29f5db5d5f367160d454db0d) in the ./out folder. You can see that it generated 3 folders:

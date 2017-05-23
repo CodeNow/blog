@@ -44,7 +44,7 @@ Enough explanation, let's check it out! I’m assuming you have `docker` and `ku
     $ docker run -it -v /:/host -v `pwd`/out:/output -v /var/run/docker.sock:/var/run/docker.sock anandkumarpatel/kontainer
     ```
 
-Let’s take a look into the files Kontainer generated in the `./out` folder. You can see that it generated 3 folders:
+Let’s take a look at [what Kontainer generated](https://gist.github.com/anandkumarpatel/90f95c3e29f5db5d5f367160d454db0d) in the ./out folder. You can see that it generated 3 folders:
 
 - `./Deployment`: Maintains a certain number of containers with a given configuration with Pods and ReplicaSets.
 - `./Service`: Provides simple load balancing and a static hostname for service discovery.

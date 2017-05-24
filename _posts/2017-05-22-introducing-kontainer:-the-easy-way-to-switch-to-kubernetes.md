@@ -9,7 +9,7 @@ date: 2017-05-22 17:30:00 -0800
 
 ### Why Kubernetes
 
-Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called k8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to k, I’ve created a tool for you!
+Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called k8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to k8s, I’ve created a tool for you!
 
 ### Why This Project
 

@@ -4,7 +4,7 @@ title: 'Promise to Never Callback'
 author: damien_h
 category: Engineering
 excerpt: 'Promises are at least <a href="//runnable.com/blog/5-reasons-why-you-should-be-using-promises">5 kinds of awesome</a>. Functionally they are not all that different from callbacks, but those differences resolve code structure problems caused by the more traditional async library and callback approach. They also change the way we approach development.'
-date: 2017-05-25 15:00:00 -0800
+date: 2017-05-29 15:00:00 -0800
 ---
 
 ### Promise to Be Awesome

@@ -58,7 +58,6 @@ By remaining ignorant, our code stories are discrete and allow us to fully harne
 
 Let’s work on our API story next (this assumes the ThirdParty libraries return promises).
 
-
 ```
 // Permission Service used by the UI
 ```

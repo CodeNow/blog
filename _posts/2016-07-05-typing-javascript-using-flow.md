@@ -3,7 +3,7 @@ layout: post
 title: Typing JavaScript Using Flow
 author: bryan_k
 category: Engineering
-excerpt: 'One of the things that I found difficult when writing and refactoring in <a href="introducing-ponos-a-rabbitmq-based-worker-server" class="link">Ponos</a> was maintaining the borders between the few classes and their functions. Some of the class methods returned values, some could throw errors, and others returned Promises. Relying on the inline documentation was insufficient because methods were changing faster than I was updating the documentation. Beyond these issues, I found myself moving or copying large chunks of testing code around for relatively small refactors, further fueling my motivation to find a better way.'
+excerpt: 'One of the things that I found difficult when writing and refactoring in <a href="/blog/introducing-ponos-a-rabbitmq-based-worker-server" class="link">Ponos</a> was maintaining the borders between the few classes and their functions. Some of the class methods returned values, some could throw errors, and others returned Promises. Relying on the inline documentation was insufficient because methods were changing faster than I was updating the documentation. Beyond these issues, I found myself moving or copying large chunks of testing code around for relatively small refactors, further fueling my motivation to find a better way.'
 legacy_url: http://blog.runnable.com/post/146913218961/typing-javascript-using-flow
 ---
 

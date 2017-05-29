@@ -3,7 +3,7 @@ layout: post
 title: 'Runnable Sandboxes: Full-stack environments for every GitHub branch'
 author: yash_k
 category: Engineering
-excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="/">homepage</a> to learn more, or read on.'
+excerpt: 'Today we’re announcing a new product we’ve been working on for over a year. Visit our <a class="link" href="//runnable.com">homepage</a> to learn more, or read on.'
 legacy_url: http://blog.runnable.com/post/141200219146/runnable-sandboxes-full-stack-environments-for
 ---
 

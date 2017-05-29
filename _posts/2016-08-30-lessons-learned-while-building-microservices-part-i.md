@@ -3,7 +3,7 @@ layout: post
 title: Lessons Learned While Building Microservices, Part I
 author: anton_p
 category: Engineering
-excerpt: 'The microservices architecture, like any solution, has its <a href="libraries-we-use-when-building-microservices" class="link">tradeoffs</a>. Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.'
+excerpt: 'The microservices architecture, like any solution, has its <a href="/blog/libraries-we-use-when-building-microservices" class="link">tradeoffs</a>. Most have heard the main talking points — the decoupling of components, faster and more frequent deployments, and improved fault tolerance. Over the past couple of years, I’ve observed these first-hand, along with other subtle advantages of the microservices architecture.'
 legacy_url: http://blog.runnable.com/post/149676042396/lessons-learned-while-building-microservices-part
 ---
 

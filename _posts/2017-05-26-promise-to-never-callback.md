@@ -33,7 +33,7 @@ First we define the use case in more detail. The user triggers `requestNewKey` t
 
 <div class="grid-block code-overflow">...</div>
 
-```
+```javascript
 let hasPermission = true // Stubbed out permission
 
 function validatePermissions () {
@@ -58,13 +58,13 @@ By remaining ignorant, our code stories are discrete and allow us to fully harne
 
 Let’s work on our API story next (this assumes the ThirdParty libraries return promises).
 
-```
+```javascript
 // Permission Service used by the UI
 ```
 
 <div class="grid-block code-overflow">...</div>
 
-```
+```javascript
 hasPermission = function() {
   return ThirdPartyOath.getUserPermissions(User.getThirdPartyId())
 }
@@ -77,7 +77,7 @@ getPermission = function() {
 
 <div class="grid-block code-overflow">...</div>
 
-```
+```javascript
 function manageKeys(
   keyService
 ) {
@@ -95,7 +95,7 @@ function manageKeys(
 
 <div class="grid-block code-overflow">...</div>
 
-```
+```javascript
 }
 ```
 

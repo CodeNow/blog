@@ -70,7 +70,7 @@ legacy_url: http://blog.runnable.com/post/146913218961/typing-javascript-using-f
 
 <p class="p">One thing that I skipped over is how Flow knew about the <code class="monospace">immutable</code> library. This is actually one of the parts where Flow can be a little cumbersome. Roughly, for every external module, you need to create an interface file that tells Flow what types to expect. Flow describes this a bit in their <a href="https://flowtype.org/docs/third-party.html" class="link">documentation</a>, but I’ll give you a rather complicated example of the interface file for this <code class="monospace">Set</code> class, with a little commentary to explain what’s happening.</p>
 
-<p class="p"><a href="#" class="link">Immutable</a> is a rather large library that extends many classes to create inheritance with its typing. Below is a condensed slice that gives us the functionality of the <code class="monospace">Set</code> used above.</p>
+<p class="p"><a href="https://facebook.github.io/immutable-js/" class="link">Immutable</a> is a rather large library that extends many classes to create inheritance with its typing. Below is a condensed slice that gives us the functionality of the <code class="monospace">Set</code> used above.</p>
 
 <pre class="pre"><code class="monospace no-wrap">declare class Set {
   // this actually inherits from SetCollection, but the two functions

@@ -3,7 +3,7 @@ layout: post
 title: Typing JavaScript Using Flow
 author: bryan_k
 category: Engineering
-excerpt: 'One of the things that I found difficult when writing and refactoring in <a href="introducing-ponos-a-rabbitmq-based-worker-server" class="link">Ponos</a> was maintaining the borders between the few classes and their functions. Some of the class methods returned values, some could throw errors, and others returned Promises. Relying on the inline documentation was insufficient because methods were changing faster than I was updating the documentation. Beyond these issues, I found myself moving or copying large chunks of testing code around for relatively small refactors, further fueling my motivation to find a better way.'
+excerpt: 'One of the things that I found difficult when writing and refactoring in <a href="/blog/introducing-ponos-a-rabbitmq-based-worker-server" class="link">Ponos</a> was maintaining the borders between the few classes and their functions. Some of the class methods returned values, some could throw errors, and others returned Promises. Relying on the inline documentation was insufficient because methods were changing faster than I was updating the documentation. Beyond these issues, I found myself moving or copying large chunks of testing code around for relatively small refactors, further fueling my motivation to find a better way.'
 legacy_url: http://blog.runnable.com/post/146913218961/typing-javascript-using-flow
 ---
 
@@ -70,7 +70,7 @@ legacy_url: http://blog.runnable.com/post/146913218961/typing-javascript-using-f
 
 <p class="p">One thing that I skipped over is how Flow knew about the <code class="monospace">immutable</code> library. This is actually one of the parts where Flow can be a little cumbersome. Roughly, for every external module, you need to create an interface file that tells Flow what types to expect. Flow describes this a bit in their <a href="https://flowtype.org/docs/third-party.html" class="link">documentation</a>, but I’ll give you a rather complicated example of the interface file for this <code class="monospace">Set</code> class, with a little commentary to explain what’s happening.</p>
 
-<p class="p"><a href="#" class="link">Immutable</a> is a rather large library that extends many classes to create inheritance with its typing. Below is a condensed slice that gives us the functionality of the <code class="monospace">Set</code> used above.</p>
+<p class="p"><a href="https://facebook.github.io/immutable-js/" class="link">Immutable</a> is a rather large library that extends many classes to create inheritance with its typing. Below is a condensed slice that gives us the functionality of the <code class="monospace">Set</code> used above.</p>
 
 <pre class="pre"><code class="monospace no-wrap">declare class Set {
   // this actually inherits from SetCollection, but the two functions

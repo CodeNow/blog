@@ -35,7 +35,7 @@ legacy_url: http://blog.runnable.com/post/155416472416/rethinking-our-developmen
 
 <p class="p">There are several ways to address the issues listed above, and we’ve tried quite a few. Teams typically invest in automation, deployment scripts, managing environments, and the like to keep their development pipeline operational.</p>
 
-<p class="p">Our experiences led us down the path of building <a href="/" class="link">Runnable</a>, and through the benefits of dogfooding, we’ve molded it to solve some of the issues we’ve faced in our own development cycle. Here’s how Runnable helps improve dev speed for our team:</p>
+<p class="p">Our experiences led us down the path of building <a href="//runnable.com" class="link">Runnable</a>, and through the benefits of dogfooding, we’ve molded it to solve some of the issues we’ve faced in our own development cycle. Here’s how Runnable helps improve dev speed for our team:</p>
 
 <ol class="ol"><li class="li">
     <b>Infinite staging environments.</b>

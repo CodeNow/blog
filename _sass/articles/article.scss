@@ -144,6 +144,11 @@
     }
   }
 
+  // github’s class for embedded gist content
+  .gist-data {
+    max-height: 240px;
+  }
+
   // tables
   table {
     display: block;

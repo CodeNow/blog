@@ -21,16 +21,18 @@ In your app, a user would need to specify an instance name, a base Docker image,
 
 On the backend for your MVP, you might write logic like this:
 
-    const instance = db.saveInstanceData(data)
-    const host = orchestrator.createHostIfNeeded(data)
-    const networkData = network.setupNetworkIfNeeded(data)
-    const image = docker.buildImage(data, host)
-    const build = db.saveBuildData(data, image, host)
-    const dockerContainer = docker.createAndRunContainer(data, build)
-    const container = db.saveContainerData(data, dockerContainer, instance)
-    const containerIP = network.attachContainerToNetwork(networkData, container)
-    const networkData = db.saveNetworkData(container, ip)
-    sendNotifications(data, instance, container)
+```javascript
+const instance = db.saveInstanceData(data)
+const host = orchestrator.createHostIfNeeded(data)
+const networkData = network.setupNetworkIfNeeded(data)
+const image = docker.buildImage(data, host)
+const build = db.saveBuildData(data, image, host)
+const dockerContainer = docker.createAndRunContainer(data, build)
+const container = db.saveContainerData(data, dockerContainer, instance)
+const containerIP = network.attachContainerToNetwork(networkData, container)
+const networkData = db.saveNetworkData(container, ip)
+sendNotifications(data, instance, container)
+```
 
 This approach is simple on the surface, but it achieves this by transferring complexity to other problems. One of the main issues is handling errors. Please spend some time investigating this new code which has error handling implemented (it’s quite long!).
 

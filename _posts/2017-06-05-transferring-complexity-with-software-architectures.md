@@ -52,23 +52,25 @@ There are different solutions to these problems of course. We went with adopting
 
 In an event-driven architecture, the code above would be split across separate workers that would handle errors independently from the whole flow context.
 
-    onContainerDataSaved = function (container) {
-      let networkData
-      try {
-        networkData = network.fetchNetworkData()
-        network.attachContainerToNetwork(networkData, container)
-        websockets.sendErrorToClients("Cannot attach container to the network")
-      } catch (err) {
-        if (err instanceof NetworkAttachError) {
-          messageBus.emit('network.attach.failed', { container, networkData })
-        }
-      }
+```javascript
+onContainerDataSaved = function (container) {
+  let networkData
+  try {
+    networkData = network.fetchNetworkData()
+    network.attachContainerToNetwork(networkData, container)
+    websockets.sendErrorToClients("Cannot attach container to the network")
+  } catch (err) {
+    if (err instanceof NetworkAttachError) {
+      messageBus.emit('network.attach.failed', { container, networkData })
     }
+  }
+}
 
-    // we can set in configuration the retry policy for such worker: exponential back-off, timeout, max number of retries etc,
-    onNetworkAttachFailed = function (container, networkData) {
-      docker.removeContainer(container)
-    }
+// we can set in configuration the retry policy for such worker: exponential back-off, timeout, max number of retries etc,
+onNetworkAttachFailed = function (container, networkData) {
+  docker.removeContainer(container)
+}
+```
 
 This is cleaner, more scalable in terms of development, and uses less mental energy when thinking about programming error cases. It also has fewer effects when bugs are deployed to production.
 

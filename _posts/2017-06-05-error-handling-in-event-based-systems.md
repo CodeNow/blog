@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Making Smart Tradeoffs with Event-Driven Architecture'
+title: 'Error-Handling in Event-Based Systems'
 author: anton_p
 category: Engineering
 excerpt: '<p class="p">Different architectures and patterns are all about different tradeoffs. More specifically, they’re about <em>transferring</em> and <em>transforming</em> complexity from one place to another, and from one type into another. The same is of course true about the event-driven architecture that we use here at Runnable.</p><p class="p">Let’s dive into where event-driven architecture reduces complexity and where it makes things more difficult. <em>Warning: lots of code ahead.</em></p>'

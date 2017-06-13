@@ -4,7 +4,7 @@ title: 'How to Achieve Practical End-to-End Testing With Docker Compose'
 author: praful_r
 category: Engineering
 excerpt: 'Now that Kubernetes and Docker support software defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software defined orchestration as the panacea and exemplify the practicality of this approach through an example.'
-date: 2017-06-12 12:00:00 -0800
+date: 2017-06-12 17:00:00 -0800
 ---
 
 Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. The speed and hassle of spinning up a full-stack environment is the biggest issue with maintaining and running E2E tests. Containerization solves the issues for single service environments, but not the full-stack problems E2E tests have. Let’s walk through these issues, and finally introduce software defined orchestration as the panacea and exemplify the practicality of this approach.
@@ -32,7 +32,7 @@ The long wait time and effort it takes to spin up a full-stack environment is th
 
 Before Docker and containerization, developers used shared databases for their unit tests and the tear up/down of their full-stack environments was managed by scripts (such as Chef and Ansible).
 
-With Docker containers, developers now have an easy way to spin up sandboxed environments with one or two services running. In a Dockerfile, you can configure your service under test, its basic dependencies, and the test framework. Once defined, the desired environment and test framework can spin up instantly after only building the updated portions of code. This enables speedy test spin up as one iterates through development.
+With Docker containers, developers now have an easy way to spin up sandboxed environments with one or two services running. In a Dockerfile, you can configure your *service under test*, its basic dependencies, and the test framework. Once defined, the desired environment and test framework can spin up instantly after only building the updated portions of code. This enables speedy test spin up as one iterates through development.
 
 Now developers can easily maintain and run tests such as unit/BDD/functional to match today’s ship speeds. However, E2E tests require more than simple containerized environments. E2E tests require the successful launch of multiple services, each running in their own containerized environments with their own dependencies.
 

@@ -7,7 +7,7 @@ excerpt: 'Now that Kubernetes and Docker support software defined orchestration,
 date: 2017-06-12 12:00:00 -0800
 ---
 
-Now that Kubernetes and Docker support software defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software defined orchestration as the panacea and exemplify the practicality of this approach through an example.
+Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. The speed and hassle of spinning up a full-stack environment is the biggest issue with maintaining and running E2E tests. Containerization solves the issues for single service environments, but not the full-stack problems E2E tests have. Let’s walk through these issues, and finally introduce software defined orchestration as the panacea and exemplify the practicality of this approach.
 
 Most modern apps are maintained as a collection of services that a development team authors and maintains. For these teams, automated tests fall under two categories:
 

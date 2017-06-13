@@ -3,7 +3,7 @@ layout: post
 title: 'How to Achieve Practical End-to-End Testing With Docker Compose'
 author: praful_r
 category: Engineering
-excerpt: 'Now that Kubernetes and Docker support software defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software defined orchestration as the panacea and exemplify the practicality of this approach through an example.'
+excerpt: 'Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software-defined orchestration as the panacea and exemplify the practicality of this approach through an example.'
 date: 2017-06-12 17:00:00 -0800
 ---
 
@@ -36,7 +36,7 @@ With Docker containers, developers now have an easy way to spin up sandboxed env
 
 Now developers can easily maintain and run tests such as unit/BDD/functional to match today’s ship speeds. However, E2E tests require more than simple containerized environments. E2E tests require the successful launch of multiple services, each running in their own containerized environments with their own dependencies.
 
-### Enter Docker Compose & Kubernetes Helm: Software Defined Orchestration
+### Enter Docker Compose & Kubernetes Helm: Software-Defined Orchestration
 
 Developers needed a way to tie containers together so they can service their full-stack E2E tests. To solve that problem, open source communities came up with new formats to define container orchestration in files. The two most popular formats right now are Docker Compose and Kubernetes Helm.
 

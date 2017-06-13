@@ -225,6 +225,10 @@
     &:active {
       text-decoration: none;
     }
+
+    > code {
+      text-decoration: underline;
+    }
   }
 
   a.btn {

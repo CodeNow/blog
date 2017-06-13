@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'How to Achieve Practical End-to-End Testing With Docker Compose'
+title: 'How To Achieve Practical End-to-End Testing With Docker Compose'
 author: praful_r
 category: Engineering
 excerpt: 'Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software-defined orchestration as the panacea and exemplify the practicality of this approach through an example.'

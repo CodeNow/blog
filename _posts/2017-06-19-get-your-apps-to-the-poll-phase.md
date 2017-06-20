@@ -9,7 +9,7 @@ date: 2017-06-19 15:00:00 -0800
 
 A month ago, I wrote about [my investigation]({{ site.baseurl }}/how-sockets-can-block-node-s-event-loop) into an implementation of a real-time socket data manipulator which could eventually stall our application. While trying to research how this stuff actually worked, I couldn’t find many resources explaining how actual code goes through the event loop. Honestly, I think that’s a huge problem. I’m afraid most developers don’t understand the most critical part of Node.js, but I’m here to fix that. So, how do sockets work? How does the socket data get so backed up? Why does using a Transform solve the issue when piping with an async function does not?
 
-### The event loop
+### Understanding the event loop.
 
 First, let’s have an in-depth look at the phases of the event loop:
 

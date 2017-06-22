@@ -1,23 +1,4 @@
-window.CSbuttons = window.CSbuttons || {};
-
-function loadJSON(path, success, error) {
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      if (xhr.status === 200) {
-        if (success)
-          success(JSON.parse(xhr.responseText));
-      } else {
-        if (error)
-          error(xhr);
-      }
-    }
-  };
-  xhr.open('GET', path, true);
-  xhr.send();
-}
-
-CSbuttons.socialSharing = function () {
+function socialSharing() {
   var buttons = document.getElementsByClassName('social-sharing')[0];
   var shareLinks = buttons.getElementsByTagName('a');
   var permalink = document.querySelectorAll('[data-url]')[0].getAttribute('data-url');
@@ -25,6 +6,23 @@ CSbuttons.socialSharing = function () {
   var twitterLink = document.getElementsByClassName('share-twitter')[0];
   var linkedInLink = document.getElementsByClassName('share-linkedin')[0];
   var hackerNewsLink = document.getElementsByClassName('share-hackernews')[0];
+
+  function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          if (success)
+            success(JSON.parse(xhr.responseText));
+        } else {
+          if (error)
+            error(xhr);
+        }
+      }
+    };
+    xhr.open('GET', path, true);
+    xhr.send();
+  }
 
   if (twitterLink) {
     var twitterTotal = 0;
@@ -55,32 +53,25 @@ CSbuttons.socialSharing = function () {
 
   if (linkedInLink) {
     var linkedInTotal = 0;
+    var shareCount = linkedInLink.getElementsByClassName('share-count')[0];
+    jsonpCallback = function(data) {
+      linkedInTotal += data.count;
+      shareCount.innerText = linkedInTotal;
+      shareCount.classList.add('is-loaded');
+    };
     if (legacyUrl) {
-      loadJSON(
-        // path
-        'https://www.linkedin.com/countserv/count/share?format=json&url=' + legacyUrl,
-        // success
-        function(data) {
-          linkedInTotal += data.count;
-        },
-        // error
-        function(xhr) { console.error(xhr);}
-      );
+      var legacyUrlScript = document.createElement('script');
+      legacyUrlScript.setAttribute('src',
+      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=jsonpCallback&url=' + legacyUrl);
+      document.body.appendChild(legacyUrlScript);
     }
-    loadJSON(
-      // path
-      'https://www.linkedin.com/countserv/count/share?format=json&url=' + permalink,
-      // success
-      function(data) {
-        linkedInTotal += data.count;
-        var shareCount = linkedInLink.getElementsByClassName('share-count')[0];
-        shareCount.innerText = linkedInTotal;
-        shareCount.classList.add('is-loaded');
-      },
-      // error
-      function(xhr) { console.error(xhr);}
-    );
-  };
+    if (permalink) {
+      var permalinkScript = document.createElement('script');
+      permalinkScript.setAttribute('src',
+      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=jsonpCallback&url=' + permalink);
+      document.body.appendChild(permalinkScript);
+    }
+  }
 
   if (hackerNewsLink) {
     if (legacyUrl) {
@@ -131,4 +122,4 @@ CSbuttons.socialSharing = function () {
   }
 }
 
-window.CSbuttons.socialSharing();
+document.addEventListener('DOMContentLoaded', socialSharing());

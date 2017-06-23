@@ -11,12 +11,10 @@ function socialSharing() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          if (success)
-            success(JSON.parse(xhr.responseText));
-        } else {
-          if (error)
-            error(xhr);
+        if (xhr.status === 200 && success) {
+          success(JSON.parse(xhr.responseText));
+        } else if (error) {
+          error(xhr);
         }
       }
     };
@@ -40,7 +38,9 @@ function socialSharing() {
         updateTwitterCount(data);
       },
       // error
-      function(xhr) { console.error(xhr);}
+      function(xhr) {
+        console.error(xhr);
+      }
     );
     loadJSON(
       // path
@@ -50,7 +50,9 @@ function socialSharing() {
         updateTwitterCount(data);
       },
       // error
-      function(xhr) { console.error(xhr);}
+      function(xhr) {
+        console.error(xhr);
+      }
     );
   };
 
@@ -64,14 +66,12 @@ function socialSharing() {
     };
     if (legacyUrl) {
       var legacyUrlScript = document.createElement('script');
-      legacyUrlScript.setAttribute('src',
-      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + legacyUrl);
+      legacyUrlScript.setAttribute('src','https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + legacyUrl);
       document.body.appendChild(legacyUrlScript);
     }
     if (permalink) {
       var permalinkScript = document.createElement('script');
-      permalinkScript.setAttribute('src',
-      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + permalink);
+      permalinkScript.setAttribute('src','https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + permalink);
       document.body.appendChild(permalinkScript);
     }
   }
@@ -95,7 +95,9 @@ function socialSharing() {
           updateHackerNewsCount(data);
         },
         // error
-        function(xhr) { console.error(xhr);}
+        function(xhr) {
+          console.error(xhr);
+        }
       );
     }
     if (!legacyUrl) {
@@ -107,7 +109,9 @@ function socialSharing() {
           updateHackerNewsCount(data);
         },
         // error
-        function(xhr) { console.error(xhr);}
+        function(xhr) {
+          console.error(xhr);
+        }
       );
     };
   }

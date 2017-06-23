@@ -1,63 +1,79 @@
 # Author details.
 anand_p:
   display_name: Anand Patel
+  author_page: anand-patel
   avatar: authors/anandpatel.jpg
   twitter: akaDJFaZe
 anton_p:
   display_name: Anton Podviaznikov
+  author_page: anton-podviaznikov
   avatar: authors/antonpodviaznikov.jpg
   twitter: podviaznikov
 bryan_k:
   display_name: Bryan Kendall
+  author_page: bryan-kendall
   avatar: authors/bryankendall.jpg
   twitter: bkendall
 chris_n:
   display_name: Chris Neill
+  author_page: chris_neill
   avatar: authors/chrisneill.jpg
 damien_h:
   display_name: Damien Hayeck
+  author_page: damien-hayeck
   avatar: authors/damienhayeck.jpg
 forrest_j:
   display_name: Forrest Junod
+  author_page: forrest-junod
   avatar: authors/forrestjunod.jpg
   twitter: ForrestJunod
 henry_m:
   display_name: Henry Mollman
+  author_page: henry-mollman
   avatar: authors/henrymollman.jpg
   twitter: henrymollman
 jorge_s:
   display_name: Jorge Silva
+  author_page: jorge-silva
   avatar: authors/jorgesilva.jpg
   twitter: thejsj
 ken_o:
   display_name: Ken Olofsen
+  author_page: ken-olofsen
   avatar: authors/kenolofsen.jpg
   twitter: kolofsen
 nathan_m:
   display_name: Nathan Meyers
+  author_page: nathan-meyers
   avatar: authors/nathanmeyers.jpg
   twitter: Nathan219
 praful_r:
   display_name: Praful Rana
+  author_page: praful-rana
   avatar: authors/prafulrana.jpg
   twitter: Prafulrana
 ryan_k:
   display_name: Ryan Kahn
+  author_page: ryan-kahn
   avatar: authors/ryankahn.jpg
   twitter: Myztiq
 ryan_r:
   display_name: Ryan Sandor Richards
+  author_page: ryan-sandor-richards
   avatar: authors/ryanrichards.jpg
   twitter: rsandor
 sohail_a:
   display_name: Sohail Ahmed
+  author_page: sohail-ahmed
   avatar: authors/sohailahmed.jpg
   twitter: sotothehail
 sundip_p:
   display_name: Sundip Patel
+  author_page: sundip-patel
   avatar: authors/sundippatel.jpg
   twitter: sundippatel
 yash_k:
   display_name: Yash Kumar
+  author_page: yash-kumar
   avatar: authors/yashkumar.jpg
   twitter: ykumar6

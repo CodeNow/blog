@@ -1,0 +1,29 @@
+---
+layout: default
+---
+
+{% assign author = site.posts | where: "author", page.author %}
+{% assign authorInfo = site.data.authors[page.author] %}
+
+<div class="grid-block col align-center hero">
+  <h1 class="h1 text-center">{{ authorInfo.display_name }}</h1>
+</div>
+
+<section class="grid-block col grid-container section-articles">
+{% for post in author %}
+  <article class="article">
+    <a class="h3 weight-strong" href="/blog{{ post.url }}">{{ post.title }}</a>
+    <div class="grid-block margin-top-sm author">
+      <img class="margin-right-xxs avatar" src="{{ site.baseurl }}/images/{{ authorInfo.avatar }}" height="27" width="27">
+      <span class="post-author text-gray">by <a class="link" href="{{ site.baseurl }}/{{ authorInfo.author_page }}">{{ authorInfo.display_name }}</a> <time datatime="{{ post.date }}">{{ post.date }}</time></span>
+    </div>
+    <p class="p article-body margin-top-sm">{{ post.excerpt }}</p>
+    <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Keep reading</a>
+  </article>
+{% endfor %}
+
+  <section class="grid-block col shrink justify-center align-center section-footer">
+    <a class="grid-block shrink link text-center margin-bottom-lg margin-top-lg" href="{{ site.baseurl }}/">View All Posts</a>
+    {% include mailchimp.html %}
+  </section>
+</section>

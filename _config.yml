@@ -46,6 +46,11 @@ defaults:
       seo:
         type: BlogPosting
 
+collections:
+  authors:
+    output: true
+    permalink: /:name/
+
 sass:
   sass_dir: _sass/
 

@@ -25,13 +25,19 @@ function socialSharing() {
   }
 
   if (twitterLink) {
-    var twitterTotal = 0;
+    var twitterShares = 0;
+    var twitterCount = twitterLink.getElementsByClassName('share-count')[0];
+    updateTwitterCount = function(data) {
+      twitterShares += data.count;
+      twitterCount.innerText = twitterShares;
+      twitterCount.classList.add('is-loaded');
+    }
     loadJSON(
       // path
       'https://opensharecount.com/count.json?url=' + legacyUrl + '&callback=',
       // success
       function(data) {
-        twitterTotal += data.count;
+        updateTwitterCount(data);
       },
       // error
       function(xhr) { console.error(xhr);}
@@ -41,10 +47,7 @@ function socialSharing() {
       'https://opensharecount.com/count.json?url=' + permalink + '&callback=',
       // success
       function(data) {
-        twitterTotal += data.count;
-        var shareCount = twitterLink.getElementsByClassName('share-count')[0];
-        shareCount.innerText = twitterTotal;
-        shareCount.classList.add('is-loaded');
+        updateTwitterCount(data);
       },
       // error
       function(xhr) { console.error(xhr);}
@@ -52,41 +55,44 @@ function socialSharing() {
   };
 
   if (linkedInLink) {
-    var linkedInTotal = 0;
-    var shareCount = linkedInLink.getElementsByClassName('share-count')[0];
-    jsonpCallback = function(data) {
-      linkedInTotal += data.count;
-      shareCount.innerText = linkedInTotal;
-      shareCount.classList.add('is-loaded');
+    var linkedInShares = 0;
+    var linkedInCount = linkedInLink.getElementsByClassName('share-count')[0];
+    updateLinkedInCount = function(data) {
+      linkedInShares += data.count;
+      linkedInCount.innerText = linkedInShares;
+      linkedInCount.classList.add('is-loaded');
     };
     if (legacyUrl) {
       var legacyUrlScript = document.createElement('script');
       legacyUrlScript.setAttribute('src',
-      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=jsonpCallback&url=' + legacyUrl);
+      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + legacyUrl);
       document.body.appendChild(legacyUrlScript);
     }
     if (permalink) {
       var permalinkScript = document.createElement('script');
       permalinkScript.setAttribute('src',
-      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=jsonpCallback&url=' + permalink);
+      'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=updateLinkedInCount&url=' + permalink);
       document.body.appendChild(permalinkScript);
     }
   }
 
   if (hackerNewsLink) {
+    var hackerNewsCount = hackerNewsLink.getElementsByClassName('share-count')[0];
+    updateHackerNewsCount = function(data) {
+      hackerNewsLink.href = 'https://news.ycombinator.com/item?id=' + data.hits[0].objectID;
+      hackerNewsCount.innerText = data.hits[0].points;
+      hackerNewsCount.classList.add('is-loaded');
+      if (hackerNewsCount.innerText > 0) {
+        hackerNewsLink.classList.remove('hidden');
+      }
+    };
     if (legacyUrl) {
       loadJSON(
         // path
         'https://hn.algolia.com/api/v1/search?query=' + legacyUrl + '&restrictSearchableAttributes=url',
         // success
         function(data) {
-          hackerNewsLink.href = 'https://news.ycombinator.com/item?id=' + data.hits[0].objectID;
-          var shareCount = hackerNewsLink.getElementsByClassName('share-count')[0];
-          shareCount.innerText = data.hits[0].points;
-          shareCount.classList.add('is-loaded');
-          if (shareCount.innerText > 0) {
-            hackerNewsLink.classList.remove('hidden');
-          }
+          updateHackerNewsCount(data);
         },
         // error
         function(xhr) { console.error(xhr);}
@@ -98,15 +104,7 @@ function socialSharing() {
         'https://hn.algolia.com/api/v1/search?query=' + permalink + '&restrictSearchableAttributes=url',
         // success
         function(data) {
-          var shareCount = hackerNewsLink.getElementsByClassName('share-count')[0];
-          if (data.hits[0]) {
-            hackerNewsLink.href = 'https://news.ycombinator.com/item?id=' + data.hits[0].objectID;
-            shareCount.innerText = data.hits[0].points;
-          }
-          shareCount.classList.add('is-loaded');
-          if (shareCount.innerText > 0) {
-            hackerNewsLink.classList.remove('hidden');
-          }
+          updateHackerNewsCount(data);
         },
         // error
         function(xhr) { console.error(xhr);}

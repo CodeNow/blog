@@ -3,25 +3,30 @@ anand_p:
   display_name: Anand Patel
   author_page: anand-patel
   avatar: authors/anandpatel.jpg
+  title: Engineer
   twitter: akaDJFaZe
 anton_p:
   display_name: Anton Podviaznikov
   author_page: anton-podviaznikov
   avatar: authors/antonpodviaznikov.jpg
+  title: Engineer
   twitter: podviaznikov
 bryan_k:
   display_name: Bryan Kendall
   author_page: bryan-kendall
   avatar: authors/bryankendall.jpg
+  title: Engineer
   twitter: bkendall
 chris_n:
   display_name: Chris Neill
   author_page: chris_neill
   avatar: authors/chrisneill.jpg
+  title: Engineer
 damien_h:
   display_name: Damien Hayeck
   author_page: damien-hayeck
   avatar: authors/damienhayeck.jpg
+  title: Engineer
 forrest_j:
   display_name: Forrest Junod
   author_page: forrest-junod
@@ -31,49 +36,59 @@ henry_m:
   display_name: Henry Mollman
   author_page: henry-mollman
   avatar: authors/henrymollman.jpg
+  title: Engineer
   twitter: henrymollman
 jorge_s:
   display_name: Jorge Silva
   author_page: jorge-silva
   avatar: authors/jorgesilva.jpg
+  title: Engineer
   twitter: thejsj
 ken_o:
   display_name: Ken Olofsen
   author_page: ken-olofsen
   avatar: authors/kenolofsen.jpg
+  title: President & co-CEO
   twitter: kolofsen
 nathan_m:
   display_name: Nathan Meyers
   author_page: nathan-meyers
   avatar: authors/nathanmeyers.jpg
+  title: Engineer
   twitter: Nathan219
 praful_r:
   display_name: Praful Rana
   author_page: praful-rana
   avatar: authors/prafulrana.jpg
+  title: Product Manager
   twitter: Prafulrana
 ryan_k:
   display_name: Ryan Kahn
   author_page: ryan-kahn
   avatar: authors/ryankahn.jpg
+  title: Engineer
   twitter: Myztiq
 ryan_r:
   display_name: Ryan Sandor Richards
   author_page: ryan-sandor-richards
   avatar: authors/ryanrichards.jpg
+  title: Engineer
   twitter: rsandor
 sohail_a:
   display_name: Sohail Ahmed
   author_page: sohail-ahmed
   avatar: authors/sohailahmed.jpg
+  title: Engineer
   twitter: sotothehail
 sundip_p:
   display_name: Sundip Patel
   author_page: sundip-patel
   avatar: authors/sundippatel.jpg
+  title: Product Manager
   twitter: sundippatel
 yash_k:
   display_name: Yash Kumar
   author_page: yash-kumar
   avatar: authors/yashkumar.jpg
+  title: Founder & co-CEO
   twitter: ykumar6

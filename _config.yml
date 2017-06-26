@@ -49,7 +49,7 @@ defaults:
 collections:
   authors:
     output: true
-    permalink: /:name/
+    permalink: /:name
 
 sass:
   sass_dir: _sass/

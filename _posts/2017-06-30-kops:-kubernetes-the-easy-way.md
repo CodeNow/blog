@@ -45,7 +45,7 @@ We also have to create an S3 bucket, within which kops will store configuration 
 aws s3 mb s3://clusters.kubernetes.mydomain.com
 ```
 
-Now, we should create the following variable in your current shell or your bash profile if you are only controlling one cluster.
+Now, we should create the following variable in your current shell or your bash profile if you are only controlling one cluster:
 
 ```bash
 export KOPS_STATE_STORE=s3://clusters.kubernetes.mydomain.com

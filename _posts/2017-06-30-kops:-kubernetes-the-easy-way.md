@@ -19,42 +19,42 @@ While “the hard way” walks the user through the process of creating a highly
 
 To follow this guide, the first thing the user must do is [create an account](http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/AboutAWSAccounts.html) on AWS, and install the [AWS CLI](https://aws.amazon.com/cli/). You will also have to install kops on your own machine. For macOS users, you can use Homebrew:
 
-```bash
-brew update && brew install kops
+```shell_session
+$ brew update && brew install kops
 ```
 
 And for Linux users:
 
-```bash
-wget https://github.com/kubernetes/kops/releases/download/1.6.1/kops-linux-amd64
-chmod +x kops-linux-amd64
-mv kops-linux-amd64 /usr/local/bin/kops
+```shell_session
+$ wget https://github.com/kubernetes/kops/releases/download/1.6.1/kops-linux-amd64
+$ chmod +x kops-linux-amd64
+$ mv kops-linux-amd64 /usr/local/bin/kops
 ```
 
 Now, we will have to create a subdomain to use with k8s, with the AWS Route53 DNS service. I used the subdomain kubernetes.mydomain.com, and created a hosted zone:
 
-```bash
-aws route53 create-hosted-zone --name kubernetes.mydomain.com --caller-reference 1
+```shell_session
+$ aws route53 create-hosted-zone --name kubernetes.mydomain.com --caller-reference 1
 ```
 
 This will return information about the hosted zone, including a DelegationSet of name servers. I selected one with a .com top-level domain, and entered into my domain name registrar as an NS record.
 
 We also have to create an S3 bucket, within which kops will store configuration for our cluster:
 
-```bash
-aws s3 mb s3://clusters.kubernetes.mydomain.com
+```shell_session
+$ aws s3 mb s3://clusters.kubernetes.mydomain.com
 ```
 
 Now, we should create the following variable in your current shell or your bash profile if you are only controlling one cluster:
 
-```bash
-export KOPS_STATE_STORE=s3://clusters.kubernetes.mydomain.com
+```shell_session
+$ export KOPS_STATE_STORE=s3://clusters.kubernetes.mydomain.com
 ```
 
 Cool! We are ready to configure and launch the cluster that will run k8s for us:
 
-```bash
-kops create cluster --zones=us-west-2c us-west-2c.kubernetes.mydomain.com
+```shell_session
+$ kops create cluster --zones=us-west-2c us-west-2c.kubernetes.mydomain.com
 ```
 
 You can also specify parameters like the subnet using the `--network-cidr` flag, or your AWS VPC with the `--vpc` flag.

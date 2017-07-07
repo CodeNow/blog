@@ -1,0 +1,364 @@
+<!doctype html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="/blog/favicon.png">
+  <link rel="stylesheet" href="//runnable.com/styles/index.css">
+  <link rel="stylesheet" href="/blog/css/index.css">
+  <meta property="og:image" content="//s3-us-west-1.amazonaws.com/runnable-design/fb-image.png">
+  
+    <meta name="twitter:title" content="Using a Slack Bot to Improve Customer Support">
+    <meta name="twitter:description" content="We rely heavily on Slack for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With some light reading and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues.">
+    
+  <meta name="twitter:image" content="https://s3-us-west-1.amazonaws.com/runnable-design/tw-image.png">
+  <script src="//runnable.com/js/external/segment.js"></script>
+  <!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Using a Slack Bot to Improve Customer Support - Runnablog</title>
+<meta property="og:title" content="Using a Slack Bot to Improve Customer Support" />
+<meta name="description" content="We rely heavily on Slack for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With some light reading and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues." />
+<meta property="og:description" content="We rely heavily on Slack for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With some light reading and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues." />
+<link rel="canonical" href="https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support" />
+<meta property="og:url" content="https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support" />
+<meta property="og:site_name" content="Runnablog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-08-09T00:00:00-07:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@GetRunnable" />
+<meta name="twitter:creator" content="@sotothehail" />
+<meta property="article:publisher" content="Runnable" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Using a Slack Bot to Improve Customer Support",
+"datePublished": "2016-08-09T00:00:00-07:00",
+"description": "We rely heavily on Slack for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With some light reading and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues.",
+"url": "https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <link type="application/atom+xml" rel="alternate" href="https://runnable.com/blog/feed.xml" title="Runnablog" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+  <script src="/blog/js/post-time.js"></script>
+</head>
+
+
+  <body class="page-landing">
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon-defintions">
+  <symbol id="icons-bitbucket" viewBox="0 0 27.438 31.681">
+    <path d='M29.208,3.519a3.47,3.47,0,0,0-.729-0.738,8.244,8.244,0,0,0-2.01-1.1A21.7,21.7,0,0,0,21.768.45,39.134,39.134,0,0,0,10.037.434,24.268,24.268,0,0,0,6,1.385,10.419,10.419,0,0,0,3.525,2.549a4.165,4.165,0,0,0-.976.869,1.832,1.832,0,0,0-.4,1.479C2.32,5.989,2.48,7.082,2.66,8.169q0.4,2.417.811,4.828c0.306,1.787.62,3.573,0.918,5.36a2.026,2.026,0,0,0,.526,1.07,5.663,5.663,0,0,0,.574.543,9.178,9.178,0,0,0,2.432,1.354,20.379,20.379,0,0,0,6.485,1.328,25.257,25.257,0,0,0,4.838-.187,19.46,19.46,0,0,0,4.011-.948,10.809,10.809,0,0,0,2.725-1.382,4.323,4.323,0,0,0,.945-0.9,1.791,1.791,0,0,0,.354-0.805c0.4-2.341.809-4.679,1.2-7.021,0.362-2.172.7-4.346,1.058-6.518A1.78,1.78,0,0,0,29.208,3.519ZM15.82,19.64a4.361,4.361,0,1,1,4.386-4.334A4.359,4.359,0,0,1,15.82,19.64Zm8.7-15.246a1.832,1.832,0,0,1-.436.357,5.524,5.524,0,0,1-1.454.541,20.191,20.191,0,0,1-2.9.485,37.5,37.5,0,0,1-3.791.188,37.891,37.891,0,0,1-4.332-.238,15.852,15.852,0,0,1-3.146-.633,6.893,6.893,0,0,1-.883-0.381,1.385,1.385,0,0,1-.386-0.3A0.443,0.443,0,0,1,7.2,3.746,1.752,1.752,0,0,1,7.61,3.43a5.392,5.392,0,0,1,1.359-.512,20.355,20.355,0,0,1,2.994-.509,37.618,37.618,0,0,1,4.967-.172,30.478,30.478,0,0,1,4.55.431,10.33,10.33,0,0,1,2.075.545,5.336,5.336,0,0,1,.683.346,1.085,1.085,0,0,1,.288.266A0.422,0.422,0,0,1,24.522,4.394Zm1.664,18.367a0.955,0.955,0,0,1-.021.271c-0.305,1.6-.614,3.2-0.911,4.811a2.6,2.6,0,0,1-.724,1.377,5.442,5.442,0,0,1-1.448,1.023A12.151,12.151,0,0,1,20,31.274a18.806,18.806,0,0,1-3.563.407,20.746,20.746,0,0,1-5.917-.7,9.9,9.9,0,0,1-2.3-.953,5.078,5.078,0,0,1-1.042-.789,2.6,2.6,0,0,1-.741-1.4c-0.3-1.6-.609-3.207-0.915-4.81A1.12,1.12,0,0,1,5.5,22.79a0.479,0.479,0,0,1,.724-0.423c0.036,0.021.072,0.041,0.105,0.063a13.221,13.221,0,0,0,3.858,1.856,18.062,18.062,0,0,0,3.873.758,19.587,19.587,0,0,0,4.54-.11,16.41,16.41,0,0,0,5.687-1.827c0.354-.194.686-0.43,1.025-0.646a1.715,1.715,0,0,1,.167-0.1A0.48,0.48,0,0,1,26.186,22.761Zm-8.159-7.477a2.185,2.185,0,1,1-2.177-2.193A2.192,2.192,0,0,1,18.027,15.284Z', transform='translate(-2.122)'</<path d="M29.208,3.519a3.47,3.47,0,0,0-.729-0.738,8.244,8.244,0,0,0-2.01-1.1A21.7,21.7,0,0,0,21.768.45,39.134,39.134,0,0,0,10.037.434,24.268,24.268,0,0,0,6,1.385,10.419,10.419,0,0,0,3.525,2.549a4.165,4.165,0,0,0-.976.869,1.832,1.832,0,0,0-.4,1.479C2.32,5.989,2.48,7.082,2.66,8.169q0.4,2.417.811,4.828c0.306,1.787.62,3.573,0.918,5.36a2.026,2.026,0,0,0,.526,1.07,5.663,5.663,0,0,0,.574.543,9.178,9.178,0,0,0,2.432,1.354,20.379,20.379,0,0,0,6.485,1.328,25.257,25.257,0,0,0,4.838-.187,19.46,19.46,0,0,0,4.011-.948,10.809,10.809,0,0,0,2.725-1.382,4.323,4.323,0,0,0,.945-0.9,1.791,1.791,0,0,0,.354-0.805c0.4-2.341.809-4.679,1.2-7.021,0.362-2.172.7-4.346,1.058-6.518A1.78,1.78,0,0,0,29.208,3.519ZM15.82,19.64a4.361,4.361,0,1,1,4.386-4.334A4.359,4.359,0,0,1,15.82,19.64Zm8.7-15.246a1.832,1.832,0,0,1-.436.357,5.524,5.524,0,0,1-1.454.541,20.191,20.191,0,0,1-2.9.485,37.5,37.5,0,0,1-3.791.188,37.891,37.891,0,0,1-4.332-.238,15.852,15.852,0,0,1-3.146-.633,6.893,6.893,0,0,1-.883-0.381,1.385,1.385,0,0,1-.386-0.3A0.443,0.443,0,0,1,7.2,3.746,1.752,1.752,0,0,1,7.61,3.43a5.392,5.392,0,0,1,1.359-.512,20.355,20.355,0,0,1,2.994-.509,37.618,37.618,0,0,1,4.967-.172,30.478,30.478,0,0,1,4.55.431,10.33,10.33,0,0,1,2.075.545,5.336,5.336,0,0,1,.683.346,1.085,1.085,0,0,1,.288.266A0.422,0.422,0,0,1,24.522,4.394Zm1.664,18.367a0.955,0.955,0,0,1-.021.271c-0.305,1.6-.614,3.2-0.911,4.811a2.6,2.6,0,0,1-.724,1.377,5.442,5.442,0,0,1-1.448,1.023A12.151,12.151,0,0,1,20,31.274a18.806,18.806,0,0,1-3.563.407,20.746,20.746,0,0,1-5.917-.7,9.9,9.9,0,0,1-2.3-.953,5.078,5.078,0,0,1-1.042-.789,2.6,2.6,0,0,1-.741-1.4c-0.3-1.6-.609-3.207-0.915-4.81A1.12,1.12,0,0,1,5.5,22.79a0.479,0.479,0,0,1,.724-0.423c0.036,0.021.072,0.041,0.105,0.063a13.221,13.221,0,0,0,3.858,1.856,18.062,18.062,0,0,0,3.873.758,19.587,19.587,0,0,0,4.54-.11,16.41,16.41,0,0,0,5.687-1.827c0.354-.194.686-0.43,1.025-0.646a1.715,1.715,0,0,1,.167-0.1A0.48,0.48,0,0,1,26.186,22.761Zm-8.159-7.477a2.185,2.185,0,1,1-2.177-2.193A2.192,2.192,0,0,1,18.027,15.284Z" transform="translate(-2.122)"/>
+  </symbol>
+  <symbol id="icons-check" viewBox='0 0 14.5 10'>
+    <path d="M7.25,14a1,1,0,0,1-.707-0.293l-4.5-4.5A1,1,0,0,1,3.457,7.793L7.25,11.586l7.293-7.293a1,1,0,0,1,1.414,1.414l-8,8A1,1,0,0,1,7.25,14Z" transform="translate(-1.75 -4)"/>
+  </symbol>
+  <symbol id="icons-chevron-right" viewBox='0 0 11 18'>
+    <polyline points="1 1 10 9 1 17" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </symbol>
+  <symbol id="icons-chevron-down" viewBox='0 0 18 11'>
+    <polyline points="17 1 9 10 1 1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+  </symbol>
+  <symbol id="icons-close" viewBox="0 0 30 30">
+    <path d="M21,22.2c-0.3,0-0.5-0.1-0.7-0.3L15,16.6l-5.3,5.3c-0.4,0.4-1,0.4-1.4,0s-0.4-1,0-1.4l5.3-5.3L8.3,9.9c-0.4-0.4-0.4-1,0-1.4s1-0.4,1.4,0l5.3,5.3l5.3-5.3c0.4-0.4,1-0.4,1.4,0s0.4,1,0,1.4l-5.3,5.3l5.3,5.3c0.4,0.4,0.4,1,0,1.4C21.5,22.1,21.3,22.2,21,22.2z"/>
+  </symbol>
+  <symbol id="icons-external" viewBox="0 0 15 15">
+    <path fill="currentColor" d="M9.5,9a0.5,0.5,0,0,1-.354-0.854L14.293,3H11a0.5,0.5,0,0,1,0-1h4.506a0.5,0.5,0,0,1,.32.121h0a0.56,0.56,0,0,1,.07.074,0.5,0.5,0,0,1,.1.269c0,0.013,0,.026,0,0.039V7a0.5,0.5,0,0,1-1,0V3.707L9.854,8.854A0.5,0.5,0,0,1,9.5,9Z" transform="translate(-1 -2)"/><path d="M13.317,8.218L13,8.535V14a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V7A2,2,0,0,1,4,5H9.465l0.317-.317A2.5,2.5,0,0,1,9.027,4H4A3,3,0,0,0,1,7v7a3,3,0,0,0,3,3h7a3,3,0,0,0,3-3V8.973A2.5,2.5,0,0,1,13.317,8.218Z" transform="translate(-1 -2)"/>
+  </symbol>
+  <symbol id="icons-github" viewBox="0 0 24 23.41">
+    <path d="M24.336,7.791A12.011,12.011,0,0,1,25.52,23.366a12.083,12.083,0,0,1-5.883,4.313A0.686,0.686,0,0,1,19,27.549a0.648,0.648,0,0,1-.187-0.457l0.023-3.281a3.861,3.861,0,0,0-.258-1.395,2.219,2.219,0,0,0-.562-0.832,7.008,7.008,0,0,0,3.738-1.348Q23.41,19.03,23.5,15.655a5.127,5.127,0,0,0-.34-1.782,4.569,4.569,0,0,0-.9-1.43,3.254,3.254,0,0,0,.234-1.078,4.936,4.936,0,0,0-.352-2.109,1.719,1.719,0,0,0-.8.035A7.4,7.4,0,0,0,18.84,10.5a11.493,11.493,0,0,0-6,0,7.4,7.4,0,0,0-2.508-1.207,1.719,1.719,0,0,0-.8-0.035,4.936,4.936,0,0,0-.352,2.109,3.254,3.254,0,0,0,.234,1.078,4.569,4.569,0,0,0-.9,1.43,5.127,5.127,0,0,0-.34,1.782Q8.27,19.03,9.91,20.237a6.976,6.976,0,0,0,3.75,1.348,1.934,1.934,0,0,0-.48.633,3.414,3.414,0,0,0-.293.984,3.316,3.316,0,0,1-1.594.293,2.42,2.42,0,0,1-1.9-1.3,3.234,3.234,0,0,0-.645-0.75,1.767,1.767,0,0,0-1.184-.469q-0.7.023-.527,0.3a1.324,1.324,0,0,0,.551.469,2.583,2.583,0,0,1,.75.82,5.653,5.653,0,0,1,.469.867,2.2,2.2,0,0,0,.984,1.172,4.5,4.5,0,0,0,3.047.258l0.023,2.227a0.648,0.648,0,0,1-.187.457,0.686,0.686,0,0,1-.633.129A12.083,12.083,0,0,1,6.16,23.366,12,12,0,0,1,24.336,7.791Z" transform="translate(-3.84 -4.287)"/>
+  </symbol>
+  <symbol id="icons-life-preserver" viewBox='0 0 18 18'>
+    <path d="M9,17A8,8,0,1,0,1,9,8,8,0,0,0,9,17ZM9,5A4,4,0,1,1,5,9,4,4,0,0,1,9,5Z" transform="translate(-1 -1)" fill="#fff"/><path d="M9,2A7,7,0,1,1,2,9,7.008,7.008,0,0,1,9,2M9,13.5A4.5,4.5,0,1,0,4.5,9,4.505,4.505,0,0,0,9,13.5M9,1a8,8,0,1,0,8,8A8,8,0,0,0,9,1H9ZM9,12.5A3.5,3.5,0,1,1,12.5,9,3.5,3.5,0,0,1,9,12.5H9Z" transform="translate(-1 -1)"/><path d="M5.259,7.623A3.989,3.989,0,0,1,7.623,5.259L4.654,2.289A8.032,8.032,0,0,0,2.29,4.653Z" transform="translate(-1 -1)"/><path d="M12.741,10.377a3.989,3.989,0,0,1-2.364,2.364l2.969,2.969a8.032,8.032,0,0,0,2.364-2.364Z" transform="translate(-1 -1)"/><path d="M7.623,12.741a3.989,3.989,0,0,1-2.364-2.364L2.289,13.346A8.032,8.032,0,0,0,4.653,15.71Z" transform="translate(-1 -1)"/><path d="M10.377,5.259a3.989,3.989,0,0,1,2.364,2.364l2.969-2.969A8.032,8.032,0,0,0,13.347,2.29Z" transform="translate(-1 -1)"/>
+  </symbol>
+  <symbol id="icons-overflow" viewBox="0 0 18 4.688">
+    <path fill="currentColor" d="M2.344,7.656A1.344,1.344,0,1,1,1,9,1.345,1.345,0,0,1,2.344,7.656m0-1A2.344,2.344,0,1,0,4.688,9,2.344,2.344,0,0,0,2.344,6.656h0Z" transform="translate(0 -6.656)"/><path fill="currentColor" d="M9,7.656A1.344,1.344,0,1,1,7.656,9,1.345,1.345,0,0,1,9,7.656m0-1A2.344,2.344,0,1,0,11.344,9,2.344,2.344,0,0,0,9,6.656H9Z" transform="translate(0 -6.656)"/><path fill="currentColor" d="M15.656,7.656A1.344,1.344,0,1,1,14.313,9a1.345,1.345,0,0,1,1.344-1.344m0-1A2.344,2.344,0,1,0,18,9a2.344,2.344,0,0,0-2.344-2.344h0Z" transform="translate(0 -6.656)"/>
+  </symbol>
+</svg>
+
+    <header class="grid-block shrink header">
+  <div class="grid-block grid-container justify-justified">
+    <a href="/" class="grid-block align-center shrink logo">
+      <img class="img" src="https://runnable.com/images/runnable-logo.svg" height="36" width="192">
+    </a>
+    <nav class="nav grid-block shrink">
+      <div class="grid-content btn btn-sm text-white weight-strong hidden-xs a popover-trigger hover has-links" tabindex="1">
+        <div class="div">Features
+          <svg class="icons icons-chevron-down">
+            <use xlink:href="#icons-chevron-down">
+          </svg>
+        </div>
+        <div class="popover-hover-wrapper popover-feature">
+  <div class="grid-block col list text-left popover popover-header-menu bottom">
+    <a href="/preview-environments/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-staging.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">Preview Environments</p>
+        <p class="small">Isolated, full-stack environments for every branch.</p>
+      </div>
+    </a>
+    <a href="/end-to-end-testing/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-testing.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">End-to-end Testing</p>
+        <p class="small">Test every code change on its own preview environment.</p>
+      </div>
+    </a>
+    <a href="/deploy-to-production/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-deploy.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">Deploy to Production</p>
+        <p class="small">Deploy fully-tested builds to any environment.</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+      </div>
+      <a href="/docs/" class="grid-content btn btn-sm text-white weight-strong hidden-sm a">Docs</a>
+      <a href="/pricing/" class="grid-content btn btn-sm text-white weight-strong hidden-md">Pricing</a>
+      <a href="/signup/" class="grid-content btn btn-sm btn-white text-white weight-strong hidden-xs track-sign-up">Sign Up</a>
+      <div class="grid-content btn btn-sm btn-overflow popover-trigger hover has-links" tabindex="1">
+        <svg class="icons icons-overflow">
+          <use xlink:href="#icons-overflow">
+        </svg>
+        <div class="popover-hover-wrapper right-align-sm">
+  <div class="grid-block popover popover-header-menu bottom">
+    <div class="grid-block col list text-left">
+      <small class="small visible-xs text-gray-light margin-left-sm">Features</small>
+      <a href="/preview-environments/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-staging.svg" height="30" width="30" class="img">
+        Preview Environments
+      </a>
+      <a href="/end-to-end-testing/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-testing.svg" height="30" width="30" class="img">
+        End-to-end Testing
+      </a>
+      <a href="/deploy-to-production/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-deploy.svg" height="30" width="30" class="img">
+        Deploy to Production
+      </a>
+      <div class="list-item divider visible-xs"></div>
+      <a href="/signup/" class="list-item-a visible-xs track-sign-up">Sign Up</a>
+      <div class="list-item divider visible-md"></div>
+      <a href="/docs/" class="list-item-a visible-sm">Docs</a>
+      <a href="/pricing/" class="list-item-a visible-md">Pricing</a>
+      <a href="/how-it-works/" class="list-item-a">How It Works</a>
+      <a href="/use-cases/" class="list-item-a">Use Cases</a>
+      <a href="/blog/" class="list-item-a">Blog</a>
+      <a href="/contact/" class="list-item-a">Contact</a>
+      <a href="/about/" class="list-item-a">About</a>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+    <main class="grid-block col main">
+      <div class="grid-block col align-center hero hero-post"></div>
+
+<div class="grid-block grid-container col noscroll">
+  <div class="grid-block align-center col post-details">
+    <h1 class="h1 text-center weight-strong margin-top-sm post-title">Using a Slack Bot to Improve Customer Support</h1>
+    
+    <img class="avatar" src="images/authors/sohailahmed.jpg" width="45" height="45">
+    <div>by <a class="link" href="/blog/sohail-ahmed">Sohail Ahmed</a></div>
+    <div><time class="time-capitalize" datatime="2016-08-09 00:00:00 -0700">2016-08-09 00:00:00 -0700</time> in Engineering</div>
+    <div class="grid-block social-sharing" data-url="https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support" data-legacy-url="http://blog.runnable.com/post/148678111226/using-a-slack-bot-to-improve-customer-support">
+      <a target="_blank" href="https://twitter.com/intent/tweet?text=Using a Slack Bot to Improve Customer Support&url=https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support&via=GetRunnable" class="share-item share-twitter">
+        <img src="images/logos/logo-twitter.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://runnable.com/blog/using-a-slack-bot-to-improve-customer-support" class="share-item share-linkedin">
+        <img src="images/logos/logo-linkedin.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+      <a target="_blank" href="#" class="share-item share-hackernews hidden">
+        <img src="images/logos/logo-hackernews.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+    </div>
+  </div>
+  <article class="article article-body">
+    <p>We rely heavily on <a href="https://slack.com/">Slack</a> for communication throughout our company, so it was only a matter of time before we started utilizing Slack bots to improve our customer support workflows. With <a href="https://scotch.io/tutorials/building-a-slack-bot-with-node-js-and-chuck-norris-super-powers#create-a-new-bot-on-your-slack-organization">some light reading</a> and a little programming, we’ve begun automating many mundane tasks which help us improve how we troubleshoot customer issues.</p>
+
+<h3 id="how-we-use-it">How we use it</h3>
+
+<p>One major factor our team uses to drive product development is bug fixes and feature requests based on customer demand. We get most of this information by providing support for our customers. We were running into bottlenecks with our old approach (it involves a Google spreadsheet), so we created a bot that helped us troubleshoot and capture feedback.</p>
+
+<p>For example, if a customer contacts us regarding an issue with their Docker container, CustomerBot communicates with our internal API to gather information about that container directly from the URL they provide us.</p>
+
+<p><img src="https://s3-us-west-1.amazonaws.com/runnable-design/customerbot-1.png" class="post-graphic" width="660" height="351" alt="image" /></p>
+
+<p>With this information, we can check the status of that container’s Docker host, view logs, and — with the user’s permission — even interact with their container using Swarm.</p>
+
+<p>After getting the customer running again, we want to capture feedback with any additional context to that customer to help drive product development.</p>
+
+<p><img src="https://s3-us-west-1.amazonaws.com/runnable-design/customerbot-2.png" class="post-graphic" width="660" height="90" alt="image" /></p>
+
+<p>This adds a tag, named after a JIRA ticket, to the company the customer is associated with in Intercom. It also appends a note to the company to provide context as to why they were tagged with that ticket.</p>
+
+<p>When we need to generate a report of the feedback we’ve collected, we simply message CustomerBot:</p>
+
+<p><img src="https://s3-us-west-1.amazonaws.com/runnable-design/customerbot-3.png" class="post-graphic" width="660" height="233" alt="image" /></p>
+
+<p>CustomerBot responds with all our Intercom tags that correspond to JIRA tickets, ranked by which issues have been experienced by the most companies.</p>
+
+<h3 id="how-do-i-start">How do I start?</h3>
+
+<p>Building your own bot is actually quite easy. There are several libraries out there for you to take advantage of, in all sorts of languages. We based our bot on <a href="https://github.com/mishk0/slack-bot-api">this library</a> written by mishk0.</p>
+
+<p>Programming with Slack RTM APIs basically involves listening to the events that are coming along the WebSocket and reacting to message events with a certain type <code class="highlighter-rouge">message.type === 'message'</code>. Your bot will receive all events from whichever channel <code class="highlighter-rouge">message.channel</code> is invited to, including direct messages. You can then parse your custom commands and arguments from the text <code class="highlighter-rouge">message.text</code>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">CustomerBot</span> <span class="kr">extends</span> <span class="nx">SlackBot</span> <span class="p">{</span>
+
+  <span class="nx">run</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'start'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onStart</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onMessage</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onError</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="nx">onStart</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span> <span class="nx">is</span> <span class="nx">running</span><span class="p">...</span><span class="err">`</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="nx">onMessage</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">))</span> <span class="p">{</span>
+      <span class="kd">let</span> <span class="nx">words</span> <span class="o">=</span> <span class="nx">message</span><span class="p">.</span><span class="nx">text</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>  <span class="c1">// Split message into parseable chunks</span>
+      <span class="kd">let</span> <span class="nx">command</span> <span class="o">=</span> <span class="nx">words</span><span class="p">.</span><span class="nx">shift</span><span class="p">()</span>          <span class="c1">// Let the first word of the message be the command</span>
+      <span class="nx">message</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">words</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>       <span class="c1">// Combine the rest of the message for later use</span>
+
+      <span class="k">switch</span> <span class="p">(</span><span class="nx">command</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s1">'help'</span><span class="err">:</span>
+          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Command: help'</span><span class="p">)</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">respond</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span> <span class="err">`</span><span class="nx">Hey</span> <span class="nx">there</span><span class="p">,</span> <span class="nx">here</span> <span class="nx">are</span> <span class="nx">the</span> <span class="nx">available</span> <span class="nx">commands</span><span class="err">:\</span><span class="nx">n</span>
+            <span class="err">\`</span><span class="nx">tag</span><span class="err">\`</span> <span class="nx">Tag</span> <span class="nx">a</span> <span class="nx">company</span><span class="p">.</span> <span class="nx">_tag</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">company</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">ticket</span> <span class="nx">number</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">notes</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="nx">_</span><span class="err">\</span><span class="nx">n</span>
+            <span class="err">\`</span><span class="nx">feedback</span><span class="err">\`</span> <span class="nx">Get</span> <span class="nx">current</span> <span class="nx">issues</span><span class="p">.</span><span class="err">\</span><span class="nx">n</span>
+            <span class="err">\`</span><span class="nx">funnel</span><span class="err">\`</span> <span class="nx">Get</span> <span class="nx">funnel</span> <span class="nx">statistics</span><span class="p">.</span><span class="err">`</span><span class="p">)</span>
+          <span class="k">break</span>
+        <span class="c1">// TODO: Add more commands here.</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>For each command, you can start to break out your own functions. This particular function gets all issues in JIRA that we have tagged companies in Intercom with.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="err">…</span>
+<span class="c1">// Add to your onMessage switch case</span>
+<span class="k">case</span> <span class="s1">'feedback'</span><span class="err">:</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Command: feedback'</span><span class="p">)</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">getFeedback</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span>
+  <span class="k">break</span>
+<span class="err">…</span>
+
+<span class="c1">// Add to your SlackBot class</span>
+<span class="nx">getFeedback</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span> <span class="s1">'Sending feedback shortly...'</span><span class="p">)</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">jira</span><span class="p">.</span><span class="nx">searchJira</span><span class="p">(</span><span class="s1">'type = feedback'</span><span class="p">,</span> <span class="p">{</span> <span class="na">maxResults</span><span class="p">:</span> <span class="s1">'1000'</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">issue</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">jira</span><span class="p">.</span><span class="nx">getIssueTable</span><span class="p">(</span><span class="nx">issue</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">intercom</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">jira</span><span class="p">.</span><span class="nx">getMessageFromTable</span><span class="p">(</span><span class="nx">results</span><span class="p">))</span>
+      <span class="p">})</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span> <span class="s1">'`Error` Something went wrong when querying JIRA. Please try again shortly.'</span><span class="p">)</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+<span class="err">…</span></code></pre></figure>
+
+<p>By adding connections to several APIs, we can start to cross-reference information from different sources and filter out just what we need.</p>
+
+<h3 id="why-a-slack-bot">Why a Slack bot?</h3>
+
+<p>Our answer to this question is a little biased. We are figuratively tied to the hip with Slack. So we figured that the most efficient place to provide us with real-time customer data and notifications would be our center of communication. Having CustomerBot in Slack comes with other benefits, too:</p>
+
+<ul>
+  <li>We can use CustomerBot anytime and anywhere we can use Slack — on our laptops, tablets, and phones.</li>
+  <li>Anyone in our team can use it by typing simple text commands.</li>
+  <li>We can pull information from (and push information to) several sources and present it in a more readable and actionable way.</li>
+</ul>
+
+<p>CustomerBot helps us troubleshoot issues and drive product improvements based on those issues. Associating bugs and feedback with specific customers helps us develop empathy and drives us to improve their experience more holistically. Using a Slack bot has enabled us to continue this practice as we grow our user base.</p>
+
+  </article>
+
+  <section class="grid-block shrink justify-center align-center section-footer">
+    <a class="grid-block shrink link text-center padding-sm" href="/blog/">View All Posts</a>
+  </section>
+</div>
+
+<script src="js/social-buttons.js"></script>
+
+    </main>
+
+    <footer class="grid-block col footer justify-spaced">
+  <aside class="grid-block aside-support">
+  <div class="grid-block col justify-center support-text">
+    <p class="p weight-strong">Our engineers are here for you.</p>
+    <p class="p">We can answer questions about Docker <br class="br">and help you set up your stack.</p>
+  </div>
+  <figure class="grid-block col figure shrink">
+    <div class="grid-block shrink bubble">
+      <img class="img float-left" src="/blog/images/logos/logo-slack.svg" height="18" width="18" alt="Slack">
+      <div class="grid-block col">
+        <div class="user">
+          <strong class="strong user-name">Jorge</strong>
+          <span class="user-time"> 4:19 PM</span>
+        </div>
+        <p class="p user-text">Can I run multiple commands?</p>
+      </div>
+    </div>
+    <div class="grid-block shrink bubble">
+      <img class="img float-left" src="/blog/images/runnabot-head.png" height="18" width="18" alt="Slack">
+      <div class="grid-block col">
+        <div class="user">
+          <strong class="strong user-name">Taylor</strong>
+          <span class="user-time"> 4:20 PM</span>
+        </div>
+        <p class="p user-text">Hi <span class="link-blue">@jorge</span>!
+          <br>Yes you can. Here’s how: …
+        </p>
+      </div>
+    </div>
+  </figure>
+</aside>
+
+  <div class="grid-block link-wrapper">
+    <div class="grid-block col align-start">
+      <h4 class="h4">Product</h4>
+      <a href="/preview-environments/" class="a">Preview Environments</a>
+      <a href="/end-to-end-testing/" class="a">End-to-End Testing</a>
+      <a href="/deploy-to-production/" class="a">Deploy to Production</a>
+      <a href="/use-cases/" class="a">Use Cases</a>
+      <a href="/how-it-works/" class="a">How It Works</a>
+      <a href="/pricing/" class="a">Pricing</a>
+      <h4 class="h4 margin-top-sm">Help</h4>
+      <a href="/docs/" class="a">Docs</a>
+      <a href="/docker/" class="a">Docker Guides</a>
+    </div>
+    <div class="grid-block col align-start">
+      <h4 class="h4">Company</h4>
+      <a href="/about/" class="a">About</a>
+      <a href="/blog/" class="a">Blog</a>
+      <a href="/contact/" class="a">Contact</a>
+      <a href="https://www.facebook.com/runnable/" class="a">Facebook</a>
+      <a href="https://twitter.com/GetRunnable" class="a">Twitter</a>
+      <a href="https://www.linkedin.com/company/runnable" class="a">Linkedin</a>
+      <h4 class="h4 margin-top-sm">Legal</h4>
+      <a href="/legal/privacy-policy/" class="a">Privacy</a>
+      <a href="/legal/terms-of-service/" class="a">Terms</a>
+      <a href="/legal/acceptable-use-policy/" class="a">Acceptable Use</a>
+    </div>
+  </div>
+</footer>
+
+  </body>
+
+</html>

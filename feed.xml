@@ -1,0 +1,1053 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="https://runnable.com/blog/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="https://runnable.com/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://runnable.com/blog/" rel="alternate" type="text/html" /><updated>2017-07-07T16:41:43-07:00</updated><id>https://runnable.com/blog//</id><title type="html">Runnablog</title><subtitle>The official blog from the team at Runnable</subtitle><author><name>{&quot;twitter&quot;=&gt;&quot;GetRunnable&quot;}</name></author><entry><title type="html">Kops: Kubernetes the Easy Way</title><link href="https://runnable.com/blog/kops-kubernetes-the-easy-way" rel="alternate" type="text/html" title="Kops: Kubernetes the Easy Way" /><published>2017-06-30T16:00:00-07:00</published><updated>2017-06-30T16:00:00-07:00</updated><id>https://runnable.com/blog/kops:-kubernetes-the-easy-way</id><content type="html" xml:base="https://runnable.com/blog/kops-kubernetes-the-easy-way">&lt;p&gt;For those who are new to Kubernetes (commonly known as k8s) and want to begin playing around with their first pods, services, and deployments, there are &lt;a href=&quot;https://runnable.com/blog/kubernetes-how-do-i-do-that&quot;&gt;many&lt;/a&gt; &lt;a href=&quot;https://kubernetes.io/docs/tutorials/stateless-application/hello-minikube/&quot;&gt;tutorials&lt;/a&gt; available for setting up a k8s installation using Minikube on their personal computers. While this is a great way to initially get experience working with k8s, eventually one will need to introduce their application stack to a production environment. Launching in a cloud environment like Google Cloud Platform (GCP) or Amazon Web Services (AWS) is facilitated using kops.&lt;/p&gt;
+
+&lt;h3 id=&quot;introducing-kops&quot;&gt;Introducing Kops&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/kubernetes/kops&quot;&gt;Kops&lt;/a&gt; is described as the “easiest way to get a production grade k8s cluster up and running,” and compared with the work entailed in Kelsey Hightower’s “&lt;a href=&quot;https://github.com/kelseyhightower/kubernetes-the-hard-way&quot;&gt;Kubernetes the Hard Way&lt;/a&gt;”, it certainly seems that way. I advise that everyone take a stab at that tutorial and go through each step in the setup process if they are more ops-inclined or want to get a better understanding of container orchestration using k8s.&lt;/p&gt;
+
+&lt;p&gt;While “the hard way” walks the user through the process of creating a highly-available cluster, kops automates most of that process away. It will perform at least 8 tasks including creating the subnet and DHCP options for your cluster, Auto Scaling Groups for your master and worker nodes, Launch Configurations for those nodes, IAM profiles and EBS volumes for your instances, and security groups for your network.&lt;/p&gt;
+
+&lt;h3 id=&quot;installing-kops-and-creating-a-cluster&quot;&gt;Installing Kops and Creating a Cluster&lt;/h3&gt;
+
+&lt;p&gt;To follow this guide, the first thing the user must do is &lt;a href=&quot;http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/AboutAWSAccounts.html&quot;&gt;create an account&lt;/a&gt; on AWS, and install the &lt;a href=&quot;https://aws.amazon.com/cli/&quot;&gt;AWS CLI&lt;/a&gt;. You will also have to install kops on your own machine. For macOS users, you can use Homebrew:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;brew&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; update &amp;amp;&amp;amp; brew install kops
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And for Linux users:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;wget&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; https://github.com/kubernetes/kops/releases/download/1.6.1/kops-linux-amd64
+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;chmod&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; +x kops-linux-amd64
+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;mv&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; kops-linux-amd64 /usr/local/bin/kops
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we will have to create a subdomain to use with k8s, with the AWS Route53 DNS service. I used the subdomain kubernetes.mydomain.com, and created a hosted zone:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;aws&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; route53 create-hosted-zone --name kubernetes.mydomain.com --caller-reference 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This will return information about the hosted zone, including a DelegationSet of name servers. I selected one with a .com top-level domain, and entered into my domain name registrar as an NS record.&lt;/p&gt;
+
+&lt;p&gt;We also have to create an S3 bucket, within which kops will store configuration for our cluster:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;aws&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; s3 mb s3://clusters.kubernetes.mydomain.com
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we should create the following variable in your current shell or your bash profile if you are only controlling one cluster:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;export&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; KOPS_STATE_STORE=s3://clusters.kubernetes.mydomain.com
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Cool! We are ready to configure and launch the cluster that will run k8s for us:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;kops&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; create cluster --zones=us-west-2c us-west-2c.kubernetes.mydomain.com
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You can also specify parameters like the subnet using the &lt;code class=&quot;highlighter-rouge&quot;&gt;--network-cidr&lt;/code&gt; flag, or your AWS VPC with the &lt;code class=&quot;highlighter-rouge&quot;&gt;--vpc&lt;/code&gt; flag.&lt;/p&gt;
+
+&lt;h3 id=&quot;let-kops-do-the-work&quot;&gt;Let Kops Do The Work&lt;/h3&gt;
+
+&lt;p&gt;While all of this can be scripted away and automated, it is very refreshing to have kops perform these tasks without the need for much input. However, if you need to exercise some hands-on configuration, the command &lt;code class=&quot;highlighter-rouge&quot;&gt;kops edit cluster $CLUSTER_NAME&lt;/code&gt; will open Vim on your computer and allow you to edit the .yml that will create your cluster. Ditto for node instance groups using &lt;code class=&quot;highlighter-rouge&quot;&gt;kops edit ig --name=$CLUSTER_NAME nodes&lt;/code&gt; or the master instance group using &lt;code class=&quot;highlighter-rouge&quot;&gt;kops edit ig --name=$CLUSTER_NAME $ZONE&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you are happy with the result, and aren’t creating infrastructure costs that will exceed your utility bill, enter the &lt;code class=&quot;highlighter-rouge&quot;&gt;kops update cluster&lt;/code&gt; command using the &lt;code class=&quot;highlighter-rouge&quot;&gt;--yes&lt;/code&gt; flag to actually perform the task and create the cluster if you have created the configuration. After allowing for some time for your NS Record to propagate to other DNS servers, Route53 will properly respond to requests. When your k8s cluster infrastructure is up and running type &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods&lt;/code&gt;. When you see &lt;code class=&quot;highlighter-rouge&quot;&gt;No resources found&lt;/code&gt;, you are ready to start creating deployments/replica sets.&lt;/p&gt;
+
+&lt;p&gt;Anyone attempting to create a k8s cluster on GCP or AWS for the first time will likely want to go through &lt;a href=&quot;https://github.com/kelseyhightower/kubernetes-the-hard-way&quot;&gt;“Kubernetes the Hard Way&lt;/a&gt;”, just to get an idea of what is involved when creating a k8s cluster in the cloud. This will allow novices to learn about k8s’ reliance on services like DNS or an Etcd key-value store. Then, once the frustrations and improvising have yielded a better understanding of k8s, you will likely find yourself using kops to streamline the process considerably and get to experimenting with pods, service configuration and other application concerns rather than ops concerns. And you will know what to do when Sheriff John Brown comes for you. If you encounter any problems or have questions, please send an email to &lt;a href=&quot;mailto:henry@runnable.com&quot;&gt;henry@runnable.com&lt;/a&gt;.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Henry Mollman&quot;, &quot;author_page&quot;=&gt;&quot;henry-mollman&quot;, &quot;avatar&quot;=&gt;&quot;authors/henrymollman.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;henrymollman&quot;}</name></author><category term="Engineering" /><summary type="html">For those who are new to Kubernetes (commonly known as k8s) and want to begin playing around with their first pods, services, and deployments, there are many tutorials available for setting up a k8s installation using Minikube on their personal computers. While this is a great way to initially get experience working with k8s, eventually one will need to introduce their application stack to a production environment. Launching in a cloud environment like Google Cloud Platform (GCP) or Amazon Web Services (AWS) is facilitated using kops.</summary></entry><entry><title type="html">5 Caveats Before Diving into Reactive Microservices Architecture</title><link href="https://runnable.com/blog/5-caveats-before-diving-into-reactive-microservices-architecture" rel="alternate" type="text/html" title="5 Caveats Before Diving into Reactive Microservices Architecture" /><published>2017-06-26T16:00:00-07:00</published><updated>2017-06-26T16:00:00-07:00</updated><id>https://runnable.com/blog/5-caveats-before-diving-into-reactive-microservices-architecture</id><content type="html" xml:base="https://runnable.com/blog/5-caveats-before-diving-into-reactive-microservices-architecture">&lt;p&gt;We have been &lt;a href=&quot;/blog/event-driven-microservices-using-rabbitmq&quot;&gt;pushing&lt;/a&gt; &lt;a href=&quot;/blog/lessons-learned-while-building-microservices-part-i&quot;&gt;reactive&lt;/a&gt; &lt;a href=&quot;/blog/embracing-event-driven-microservices&quot;&gt;microservices&lt;/a&gt; for some time now, but there are some considerations to take note of before taking the plunge. Reactive microservices bring a lot of benefits to the the table, but it comes at a cost. Here are some caveats that you should be aware of as you transition away from monoliths:&lt;/p&gt;
+
+&lt;h3 id=&quot;decoupled-means-decoupled&quot;&gt;Decoupled Means Decoupled&lt;/h3&gt;
+
+&lt;p&gt;By design, microservices allow for domain specific functionality to be organized into separate modules. Because of this decoupled nature, tracing functionality across several domain boundaries can be quite difficult. This may be manageable while your team is small and everyone is familiar with the stack, but new developers can have a lot of difficulty grokking the entire system. Even if you track events with &lt;a href=&quot;/blog/debugging-event-driven-microservices&quot;&gt;transaction IDs&lt;/a&gt;, you still may have difficulty understanding the flow of your actions. This is especially evident when you are debugging and pulling your hair out because you cannot find where things went wrong.&lt;/p&gt;
+
+&lt;h3 id=&quot;versioning-is-more-complex&quot;&gt;Versioning is More Complex&lt;/h3&gt;
+
+&lt;p&gt;With more services comes separate code bases and more versioning. A monolith can be simple to track with semantic versioning, but now that you have several microservices, you have to deal with tracking many different versions across your stack. You could version your entire stack with a manifest containing the versions of each component, but it can quickly become annoying when you want to manage releases with a multitude of services.&lt;/p&gt;
+
+&lt;h3 id=&quot;documentation-is-key&quot;&gt;Documentation is Key&lt;/h3&gt;
+
+&lt;p&gt;Along with keeping a manifest of your stack, you really need to document your architecture hierarchy. Now that your stack is decoupled, finding specific functionality can really be a hunt. A simple diagram can go a long way to help your fellow developers, but if you have a complex stack, your diagrams can become very convoluted.&lt;/p&gt;
+
+&lt;h3 id=&quot;event-changes-must-be-propagated&quot;&gt;Event Changes Must Be Propagated&lt;/h3&gt;
+
+&lt;p&gt;One of the benefits of reactive microservices is that you can develop without knowledge of your other services. But changes to an event or its schema can cause unexpected issues when consuming events downstream. For example, if you need additional information to perform a job and modify your job schema to add new flags, you can end up with a situation where other consumers begin to fail. By modifying the schema of the event, you may need to trace down other consumers and ensure that your changes won’t break things downstream. Yet another reason for having good documentation on your stack hierarchy.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing-is-not-so-straightforward&quot;&gt;Testing is Not So Straightforward&lt;/h3&gt;
+
+&lt;p&gt;Now that all of your application does not live in a monolith, you will need to consider additional factors when running tests. Integration testing may involve several microservices that need to publish or consume events to perform certain duties. Docker Compose makes standing up these test environments easy, but you will need to make sure to include all of the services needed for testing that portion of your stack. In addition, you will need to coordinate the versioning of the subsequent services in order to test your desired functionality.&lt;/p&gt;
+
+&lt;h3 id=&quot;worth-the-growing-pains&quot;&gt;Worth the Growing Pains&lt;/h3&gt;
+
+&lt;p&gt;All in all, the downsides are really not strong enough to deter you from breaking up your monolith. Even though there are some growing pains associated with microservices, it can really help you scale in the future. Up-to-date documentation and &lt;a href=&quot;http://naildrivin5.com/blog/2016/12/08/learn-graphviz-and-up-your-diagramming-game.html&quot;&gt;architecture diagrams&lt;/a&gt; are always important, especially for onboarding, but can also help when investigating issues. &lt;a href=&quot;https://dzone.com/articles/best-practices-for-tracing-and-debugging-microserv&quot;&gt;Following best practices&lt;/a&gt; will pay dividends in the future when the complexity of your application increases and issues arise. Luckily, much of the industry is moving in this direction, so you are not alone. Good luck!&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Sohail Ahmed&quot;, &quot;author_page&quot;=&gt;&quot;sohail-ahmed&quot;, &quot;avatar&quot;=&gt;&quot;authors/sohailahmed.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;sotothehail&quot;}</name></author><category term="Engineering" /><summary type="html">We have been pushing reactive microservices for some time now, but there are some considerations to take note of before taking the plunge. Reactive microservices bring a lot of benefits to the the table, but it comes at a cost. Here are some caveats that you should be aware of as you transition away from monoliths…</summary></entry><entry><title type="html">Get Your Apps to the Poll (Phase)!</title><link href="https://runnable.com/blog/get-your-apps-to-the-poll-phase" rel="alternate" type="text/html" title="Get Your Apps to the Poll (Phase)!" /><published>2017-06-19T16:00:00-07:00</published><updated>2017-06-19T16:00:00-07:00</updated><id>https://runnable.com/blog/get-your-apps-to-the-poll-phase</id><content type="html" xml:base="https://runnable.com/blog/get-your-apps-to-the-poll-phase">&lt;p&gt;A month ago, I wrote about &lt;a href=&quot;/blog/how-sockets-can-block-node-s-event-loop&quot;&gt;my investigation&lt;/a&gt; into an implementation of a real-time socket data manipulator which could eventually stall our application. While trying to research how this stuff actually worked, I couldn’t find many resources explaining how actual code goes through the event loop. Honestly, I think that’s a huge problem. I’m afraid most developers don’t understand the most critical part of Node.js, but I’m here to fix that. So, how do sockets work? How does the socket data get so backed up? Why does using a Transform solve the issue when piping with an async function does not?&lt;/p&gt;
+
+&lt;h3 id=&quot;understanding-the-event-loop&quot;&gt;Understanding the event loop.&lt;/h3&gt;
+
+&lt;p&gt;First, let’s have an in-depth look at the phases of the event loop:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-06-19-event-loop.png&quot; alt=&quot;&quot; width=&quot;527&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Most of our time is usually spent between the Callbacks and the Poll phases.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;Poll&lt;/strong&gt; phase is responsible for blocking the current flow of the code to check for incoming asynchronous events or timers. It checks on the response of any of the handlers it’s been given (file handlers, socket handlers) and appends them to the Callbacks phase queue. It also checks to see if any timers have reached zero and appends them to the Timers phase queue.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;Callbacks&lt;/strong&gt; phase processes all incoming IO callbacks, like network traffic, file streams, and database responses. The &lt;strong&gt;Timers&lt;/strong&gt; phase runs any &lt;code class=&quot;highlighter-rouge&quot;&gt;setTimeout&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;setInterval&lt;/code&gt; callbacks, and the &lt;strong&gt;Check&lt;/strong&gt; phase runs any &lt;code class=&quot;highlighter-rouge&quot;&gt;setImmediate&lt;/code&gt; callbacks.&lt;/p&gt;
+
+&lt;p&gt;This is the main flow of every Node app. The Poll phase blocks flow waiting for incoming things to do, and when it does, distributes the task to the correct queue, then relinquishes flow so the callbacks may be invoked. Synchronous code that isn’t part of the main execution loop (initial code run) is run in the phase it was called in.&lt;/p&gt;
+
+&lt;h3 id=&quot;buffering&quot;&gt;Buffering&lt;/h3&gt;
+
+&lt;p&gt;Now that we’ve got the basics down, we should talk about how Streams work in Node.JS. Streams are the constructs Node.JS uses to expose the machine’s network Sockets. They use the Node-specific class Buffer to hold their data. Buffers were created as a way to hold large amounts of Binary data, since pre-ES6 didn’t have &lt;code class=&quot;highlighter-rouge&quot;&gt;TypedArray&lt;/code&gt;. They are even more special than other structures in Node.js because their memory is allocated outside of the standard V8 heap. This means they have a larger memory allotment than the rest of Node, and they don’t affect the memory pressure of your whole app. Now, that isn’t to say they have unlimited memory; they don’t, but Node.js actually has &lt;a href=&quot;https://nodejs.org/en/docs/guides/backpressuring-in-streams/&quot;&gt;a few smart tricks&lt;/a&gt; to keep everything smooth.&lt;/p&gt;
+
+&lt;h3 id=&quot;working-with-streams&quot;&gt;Working with Streams&lt;/h3&gt;
+
+&lt;p&gt;A Stream is, like the name suggests, a Node construct for a continuous stream of data. When the Stream gets a chunk of data, it adds it to its buffer and fires a data event. Streams won’t let the data flow until there is a data handler added, or it’s specifically told to drain. When data is flowing, When the handler is given to the Poll phase, the Stream will slice as much data as it can from the from the top of its buffer, and give it to the data callback in the Callbacks phase.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note: The data a Stream splices could be multiple messages or incomplete messages, so be aware of this when processing live data.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;how-do-streams-get-backed-up&quot;&gt;How do Streams get backed up?&lt;/h3&gt;
+
+&lt;p&gt;This is usually referred to as “starving the IO”, but there are quite a few ways this can happen. Synchronous code keeps the event loop on whichever phase triggered the callback (except for the main execution, which isn’t in any phase). This includes event listeners. All listeners to an event are called synchronously, just like a method call. Until the event loop is able to get to the Poll phase, all streams buffer their incoming data in their internal write buffer. If you are streaming continuous data, the buffers can really get backed up the longer the Poll phase is ignored. While the Poll phase is ignored, no new IO can be handled, and your server becomes unresponsive to requests.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-cant-we-use-a-settimeout-to-make-a-loop-asynchronous&quot;&gt;Why can’t we use a setTimeout to make a loop asynchronous?&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SetTimeout&lt;/code&gt; adds a special handler to the Poll queue which triggers after the given amount of time has passed. Why doesn’t this work?&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getDataWithTimeout&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readUInt32BE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;splice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getDataWithTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;‘&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getDataWithTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The Poll phase will check the Stream and trigger the IO callback. Once in there, the data is processed, then the timeout is scheduled. Next Poll phase, there is another IO callback added (brand new data), and the setTimeout is scheduled (since its timeout is 0). Luckily, &lt;code class=&quot;highlighter-rouge&quot;&gt;setTimeout&lt;/code&gt; callbacks are done at the beginning of the loop, so we’re still processing stuff in order, which is good!&lt;/p&gt;
+
+&lt;p&gt;But here’s the problem: if we have more data at the end of this timeout, the Poll phase will have to schedule the next &lt;code class=&quot;highlighter-rouge&quot;&gt;setTimeout&lt;/code&gt; on the next Timer phase. So when the Callbacks phase runs, it will process new data before all the old data is done. Our data just got processed out of order.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-does-a-transform-solve-the-issue&quot;&gt;Why does a Transform solve the issue?&lt;/h3&gt;
+
+&lt;p&gt;Transforms were created for transforming data. They are Duplex Streams, which means they have a Read buffer (for something, like a terminal, to read from), and a Write buffer (for something, like TCP Streams, to write to). A Transform gives you a method to transfer data from the Write buffer to the Read buffer, which is exactly what we need. But how is it different? The method’s callback triggers the next chunk of data to the Transform, but until it’s invoked, the data just buffers. This makes sure we never process new data before all of the old data is done. Now our setTimeout works perfectly! It also makes it easier to build incomplete messages until they are complete.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cleanser&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Transform&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;_transform&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readUInt32BE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cleanser&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cleanser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cleanser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;You could write thousands of lines of code without ever hitting any issues with the event loop. Many people don’t when first writing their apps. But as these apps get more complex by working with different IO, using sockets, and scaling to thousands of users, issues like this can start to pop up.&lt;/p&gt;
+
+&lt;p&gt;The Node event loop is not an easy concept to grasp, but understanding how it works can be crucial to writing performant code and avoiding design mistakes that can cause hidden failures. Before you design your new component, understand how it will flow in the event loop, and plan accordingly. You may even be able to use its advanced features to your advantage.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Nathan Meyers&quot;, &quot;author_page&quot;=&gt;&quot;nathan-meyers&quot;, &quot;avatar&quot;=&gt;&quot;authors/nathanmeyers.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;Nathan219&quot;}</name></author><category term="Engineering" /><summary type="html">A month ago, I wrote about my investigation into an implementation of a real-time socket data manipulator which could eventually stall our application. While trying to research how this stuff actually worked, I couldn’t find many resources explaining how actual code goes through the event loop. Honestly, I think that’s a huge problem. I’m afraid most developers don’t understand the most critical part of Node.js, but I’m here to fix that. So, how do sockets work? How does the socket data get so backed up? Why does using a Transform solve the issue when piping with an async function does not?</summary></entry><entry><title type="html">How To Achieve Practical End-to-End Testing With Docker Compose</title><link href="https://runnable.com/blog/how-to-achieve-practical-end-to-end-testing" rel="alternate" type="text/html" title="How To Achieve Practical End-to-End Testing With Docker Compose" /><published>2017-06-12T17:00:00-07:00</published><updated>2017-06-12T17:00:00-07:00</updated><id>https://runnable.com/blog/how-to-achieve-practical-end-to-end-testing</id><content type="html" xml:base="https://runnable.com/blog/how-to-achieve-practical-end-to-end-testing">&lt;p&gt;Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. The speed and hassle of spinning up a full-stack environment is the biggest issue with maintaining and running E2E tests. Containerization solves the issues for single service environments, but not the full-stack problems E2E tests have. Let’s walk through these issues, and finally introduce software defined orchestration as the panacea and exemplify the practicality of this approach.&lt;/p&gt;
+
+&lt;p&gt;Most modern apps are maintained as a collection of services that a development team authors and maintains. For these teams, automated tests fall under two categories:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Unit Tests: Tests that run against just 1 of the services (with connections to databases and datastores).&lt;/li&gt;
+  &lt;li&gt;End-to-end Tests: Tests that run against a collection of the services.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;the-need-for-speed&quot;&gt;The Need for Speed&lt;/h3&gt;
+
+&lt;p&gt;Gone are the days when sprints were locked down and there were several days allocated for tests before shipping a product. Today’s development practices call for breakneck development speeds.The requirement of speed comes from 2 workflow requirements:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Test execution: For contemporary developers, turning business needs into shipped features is a daily regimen. This calls for a revamp on how testing is handled in the software delivery process. With such speedy deliveries, developers require quick isolated executions of their tests. And in an ideal world, they would be able to verify the results of their tests immediately after pushing a change so that they can continue to push their change to production.&lt;/li&gt;
+  &lt;li&gt;Test maintenance: As the code and UI evolve, tests need to be updated with new assertions and cases. Any iterations require testing with short execution times.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The long wait time and effort it takes to spin up a full-stack environment is the major reason teams are unable to implement a maintainable automated E2E testing workflow.&lt;/p&gt;
+
+&lt;h3 id=&quot;ideal-tests-environments&quot;&gt;Ideal Tests Environments&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Repeatable configuration: Minimal work should be required to set up the dependencies and versions of the required OS and tools. The environment should also be ready to run the code and test, including having the data required for this test seeded and ready to be used.&lt;/li&gt;
+  &lt;li&gt;Isolated: During the execution of the test, there should be no unplanned script/binary/service running in the environment.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;vanilla-containerization-and-unit-tests&quot;&gt;Vanilla Containerization and Unit Tests&lt;/h3&gt;
+
+&lt;p&gt;Before Docker and containerization, developers used shared databases for their unit tests and the tear up/down of their full-stack environments was managed by scripts (such as Chef and Ansible).&lt;/p&gt;
+
+&lt;p&gt;With Docker containers, developers now have an easy way to spin up sandboxed environments with one or two services running. In a Dockerfile, you can configure your &lt;em&gt;service under test&lt;/em&gt;, its basic dependencies, and the test framework. Once defined, the desired environment and test framework can spin up instantly after only building the updated portions of code. This enables speedy test spin up as one iterates through development.&lt;/p&gt;
+
+&lt;p&gt;Now developers can easily maintain and run tests such as unit/BDD/functional to match today’s ship speeds. However, E2E tests require more than simple containerized environments. E2E tests require the successful launch of multiple services, each running in their own containerized environments with their own dependencies.&lt;/p&gt;
+
+&lt;h3 id=&quot;enter-docker-compose--kubernetes-helm-software-defined-orchestration&quot;&gt;Enter Docker Compose &amp;amp; Kubernetes Helm: Software-Defined Orchestration&lt;/h3&gt;
+
+&lt;p&gt;Developers needed a way to tie containers together so they can service their full-stack E2E tests. To solve that problem, open source communities came up with new formats to define container orchestration in files. The two most popular formats right now are Docker Compose and Kubernetes Helm.&lt;/p&gt;
+
+&lt;p&gt;The main functionality of these orchestration formats include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Being able to bring up and down multiple containers based on container images, as a single group.&lt;/li&gt;
+  &lt;li&gt;Being able to set run-time properties such as file system mounts, environment variables, commands and ports on each container. Setting the command is required to inject scripts to connect containers together.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With these orchestration formats, developers can now instantly spin up isolated full-stack environments locally to match their iteration speed. Armed with this, any teammate can author, run, and improve E2E tests with the same level of convenience and ease as unit tests.&lt;/p&gt;
+
+&lt;h3 id=&quot;trying-it-yourself-with-docker-compose&quot;&gt;Trying It Yourself With Docker Compose&lt;/h3&gt;
+
+&lt;p&gt;Let’s try this with a 3-tier app. The hardest part of the process is coming up with the initial Compose file. Here is a high-level diagram of what we are trying to instantiate with this Compose file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;images/posts/2017-06-12-ss1.png&quot; alt=&quot;&quot; width=&quot;750&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;caption&quot;&gt;Figure 1: E2E test topology.&lt;/p&gt;
+
+&lt;h4 id=&quot;first-system-under-test&quot;&gt;First: System Under Test&lt;/h4&gt;
+
+&lt;p&gt;The first step is to ensure that your app is able to spin up using Compose syntax. In this example, our app is a 3-tier app composed of a Web, API, and DB container.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2'&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Dockerfile.db&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;27017:27017'&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;api&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Dockerfile.api&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;wait_for_it.sh localhost:27017 &amp;amp;&amp;amp; npm start&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3000:3000'&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;db'&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;MONGODB_HOST&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Dockerfile.web&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;wait_for_it.sh localhost:3000 &amp;amp;&amp;amp; npm start&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;80:80'&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;api'&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;API_HOST&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;api&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p class=&quot;caption&quot;&gt;Figure 2: E2E test Docker Compose file excerpt for “System Under Test”.&lt;/p&gt;
+
+&lt;h4 id=&quot;second-selenium-chrome---e2e-test-agent&quot;&gt;Second: Selenium Chrome &amp;amp;  E2E Test Agent&lt;/h4&gt;
+
+&lt;p&gt;Next, we configure the 2 extra containers we need to run E2E tests: the headless browser (Selenium/Chrome) and the service actually running the test (e2e).&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;chrome&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;selenium/standalone-chrome&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;web'&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;4444:4444'&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;wait_for_it.sh localhost:80 &amp;amp;&amp;amp; /opt/bin/entry_point.sh&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;e2e&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Dockerfile.e2e&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;wait_for_it.sh localhost:4444 &amp;amp;&amp;amp; npm test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p class=&quot;caption&quot;&gt;Figure 3: E2E test Docker Compose file excerpt for “headless browser agent &amp;amp; test agent”.&lt;/p&gt;
+
+&lt;p&gt;The tests that run in the e2e service are set up to look for the headless browser at “chrome:4444”. Excerpt from Selenium test:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NODE_ENV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'docker'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webdriver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;usingServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'http://chrome:4444/wd/hub/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forBrowser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'chrome'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webdriver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forBrowser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'chrome'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;describe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'todo app'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WEB_URL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://localhost'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'renders the proper notification'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;findElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;className&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'small'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;element&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getText&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Each branch gets its own database. Check it out and then head back to Runnable.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'can add a todo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;findElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;className&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'input'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sendKeys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow code-end&quot;&gt;...&lt;/div&gt;
+
+&lt;p class=&quot;caption&quot;&gt;Figure 4: Selenium test excerpt for “headless browser agent &amp;amp; test agent”.&lt;/p&gt;
+
+&lt;h4 id=&quot;third-ensuring-the-service-dependency-order&quot;&gt;Third: Ensuring the service dependency order.&lt;/h4&gt;
+
+&lt;p&gt;An issue when working with multiple services is startup ordering, which is the position in the startup process of your stack. A service might depend on another service to be running before spinning up successfully; like if a service has to connect to a database. To ensure this dependency, we can execute a simple script that waits and retries to connect to a dependent service.&lt;/p&gt;
+
+&lt;p&gt;In this example, we will use the commonly used &lt;a href=&quot;https://github.com/vishnubob/wait-for-it&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wait-for-it.sh&lt;/code&gt;&lt;/a&gt;. Appending this script to a container CMD ensures that a required service is up and running (accepting TCP connections) before the service in question starts up. For example, you can use the command &lt;code class=&quot;highlighter-rouge&quot;&gt;wait_for_it.sh localhost:27017 &amp;amp;&amp;amp; npm start&lt;/code&gt; to ensure that the database is up before the API service. This means that the service will first wait for the &lt;code class=&quot;highlighter-rouge&quot;&gt;27017&lt;/code&gt; port to be active before trying to start.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Armed with a Compose file like the one above, a developer can instantly spin up an environment to the execute the test in &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile.e2e&lt;/code&gt; just by running &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose build&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose up&lt;/code&gt;. This makes maintaining and verifying E2E tests as easy as unit tests.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Praful Rana&quot;, &quot;author_page&quot;=&gt;&quot;praful-rana&quot;, &quot;avatar&quot;=&gt;&quot;authors/prafulrana.jpg&quot;, &quot;title&quot;=&gt;&quot;Product Manager&quot;, &quot;twitter&quot;=&gt;&quot;Prafulrana&quot;}</name></author><category term="Engineering" /><summary type="html">Now that Kubernetes and Docker support software-defined orchestration, end-to-end (E2E) testing has finally become a practical reality. We’ll walk through the biggest issue with maintaining and running E2E tests: the speed and hassle of spinning up a full-stack environment. Then we’ll cover how containerization solves single service environment problems, but not the full-stack environment problems E2E tests need. And finally, introduce software-defined orchestration as the panacea and exemplify the practicality of this approach through an example.</summary></entry><entry><title type="html">Error-Handling in Event-Based Systems</title><link href="https://runnable.com/blog/error-handling-in-event-based-systems" rel="alternate" type="text/html" title="Error-Handling in Event-Based Systems" /><published>2017-06-05T16:00:00-07:00</published><updated>2017-06-05T16:00:00-07:00</updated><id>https://runnable.com/blog/error-handling-in-event-based-systems</id><content type="html" xml:base="https://runnable.com/blog/error-handling-in-event-based-systems">&lt;p&gt;Different architectures and patterns are all about different tradeoffs. More specifically, they’re about &lt;em&gt;transferring&lt;/em&gt; and &lt;em&gt;transforming&lt;/em&gt; complexity from one place to another, and from one type into another. The same is of course true about the event-driven architecture that we use.&lt;/p&gt;
+
+&lt;p&gt;Let’s dive into where event-driven architecture reduces complexity and where it makes things more difficult. &lt;em&gt;Warning: lots of code ahead.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;use-case&quot;&gt;Use Case&lt;/h3&gt;
+
+&lt;p&gt;Let’s say you are building a platform like Runnable from scratch. Your app allows users to create and run containers based on Docker. Containers should be single-tenant (isolated per customer organization) and they should be able to communicate with each other inside the org.&lt;/p&gt;
+
+&lt;p&gt;In your app, a user would need to specify an instance name, a base Docker image, some environment variables, etc. All this data will be passed to your backend.&lt;/p&gt;
+
+&lt;h3 id=&quot;initial-implementation&quot;&gt;Initial Implementation&lt;/h3&gt;
+
+&lt;p&gt;On the backend for your MVP, you might write logic like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveInstanceData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;orchestrator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createHostIfNeeded&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setupNetworkIfNeeded&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;buildImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveBuildData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dockerContainer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createAndRunContainer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveContainerData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dockerContainer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;containerIP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;attachContainerToNetwork&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveNetworkData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;sendNotifications&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This approach is simple on the surface, but it achieves this by transferring complexity to other problems. One of the main issues is handling errors. Please spend some time investigating this new code which has error handling implemented (it’s quite long!).&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/podviaznikov/a66e26b08209336b1da798b2ef213f73.js&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;initial-problems&quot;&gt;Initial Problems&lt;/h3&gt;
+
+&lt;p&gt;So instead of 10 lines of code, now we have over 80 lines in the same function. The amount of code is not even the main problem; there are a few bigger ones:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;Complexity&lt;/em&gt; which arises from the fact that we need to do different things in case of different errors. E.g. when we are trying to handle a &lt;a href=&quot;https://gist.github.com/podviaznikov/a66e26b08209336b1da798b2ef213f73#file-error-handling-js-L45&quot;&gt;network creation error&lt;/a&gt; we also want to &lt;a href=&quot;https://gist.github.com/podviaznikov/a66e26b08209336b1da798b2ef213f73#file-error-handling-js-L48&quot;&gt;delete the created host&lt;/a&gt;, because we don’t want to have a machine around that wasn’t properly set up. And when we &lt;a href=&quot;https://gist.github.com/podviaznikov/a66e26b08209336b1da798b2ef213f73#file-error-handling-js-L33&quot;&gt;failed to save the new IP address&lt;/a&gt; of the container into the DB, we want to &lt;a href=&quot;https://gist.github.com/podviaznikov/a66e26b08209336b1da798b2ef213f73#file-error-handling-js-L92&quot;&gt;revert the network change and delete the running container&lt;/a&gt; in order to prevent wasting resources. And what do you do when your rollback functionality in the error handler fails? If you wanted to delete a host or container and it failed, do you retry one more time?&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Cost of errors&lt;/em&gt;. In this setup, we have one critical path. All code exists in that path. If we want to add a new notification provider, that code would also live in the same path, and it would have the potential to break the core flow for a running container.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Expertise demand&lt;/em&gt;. Dealing with complex code requires high expertise and code familiarity. If you are working on notifications functionality, you also need to be very familiar with the whole core flow and understand each case of the error handling in that path.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are different solutions to these problems of course. We went with adopting an event-driven architecture. It’s changed (we can argue that it’s simplified) our problems with error-handling and provided a &lt;a href=&quot;https://runnable.com/blog/event-driven-microservices-using-rabbitmq&quot;&gt;framework&lt;/a&gt; to handle retries and timeouts in a declarative way.&lt;/p&gt;
+
+&lt;h3 id=&quot;new-implementation&quot;&gt;New Implementation&lt;/h3&gt;
+
+&lt;p&gt;In an event-driven architecture, the code above would be split across separate workers that would handle errors independently from the whole flow context.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;onContainerDataSaved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fetchNetworkData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;attachContainerToNetwork&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;websockets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sendErrorToClients&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cannot attach container to the network&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NetworkAttachError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;messageBus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;emit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'network.attach.failed'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// we can set in configuration the retry policy for such worker: exponential back-off, timeout, max number of retries etc,&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;onNetworkAttachFailed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;networkData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;removeContainer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is cleaner, more scalable in terms of development, and uses less mental energy when thinking about programming error cases. It also has fewer effects when bugs are deployed to production.&lt;/p&gt;
+
+&lt;h3 id=&quot;new-problems&quot;&gt;New Problems&lt;/h3&gt;
+
+&lt;p&gt;This solution addresses the complexity with error handling states above but creates new complexity in the following areas:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;It takes longer to develop and deploy initially because you need to have the framework in place, deployment infrastructure, etc.&lt;/li&gt;
+  &lt;li&gt;Sometimes each worker would have some additional code that wasn’t in the original synchronous implementation. E.g. in order to ensure idempotency, we would need to re-fetch some additional data or use conditional updates.&lt;/li&gt;
+  &lt;li&gt;It can be tricky to propagate an error from the microservice in which it occured up to the user who initiated the action.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first two problems are well understood. The last problem is less obvious. This problem is discussed in the paper &lt;em&gt;&lt;a href=&quot;https://www.academia.edu/27326556/Exception_Handling_in_an_Event-Driven_System&quot;&gt;Exception Handling in an Event-Driven System&lt;/a&gt;&lt;/em&gt; by Jan Ploski and Wilhelm Hasselbring. The problem arises when you replace a request/response or RPC communication mechanism with an asynchronous one. This problem is not trivial, but it’s solvable in the architecture we have. In general, it’s very similar to the debugging process of event-based systems that we covered in &lt;a href=&quot;https://runnable.com/blog/debugging-event-driven-microservices&quot;&gt;Debugging Event-Driven Microservices&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;For us, switching to an event-driven architecture solved old problems with the complexity and difficulty of error-handling and created new ones that we found more manageable. Your case might be entirely different, so pick the architecture that suits your problem domain, team, and budget.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Anton Podviaznikov&quot;, &quot;author_page&quot;=&gt;&quot;anton-podviaznikov&quot;, &quot;avatar&quot;=&gt;&quot;authors/antonpodviaznikov.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;podviaznikov&quot;}</name></author><category term="Engineering" /><summary type="html">Different architectures and patterns are all about different tradeoffs. More specifically, they’re about transferring and transforming complexity from one place to another, and from one type into another. The same is of course true about the event-driven architecture that we use here at Runnable.Let’s dive into where event-driven architecture reduces complexity and where it makes things more difficult. Warning: lots of code ahead.</summary></entry><entry><title type="html">Using Promises to Escape Callback Hell</title><link href="https://runnable.com/blog/promise-to-never-callback" rel="alternate" type="text/html" title="Using Promises to Escape Callback Hell" /><published>2017-05-29T16:00:00-07:00</published><updated>2017-05-29T16:00:00-07:00</updated><id>https://runnable.com/blog/promise-to-never-callback</id><content type="html" xml:base="https://runnable.com/blog/promise-to-never-callback">&lt;h3 id=&quot;promise-to-be-awesome&quot;&gt;Promise to Be Awesome&lt;/h3&gt;
+
+&lt;p&gt;Promises are at least &lt;a href=&quot;//runnable.com/blog/5-reasons-why-you-should-be-using-promises&quot;&gt;5 kinds of awesome&lt;/a&gt;. Functionally they are not all that different from callbacks, but those differences resolve code structure problems caused by the more traditional async library and callback approach. They also change the way we approach development.&lt;/p&gt;
+
+&lt;p&gt;Before promises, I was in callback hell, with layers of nesting and error handling, and taking extra care to not couple disparate units of work. The power of async code would still be there, but it was held back by the increasing complexity of callbacks. Let’s look at a real use case using both callbacks and promises.&lt;/p&gt;
+
+&lt;p&gt;I am currently working on a component to create, persist, and consume a set of keys. It also needs to send the public key to a third party. It’s a complicated piece that spans the entire stack, adds two new services, and utilizes multiple third party products in new ways. The high level flow looks like &lt;em&gt;Jane Requests a New Key&lt;/em&gt; from the web service. The web service then starts the story &lt;em&gt;API Spawns Create Key Job&lt;/em&gt;. Once the key is spawned we need to invoke the story &lt;em&gt;Update Jane’s Key List&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-road-to-hell&quot;&gt;The Road to Hell&lt;/h3&gt;
+
+&lt;p&gt;When using callbacks we pass &lt;code class=&quot;highlighter-rouge&quot;&gt;fetchKeyList&lt;/code&gt; from &lt;code class=&quot;highlighter-rouge&quot;&gt;requestNewKey&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt;; wrapping &lt;code class=&quot;highlighter-rouge&quot;&gt;fetchKeyList&lt;/code&gt; so &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt; knows how to initialize &lt;code class=&quot;highlighter-rouge&quot;&gt;fetchKeyList&lt;/code&gt;. Now to structure the callback, &lt;code class=&quot;highlighter-rouge&quot;&gt;requestNewKey&lt;/code&gt; has to know how its callback will be invoked by &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We could continue, but at two layers deep, three stories in, and zero code written, we’ve got wrapper functions and coupling between all three stories. It’s already clear what road we are on. Let’s look at how promises fix that, and much more.&lt;/p&gt;
+
+&lt;h3 id=&quot;promise-of-ignorance&quot;&gt;Promise of Ignorance&lt;/h3&gt;
+
+&lt;p&gt;In an ideal world, any unit of code should be understandable to another developer without special knowledge. It should tell me a story simply by reading it, and I should be able to comprehend it without reading any companion work. To understand the story of &lt;em&gt;Jane Requests a New Key&lt;/em&gt;, I shouldn’t have to read &lt;em&gt;API Spawns Create Key Job&lt;/em&gt;, or even have to know the referenced work, &lt;em&gt;Validate Jane’s Credentials&lt;/em&gt;. Promises let us be ignorant, reading &lt;em&gt;Jane Creates a New Key&lt;/em&gt; is enough to understand the story!&lt;/p&gt;
+
+&lt;p&gt;First we define the use case in more detail. The user triggers &lt;code class=&quot;highlighter-rouge&quot;&gt;requestNewKey&lt;/code&gt; to create a key, which the UI passes to our API service, which then calls &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt; to generate the new key. Now that we have the new key we need to persist it and send the public key to a third party for future requests. And finally update our UI with &lt;code class=&quot;highlighter-rouge&quot;&gt;fetchKeyList&lt;/code&gt;. With the narrative defined, let’s start coding the UI.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Controller for requestNewKey&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hasPermission&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Stubbed out permission&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;validatePermissions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hasPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;updatePermissions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;permissionsWereUpdated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;when&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;validatePermissions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;keyWasAdded&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fetchKeyList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;makeKeysPretty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sendEmailNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And the UI is ready to be used. We have written our story and it doesn’t require any supplemental reading. Not only that but we can critique the entire work! The flow is ready so we can find gaps in our thinking. Promises &lt;code class=&quot;highlighter-rouge&quot;&gt;permissionsWereUpdated&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;keyWasAdded&lt;/code&gt; have no timeout, so they can cause infinite waits. The value of &lt;code class=&quot;highlighter-rouge&quot;&gt;hasPermission&lt;/code&gt; should be generated in a reusable manner so it should be a service. We can also determine what referenced stories need to be written; &lt;code class=&quot;highlighter-rouge&quot;&gt;hasPermission&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePermissions&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;permissionsWereUpdated&lt;/code&gt;, etc. Optimize for parallel functionality by moving &lt;code class=&quot;highlighter-rouge&quot;&gt;sendEmailNotification&lt;/code&gt; right after &lt;code class=&quot;highlighter-rouge&quot;&gt;saveKey&lt;/code&gt;; since it only requires the name and can run while we wait for the event. And better prioritizing tasks, both &lt;code class=&quot;highlighter-rouge&quot;&gt;makeKeysPretty&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;sendEmailNotification&lt;/code&gt; are optional and can be written last.&lt;/p&gt;
+
+&lt;p&gt;By remaining ignorant, our code stories are discrete and allow us to fully harness asynchronous programming without turning our code into a Jackson Pollock.&lt;/p&gt;
+
+&lt;p&gt;Let’s work on our API story next (this assumes the ThirdParty libraries return promises).&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Permission Service used by the UI&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;hasPermission&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ThirdPartyOath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getUserPermissions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThirdPartyId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;getPermission&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ThirdPartyOath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setPermissions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;PERMISSIONS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;KEY_WRITE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Manage Keys Service&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;manageKeys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;keyService&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;saveKey&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;keyService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spawnCreateKeyJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;keyWasCreated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ThirdPartyOath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;savePublicKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;publishEventForUI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;fetchKeyList&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;keysService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Repeat the analysis we did for the UI and the API microservice is ready to be consumed!&lt;/p&gt;
+
+&lt;p&gt;Within an hour we have several services of our app stubbed out, its logic analyzed, and we can have faith that we have parallelized it as much as possible.&lt;/p&gt;
+
+&lt;h3 id=&quot;promise-of-infinite-ignorance&quot;&gt;Promise of Infinite Ignorance&lt;/h3&gt;
+
+&lt;p&gt;With our code being discrete and ignorant we also enjoy two other benefits: simpler unit testing and full parallel development.&lt;/p&gt;
+
+&lt;p&gt;Unit testing is driven by the principle that each unit should be individually testable; this just isn’t the case with callbacks. But if we don’t have to worry about other units of code, our units become true black boxes with the only external interface being inputted data and outputted data.&lt;/p&gt;
+
+&lt;p&gt;Parallel development is achieved for the same reasons. A developer working on &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt; doesn’t have to know anything about what’s done with it; it has no connections to the outside world except its input and return. So while Kahn is researching Vault and its permission schemes for &lt;code class=&quot;highlighter-rouge&quot;&gt;spawnCreateKeyJob&lt;/code&gt;, I can knock out &lt;code class=&quot;highlighter-rouge&quot;&gt;fetchKeyList&lt;/code&gt;, and Nate can work on &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePermissions&lt;/code&gt;. The only outside knowledge anyone needs is our agreed upon data structures.&lt;/p&gt;
+
+&lt;h3 id=&quot;promise-of-promises&quot;&gt;Promise of Promises&lt;/h3&gt;
+
+&lt;p&gt;Promises have turned the hell that was forming with callbacks into &lt;em&gt;Jane Requests a New Key&lt;/em&gt;, then &lt;em&gt;API Spawns Job&lt;/em&gt;, then &lt;em&gt;Update Jane’s Key List&lt;/em&gt;. They have also made our code more testable by making our stories “ignorant”. Additionally because of the ignorance of promises, our stories can be written independently of each other. In this case, we had three different developers implementing multiple services simultaneously.&lt;/p&gt;
+
+&lt;p&gt;All of this because I made a promise, and promises are awesome!&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Damien Hayeck&quot;, &quot;author_page&quot;=&gt;&quot;damien-hayeck&quot;, &quot;avatar&quot;=&gt;&quot;authors/damienhayeck.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;}</name></author><category term="Engineering" /><summary type="html">Promises are at least 5 kinds of awesome. Functionally they are not all that different from callbacks, but those differences resolve code structure problems caused by the more traditional async library and callback approach. They also change the way we approach development.</summary></entry><entry><title type="html">Introducing Kontainer: The Easy Way to Switch to Kubernetes</title><link href="https://runnable.com/blog/introducing-kontainer-the-easy-way-to-switch-to-kubernetes" rel="alternate" type="text/html" title="Introducing Kontainer: The Easy Way to Switch to Kubernetes" /><published>2017-05-22T18:30:00-07:00</published><updated>2017-05-22T18:30:00-07:00</updated><id>https://runnable.com/blog/introducing-kontainer:-the-easy-way-to-switch-to-kubernetes</id><content type="html" xml:base="https://runnable.com/blog/introducing-kontainer-the-easy-way-to-switch-to-kubernetes">&lt;h3 id=&quot;why-kubernetes&quot;&gt;Why Kubernetes&lt;/h3&gt;
+
+&lt;p&gt;Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called k8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to k8s, I’ve created a tool for you!&lt;/p&gt;
+
+&lt;h3 id=&quot;why-this-project&quot;&gt;Why This Project&lt;/h3&gt;
+
+&lt;p&gt;After getting familiar with &lt;a href=&quot;https://runnable.com/blog/kubernetes-how-do-i-do-that&quot;&gt;the basics of k8s&lt;/a&gt;, we decided to make the switch. I knew I needed to make a few files for each container: a Deployment to describe what to run, a Service to help with service discovery, and a ConfigMap to inject configuration.&lt;/p&gt;
+
+&lt;p&gt;But we had 20+ microservices, and the k8s docs are massive, which made it hard to find out how to create the right resources for each one. There’s &lt;a href=&quot;http://kompose.io/&quot;&gt;a tool&lt;/a&gt; that’ll do it for you if your app has a Docker Compose file, but we didn’t use Compose, so we needed another solution.&lt;/p&gt;
+
+&lt;p&gt;I decided to create a new tool that will take an existing container and create all the resources necessary to get it up and running in k8s.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-does-it-work&quot;&gt;How Does It Work?&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/anandkumarpatel/kontainer&quot;&gt;Kontainer&lt;/a&gt; inspects your Docker container and creates a deployment resource for you with the correct environment variables, ports, and Docker image. If ports are exposed, it creates a service based on the container name. And if volumes are mounted, it reads them and turns them into ConfigMaps.&lt;/p&gt;
+
+&lt;p&gt;This tool works with any Docker container, regardless of how you built it. This is useful if you use Ansible or another deployment tool (Chef, Puppet, etc.) because your container may have certain environment variables and files it injected that weren’t directly set by you.&lt;/p&gt;
+
+&lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
+
+&lt;p&gt;Enough explanation, let’s check it out! I’m assuming you have &lt;code class=&quot;highlighter-rouge&quot;&gt;docker&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl&lt;/code&gt; installed and pointed to an existing k8s cluster on your system. This example will use a simple file server application which exposes a port and uses a bind mounted file. You can follow along by using these commands in your terminal.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a file:
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello&quot;&lt;/span&gt; &amp;gt; served-file
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Run a simple file server container. This is the application we’ll create k8s resources for:
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; docker run -d -p 8080:8080 -v &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/served-file:/served/file anandkumarpatel/serve-file
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Run Kontainer to generate k8s files for the file server:
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; docker run -it -v /:/host -v &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/out:/output -v /var/run/docker.sock:/var/run/docker.sock anandkumarpatel/kontainer
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let’s take a look at &lt;a href=&quot;https://gist.github.com/anandkumarpatel/90f95c3e29f5db5d5f367160d454db0d&quot;&gt;what Kontainer generated&lt;/a&gt; in the &lt;code class=&quot;highlighter-rouge&quot;&gt;./out&lt;/code&gt; folder. You can see that it generated 3 folders:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;./Deployment&lt;/code&gt;: Maintains a certain number of containers with a given configuration with Pods and ReplicaSets.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;./Service&lt;/code&gt;: Provides simple load balancing and a static hostname for service discovery.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;./ConfigMap&lt;/code&gt;: Contains the contents of the served file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These files will work out of the box! You can run &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl create -f&lt;/code&gt; on all the files in the &lt;code class=&quot;highlighter-rouge&quot;&gt;out&lt;/code&gt; folder to get this app running inside of k8s.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;The files generated by Kontainer should get you up and running relatively quickly, but you probably shouldn’t keep these files this way for production. You should use these files as a starting point to make real production-ready configs. I took these files and turned them into templates for Ansible. A few suggestions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ConfigMaps might have secrets in them that should be turned into &lt;a href=&quot;https://kubernetes.io/docs/concepts/configuration/secret/&quot;&gt;Kubernetes secrets&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Environment variables that hold secrets should also pull their values from Kubernetes secrets.&lt;/li&gt;
+  &lt;li&gt;If you bind mount volumes for databases, use the &lt;a href=&quot;https://github.com/anandkumarpatel/kontainer#flags&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--remove-mounts&lt;/code&gt;&lt;/a&gt; flag to ignore them.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This project is still a work in progress and is missing a few things at the moment. Volumes that are internal are not turned into ConfigMaps. Creating and defining networks is not supported yet. There are many more Docker features to map. If you want to add something, feel free to open issues or create a Pull Request &lt;a href=&quot;https://github.com/anandkumarpatel/kontainer&quot;&gt;on GitHub&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;I hope this helps you get onboard with Kubernetes faster! If you have any questions, feel free to tweet me &lt;a href=&quot;https://twitter.com/akaDJFaZe&quot;&gt;@akaDJFaZe&lt;/a&gt;.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Anand Patel&quot;, &quot;author_page&quot;=&gt;&quot;anand-patel&quot;, &quot;avatar&quot;=&gt;&quot;authors/anandpatel.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;akaDJFaZe&quot;}</name></author><category term="Engineering" /><summary type="html">Unless you’ve been hiding in a container for the past few months, you’ve probably heard of Kubernetes (often called k8s), the best container orchestration tool around. K8s configuration is a bit more involved than a simple Docker run command or Compose definition. However, in return for this complexity, you get a cluster that is fault tolerant, self-healing, and auto-scalable. If you are looking to move from native Docker tooling to k8s, I’ve created a tool for you!</summary></entry><entry><title type="html">How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs</title><link href="https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes" rel="alternate" type="text/html" title="How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs" /><published>2017-05-15T18:00:00-07:00</published><updated>2017-05-15T18:00:00-07:00</updated><id>https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes</id><content type="html" xml:base="https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes">&lt;p&gt;HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.&lt;/p&gt;
+
+&lt;p&gt;We’ll take a look at how to automatically generate SSL/TLS certificates (certs) for the domain used in your Kubernetes-hosted application. We’ll rely on &lt;a href=&quot;https://kubernetes.io/docs/concepts/services-networking/ingress/#what-is-ingress&quot;&gt;Ingress controllers&lt;/a&gt; to route traffic to the domain, use jobs to generate the certs, and use secrets to store them. You can find all the &lt;a href=&quot;https://github.com/thejsj/kubernetes-letsencrypt-demo&quot;&gt;code for this demo on GitHub&lt;/a&gt;. We’ll be diving into more advanced code, so before getting started, be sure to &lt;a href=&quot;https://runnable.com/blog/kubernetes-how-do-i-do-that&quot;&gt;read about the basics of Kubernetes&lt;/a&gt;, kubectl, and have a cluster up and running.&lt;/p&gt;
+
+&lt;h3 id=&quot;setting-up-our-application&quot;&gt;Setting Up Our Application&lt;/h3&gt;
+
+&lt;p&gt;To understand how we’re going to generate certificates and add HTTPS, we first need to understand how our application works. For this post, we’ll define an application that returns a 200 and a message when it receives an HTTP request. The first thing we’ll do is define our endpoint by creating a ConfigMap that stores our Nginx configuration. All this config does is respond to a request in port 80:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ConfigMap&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-config&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;default.conf&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;server {&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;listen 80;&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;listen [::]:80;&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;server_name  _;&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;location / {&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;add_header Content-Type text/plain; # Prevents download&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;return 200 &quot;Hello world! Kubernetes + Let's encrypt demo.&quot;;&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Next, we’ll create a deployment that runs an image of Nginx with the config we’ve created. The deployment mounts the config file as a volume through this ConfigMap.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;extensions/v1beta1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deployment&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;volumeMounts&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-configs&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;mountPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/etc/nginx/conf.d&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Load the configuration files for nginx&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-configs&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;configMap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-config&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Finally, we’ll create a service to direct traffic to this deployment:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Service&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;protocol&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;TCP&quot;&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In order to test this, we can cURL the service from inside the container:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;POD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;kubectl get pods | grep nginx | awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$POD&lt;/span&gt; -it bash
+apt-get update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get install curl -qq -y &lt;span class=&quot;c&quot;&gt;# Terrible, I know&lt;/span&gt;
+curl nginx &lt;span class=&quot;c&quot;&gt;# Name of the service&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You should get the following response:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;ni&quot;&gt;root@nginx-3659739084-tk6ng:/# &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;curl&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; nginx
+&lt;/span&gt;Hello world! Kubernetes + Let's encrypt demo.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;setting-up-our-host-through-ingress&quot;&gt;Setting Up Our Host Through Ingress&lt;/h3&gt;
+
+&lt;p&gt;Now that our application is up and running, we can expose it to the internet. We’ll create an Ingress controller with the host we want to use. Here we’ll use &lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes-letsencrypt.jorge.fail&lt;/code&gt; as our domain (great domain name, I know!), and redirect traffic for that host to our existing Nginx service.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;extensions/v1beta1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Ingress&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;kubernetes-demo-app-ingress-service&quot;&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;kubernetes-letsencrypt.jorge.fail&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# CHANGE ME!&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# The * is needed so that all traffic gets redirected to nginx&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/*&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;serviceName&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;servicePort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that our Ingress is setup, we can look for the IP address for this Ingress controller by running a &lt;code class=&quot;highlighter-rouge&quot;&gt;describe&lt;/code&gt; on our Ingres resource (&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl describe ing kubernetes-demo-app-ingress-service&lt;/code&gt;). You’ll see the IP address for this Ingress in the “address” entry.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-05-15-ss1.png&quot; alt=&quot;&quot; width=&quot;1200&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can now add an A record for this IP address, or test it by adding the IP address and host to your /etc/hosts (if you’re using Minikube, this works automatically).If you’re using Google Cloud Platform (GCP) or AWS we’ll still need to add a couple of things to make this work.&lt;/p&gt;
+
+&lt;h3 id=&quot;making-changes-to-our-application-for-gcpaws&quot;&gt;Making Changes to Our Application for GCP/AWS&lt;/h3&gt;
+
+&lt;p&gt;If you’re using GCP and try to access your host, you might get something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-05-15-ss2.png&quot; alt=&quot;&quot; width=&quot;750&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A great way to debug some of these errors is by running a &lt;code class=&quot;highlighter-rouge&quot;&gt;describe&lt;/code&gt; on your Ingress resource. The “Events” section will show you some of the problems with your Ingres controller:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-05-15-ss3.png&quot; alt=&quot;&quot; width=&quot;1200&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In order for our Ingress controller to work in the GCP Ingress controller, there are still two things we need to do: we need to add health checks to the Pod, and we need to add a Node port to the Nginx service.&lt;/p&gt;
+
+&lt;p&gt;The GCP will not route traffic if the Pod is unhealthy or its health status is unknown. So to verify that our Pod is healthy, we need to add a health route. We’ll do this through an HTTP GET request to &lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt; in order to assert that we get a 200 response.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;extensions/v1beta1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deployment&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;s&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      &lt;span class=&quot;c1&quot;&gt;# HTTP Health Check&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;livenessProbe&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;httpGet&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We’ll also need to expose a port in the host for our Ingress controller by making our Nginx service into a Node port service. The exposed Node port allows the Ingress controller to use a load balancer native to the provider (GCP, AWS); which runs outside the Kubernetes cluster.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Service&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;NodePort&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;protocol&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;TCP&quot;&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;nodePort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;32111&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You should now be able to (finally) go to your service over the internet and get back a correct response.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-05-15-ss4.png&quot; alt=&quot;&quot; width=&quot;750&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;generating-certs&quot;&gt;Generating Certs&lt;/h3&gt;
+
+&lt;p&gt;Now that our application is running and the DNS for it is correctly set up, it’s time to actually create some certificates. First, we’ll create a job in our cluster that uses &lt;a href=&quot;https://github.com/thejsj/kubernetes-letsencrypt-demo/blob/master/kube-nginx-letsencrypt/Dockerfile&quot;&gt;an image&lt;/a&gt; to run a &lt;a href=&quot;https://github.com/thejsj/kubernetes-letsencrypt-demo/blob/master/kube-nginx-letsencrypt/entrypoint.sh&quot;&gt;shell script&lt;/a&gt;. The script will spin up an HTTP service, create the certs, and save them into a predefined secret. Your domain and email are environment variables, so be sure to fill those in:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;batch/v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Job&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt-job&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Bash script that starts an http server and launches certbot&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Fork of github.com/sjenning/kube-nginx-letsencrypt&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;quay.io/hiphipjorge/kube-nginx-letsencrypt:latest&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;imagePullPolicy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Always&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;DOMAINS&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;kubernetes-letsencrypt.jorge.fail&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Domain you want to use. CHANGE ME!&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;EMAIL&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;jorge@runnable.com&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Your email. CHANGE ME!&lt;/span&gt;
+        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SECRET&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt-certs&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;restartPolicy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Never&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that we have a job running, we can create a service to direct traffic to this job:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Service&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;protocol&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;TCP&quot;&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This job will now be able to run, but we still have three things we need to do before our job actually succeeds and we’re able to access our service over HTTPs.&lt;/p&gt;
+
+&lt;p&gt;First, we need to create a secret for the job to actually update and store our certs. Since we don’t have any certs when we create the secret, the secret will just start empty.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Secret&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt-certs&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Opaque&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Create an empty secret (with no data) in order for the update to work&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Second, we’ll have to add the secret to the Ingress controller in order for it to fetch the certs. Remember that it is the Ingress controller that knows about our host, which is why our certs need to be specified here. The addition of our secret to the Ingress controller will look something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;extensions/v1beta1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Ingress&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;kubernetes-demo-app-ingress-service&quot;&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;tls&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;hosts&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;kubernetes-letsencrypt.jorge.fail&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Your host. CHANGE ME&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;secretName&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;letsencrypt-certs&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Name of the secret&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Finally we have to redirect traffic through the host, down to the job, through our Nginx deployment. In order to do that we’ll add a new route and an upstream to our Nginx configuration: This could be done through the Ingress controller by adding a &lt;code class=&quot;highlighter-rouge&quot;&gt;/.well-known/*&lt;/code&gt; entry and redirecting it to the &lt;code class=&quot;highlighter-rouge&quot;&gt;letsencrypt&lt;/code&gt; service. That’s more complex because we would also have to add a health route to the job, so instead we’ll just redirect traffic through the Nginx deployment:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ConfigMap&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-config&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;default.conf&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;c1&quot;&gt;# Add upstream for letsencrypt job&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;upstream letsencrypt {&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;server letsencrypt:80 max_fails=0 fail_timeout=1s;&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;s&quot;&gt;server {&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;listen 80;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow&quot;&gt;...&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      &lt;span class=&quot;c1&quot;&gt;# Redirect all traffic in /.well-known/ to letsencrypt&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;location ^~ /.well-known/acme-challenge/ {&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;proxy_pass http://letsencrypt;&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After you apply all these changes, destroy your Nginx Pod(s) in order to make sure that the ConfigMap gets updated correctly in the new Pods:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kubectl get pods | grep ngi | awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt; | xargs kubectl delete pods
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;making-sure-it-works&quot;&gt;Making Sure It Works&lt;/h3&gt;
+
+&lt;p&gt;In order to verify that this works, we should make sure the job actually succeeded. We can do this by getting the job through kubectl or by checking the Kubernetes dashboard.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;kubectl&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; get job letsencrypt-job
+&lt;/span&gt;NAME              DESIRED   SUCCESSFUL   AGE
+letsencrypt-job   1         1            1d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We can also check the secret to make sure the certs have been properly populated. Again, we can do this through kubectl or through the dashboard:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell_session highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;kubectl&lt;/span&gt;&lt;span class=&quot;kv&quot;&gt; describe secret letsencrypt-certs
+&lt;/span&gt;Name:   letsencrypt-certs
+Namespace:  default
+Labels:   &amp;lt;none&amp;gt;
+Annotations:
+Type:   Opaque
+
+Data
+====
+tls.crt:  3493 bytes
+tls.key:  1704 bytes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that we can see that the certs have been successfully created, we can do the very last step in this whole process. For the Ingress controller to pick up the change in the secret (from having no data to having the certs), we need to update it so it gets reloaded. In order to do that, we’ll just add a timestamp as a label to the Ingress controller:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;extensions/v1beta1&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Ingress&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;kubernetes-demo-app-ingress-service&quot;&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# Timestamp used in order to force reload of the secret&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;last_updated&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1494099933&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid-block code-overflow code-end&quot;&gt;...&lt;/div&gt;
+
+&lt;p&gt;After doing this, you can now access your page through HTTPS!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/images/posts/2017-05-15-ss5.png&quot; alt=&quot;&quot; width=&quot;750&quot; /&gt;
+&lt;img src=&quot;/blog/images/posts/2017-05-15-ss6.png&quot; alt=&quot;&quot; width=&quot;750&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Now, you have an idea of how Ingress controllers, services, deployments, and jobs interact with each other. You also know how SSL/TLS fits into the Kubernetes model, and how to leverage Let’s Encrypt to automatically generate SSL/TLS certs for your site. I hope you can take these practices further to make your applications easier to manage and more secure. If you want to take a look at a project that simplifies this process, you should check out &lt;a href=&quot;https://github.com/jetstack/kube-lego&quot;&gt;Kube-Lego&lt;/a&gt;.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Jorge Silva&quot;, &quot;author_page&quot;=&gt;&quot;jorge-silva&quot;, &quot;avatar&quot;=&gt;&quot;authors/jorgesilva.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;thejsj&quot;}</name></author><category term="Engineering" /><summary type="html">HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.</summary></entry><entry><title type="html">Vault: Thinking Differently About Secrets</title><link href="https://runnable.com/blog/vault-thinking-differently-about-secrets" rel="alternate" type="text/html" title="Vault: Thinking Differently About Secrets" /><published>2017-05-08T16:00:00-07:00</published><updated>2017-05-08T16:00:00-07:00</updated><id>https://runnable.com/blog/vault-thinking-differently-about-secrets</id><content type="html" xml:base="https://runnable.com/blog/vault-thinking-differently-about-secrets">&lt;h3 id=&quot;what-is-vault&quot;&gt;What is Vault?&lt;/h3&gt;
+
+&lt;p&gt;Vault is a service developed by the fine engineers at Hashicorp, which is designed to safely secure any data you want: passwords, SSL certificates, application tokens, etc. Aptly named, it can be sealed by any authorized user, but can only be unsealed with the use of &lt;em&gt;n&lt;/em&gt; keys (3 by default), so in the event of a breach a single bad actor can’t gain access to the system.&lt;/p&gt;
+
+&lt;p&gt;Once Vault is unsealed, it still requires an access token to perform CRUD operations, all of which are logged. Permissions can be granted at an incredibly granular level, and it can be deployed in High Availability mode so nodes in the system can go down without disrupting services.&lt;/p&gt;
+
+&lt;h3 id=&quot;our-original-approach&quot;&gt;Our Original Approach&lt;/h3&gt;
+
+&lt;p&gt;Before we used Vault, we had all our configuration in a private Git repo which contained all our secret keys. This is bad because any user who has access to that repo can now get full access to databases without any audit logs to prove who made the access. This is a stage that most startups go through. When your goal is to get a product out the door, there’s no sense worrying about the architecture of security.&lt;/p&gt;
+
+&lt;p&gt;When we started getting customers, it was time to get more serious about security. We started off by putting all our keys into Vault so they were in one configured location. Whenever a service was deployed, it’d pull the latest values from Vault and we’d have audit logs of who accessed which database passwords, etc. We were literally using Vault as a secured and audited key-value store. This was an improvement over our previous approach, but came with its own set of issues.&lt;/p&gt;
+
+&lt;h3 id=&quot;running-into-issues&quot;&gt;Running Into Issues&lt;/h3&gt;
+
+&lt;p&gt;After the initial implementation of simply storing key-value pairs we ran into some core issues with our credentials. Firstly, when our SSL certificates changed, or we needed to change important database passwords, we still had to redeploy all the services which used those credentials. Sometimes this resulted in short downtimes as we would roll over to new systems.&lt;/p&gt;
+
+&lt;p&gt;Second, since we still only had one username/password combination to access our database, shared by multiple systems, it was very hard for us to track access, and we had no solution to quickly revoke access to a single compromised system.&lt;/p&gt;
+
+&lt;p&gt;Another issue came from how we used Vault’s &lt;a href=&quot;https://www.vaultproject.io/docs/secrets/&quot;&gt;secret backend&lt;/a&gt; for AWS. We needed an AWS user who could only access a specific path in an S3 bucket for customer code. But our initial implementation was to generate keys that would expire in a year, thinking no customer server would run for longer than that due to security updates and patches. This meant that if someone gained access to that token, they could wreak havoc on that bucket’s path for a long time without being detected.&lt;/p&gt;
+
+&lt;h3 id=&quot;rethinking-vault&quot;&gt;Rethinking Vault&lt;/h3&gt;
+
+&lt;p&gt;As we started getting more and more customers on our system, we started thinking differently about Vault. Instead of using it as a key-value store, we started using it as a token generator which gives you access to short-lived passwords.&lt;/p&gt;
+
+&lt;p&gt;We’ve been making all our password leases as short as possible, and implementing code to renew those leases as needed. Each application gets its own Vault token to generate the credentials it needs. When a system needs to connect to MongoDB, it’s given a token which can generate MongoDB usernames  and passwords using the MongoDB secret backend. The same pattern matches for Postgres, AWS and Consul. But we don’t just stop there; each one-off script generates short-lived tokens for their duration, meaning credentials live for exactly as long as they need to.&lt;/p&gt;
+
+&lt;h3 id=&quot;reaping-the-benefits&quot;&gt;Reaping the Benefits&lt;/h3&gt;
+
+&lt;p&gt;Short-lived tokens greatly reduce the attack surface of our codebase, and since each application has a unique identifier to access Vault, we can track who requests access for what. Not only that, but the password is validated often, meaning we can revoke access to any suspicious applications easily. Perhaps the best part of this strategy is the ability to easily roll credentials that can’t be automatically generated by Vault, like SSL certificates. Since services can regularly check Vault for new credentials, we can update them manually and put them in Vault, knowing they’ll be picked up soon.&lt;/p&gt;
+
+&lt;p&gt;If it’s possible, have Vault generate all your credentials for your services, so you can get unique credentials per application and track the entire access to the originating party. Don’t be shy about creating access tokens; each service and administrator should get their own. And remember to store your personal tokens in a password manager. Vault is not just a key-value store, it’s a way of generating your secrets, and most importantly a way of thinking.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Ryan Kahn&quot;, &quot;author_page&quot;=&gt;&quot;ryan-kahn&quot;, &quot;avatar&quot;=&gt;&quot;authors/ryankahn.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;Myztiq&quot;}</name></author><category term="Engineering" /><summary type="html">Vault is a service developed by the fine engineers at Hashicorp, which is designed to safely secure any data you want: passwords, SSL certificates, application tokens, etc. Aptly named, it can be sealed by any authorized user, but can only be unsealed with the use of n keys (3 by default), so in the event of a breach a single bad actor can’t gain access to the system.</summary></entry><entry><title type="html">How to Scale Architecture Using the DR-CoN Pattern</title><link href="https://runnable.com/blog/how-to-scale-architecture-using-the-dr-con-pattern" rel="alternate" type="text/html" title="How to Scale Architecture Using the DR-CoN Pattern" /><published>2017-05-01T18:30:00-07:00</published><updated>2017-05-01T18:30:00-07:00</updated><id>https://runnable.com/blog/how-to-scale-architecture-using-the-dr-con-pattern</id><content type="html" xml:base="https://runnable.com/blog/how-to-scale-architecture-using-the-dr-con-pattern">&lt;p&gt;Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.&lt;/p&gt;
+
+&lt;p&gt;Our microservice architecture is built using Docker, and we use Nginx proxies to handle incoming traffic. This is a common setup for handling web requests with both technologies gaining in popularity. Internally, we also employ Hashicorp’s Consul as a service discovery application and key-value store, though it can also be used to provide DNS services. It can insert values into configuration files with Consul Template, and create dynamic policies and manage credentials with Vault.&lt;/p&gt;
+
+&lt;p&gt;To keep the infrastructure updated, services need to be automatically registered as soon as their Docker containers are available. Glider Labs’ Registrator will update Consul when they come up or go down, and Consul Template will execute user-provided commands when the template files have changed.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-running-example&quot;&gt;A Running Example&lt;/h3&gt;
+
+&lt;p&gt;In the following example, we will manage a redundant configuration of scaled applications to handle load, or prevent an outage. To do this, we need to continually rewrite the Nginx configuration file, nginx.conf, to include all the routing information, then reload Nginx to configure one end-point for multiple services and provide load-balancing and high-availability.&lt;/p&gt;
+
+&lt;p&gt;To run this yourself, please check out a few &lt;a href=&quot;https://github.com/henrymollman/DR-CoN-example&quot;&gt;files from GitHub&lt;/a&gt;. The Docker Compose file will create a cluster of five containers that will load balance two sample Todo web applications:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;web1:
+  build:
+    context: https://github.com/RunnableDemo/node-starter.git
+  ports:
+    - &quot;3000&quot;
+  links:
+    - &quot;db&quot;
+  environment:
+    - MONGODB_HOST=db
+    - SERVICE_NAME=web
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The other services built are a Consul server, Registrator application, and an Nginx server that will also use Consul Template to populate the following template file:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;upstream app {
+  least_conn;
+  {{range service &quot;web&quot;}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=5s weight=1;
+  {{else}}server 127.0.0.1:65535; # force a 502{{end}}
+}
+
+server {
+  listen 80 default_server;
+
+  location / {
+    proxy_pass http://app;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The template file is based on the Go Template format used in the Go language, and will insert web applications with the service name “web”, configured in the Docker Compose file above, into a configuration readable by Nginx. This is configured with the following Consul Template command:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;consul-template -consul=$CONSUL_URL -template=&quot;/templates/service.ctmpl:/etc/nginx/conf.d/service.conf:service nginx reload&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And the resulting Nginx configuration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;upstream app {
+  least_conn;
+  server 172.18.0.6:3000 max_fails=3 fail_timeout=5s weight=1;
+  server 172.18.0.5:3000 max_fails=3 fail_timeout=5s weight=1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, when the web application containers are up and the server is running, we can visit the IP of our Docker host on port 80 and it will route us to our to-do application:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;images/posts/web1.png&quot; width=&quot;800&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s take one of our containers down:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker stop *containerId*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;images/posts/web2.png&quot; width=&quot;800&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can still navigate to the site because one of the containers is still running, and Consul has updated the Nginx config using Consul Template. Now, let’s take down the ‘dark-themed’ container, and we will see no response from server. We will bring up the first container using &lt;code class=&quot;highlighter-rouge&quot;&gt;docker start *containerId*&lt;/code&gt; and now, when we navigate to that URL, we will see our application again.&lt;/p&gt;
+
+&lt;p&gt;Registrator updated Consul with the container once it came up, and we can now see our application because Nginx was re-configured using the Consul Template &lt;code class=&quot;highlighter-rouge&quot;&gt;service.conf&lt;/code&gt; file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;conf.d&lt;/code&gt; directory with &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/nginx&lt;/code&gt;. This configuration can also be used in conjunction with Consul health checks by querying those health check results at the &lt;code class=&quot;highlighter-rouge&quot;&gt;consul-host/v1/health/service/:service&lt;/code&gt; endpoint to get the status of the nodes in the service:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[
+  {
+    &quot;Node&quot;: {
+      &quot;Node&quot;: &quot;779a2399de13&quot;,
+      &quot;Address&quot;: &quot;127.0.0.1&quot;
+    },
+    &quot;Service&quot;: {
+      &quot;ID&quot;: &quot;fc509009c31f:myapp_web1_1:3000&quot;,
+      &quot;Service&quot;: &quot;web&quot;,
+      &quot;Tags&quot;: null,
+      &quot;Address&quot;: &quot;172.18.0.6&quot;,
+      &quot;Port&quot;: 3000
+    },
+    &quot;Checks&quot;: [
+      {
+        &quot;Node&quot;: &quot;779a2399de13&quot;,
+        &quot;CheckID&quot;: &quot;serfHealth&quot;,
+        &quot;Name&quot;: &quot;Serf Health Status&quot;,
+        &quot;Status&quot;: &quot;passing&quot;,
+        &quot;Notes&quot;: &quot;&quot;,
+        &quot;Output&quot;: &quot;Agent alive and reachable&quot;,
+        &quot;ServiceID&quot;: &quot;&quot;,
+        &quot;ServiceName&quot;: &quot;&quot;
+      }
+    ]
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;With this information, we can create new nodes to minimize service outages by spinning up new containers.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;This paradigm is useful for any developer or DevOps engineer that is considering their own implementation of a basic service discovery and scaling solution, as much has been already built out with these tools. This post and repo are broken out to show the different steps and parts of the configuration, but the setup is robust enough to accept changes without needing to abandon the structure. If your infrastructure is not containerized or you are not familiar with Docker and Docker Compose, clone the &lt;a href=&quot;https://github.com/henrymollman/DR-CoN-example&quot;&gt;demo repo&lt;/a&gt; and type &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose up&lt;/code&gt; on any system with Docker installed to create the cluster.&lt;/p&gt;</content><author><name>{&quot;display_name&quot;=&gt;&quot;Henry Mollman&quot;, &quot;author_page&quot;=&gt;&quot;henry-mollman&quot;, &quot;avatar&quot;=&gt;&quot;authors/henrymollman.jpg&quot;, &quot;title&quot;=&gt;&quot;Engineer&quot;, &quot;twitter&quot;=&gt;&quot;henrymollman&quot;}</name></author><category term="Engineering" /><summary type="html">Every scalable architecture needs to manage service discovery and application scaling. We accomplish this by utilizing the DR-CoN pattern (Docker-Registrator-Consul-Nginx) to load-balance web applications. Rerouting network traffic to healthy nodes and preventing applications from receiving too many requests are common needs for every infrastructure, and we can use this pattern to automate that process.</summary></entry></feed>

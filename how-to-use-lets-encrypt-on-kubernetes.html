@@ -1,0 +1,606 @@
+<!doctype html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="/blog/favicon.png">
+  <link rel="stylesheet" href="//runnable.com/styles/index.css">
+  <link rel="stylesheet" href="/blog/css/index.css">
+  <meta property="og:image" content="//s3-us-west-1.amazonaws.com/runnable-design/fb-image.png">
+  
+    <meta name="twitter:title" content="How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs">
+    <meta name="twitter:description" content="HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.">
+    
+  <meta name="twitter:image" content="https://s3-us-west-1.amazonaws.com/runnable-design/tw-image.png">
+  <script src="//runnable.com/js/external/segment.js"></script>
+  <!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs - Runnablog</title>
+<meta property="og:title" content="How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs" />
+<meta name="description" content="HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share." />
+<meta property="og:description" content="HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share." />
+<link rel="canonical" href="https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes" />
+<meta property="og:url" content="https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes" />
+<meta property="og:site_name" content="Runnablog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-05-15T18:00:00-07:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@GetRunnable" />
+<meta name="twitter:creator" content="@thejsj" />
+<meta property="article:publisher" content="Runnable" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs",
+"datePublished": "2017-05-15T18:00:00-07:00",
+"description": "HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.",
+"url": "https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <link type="application/atom+xml" rel="alternate" href="https://runnable.com/blog/feed.xml" title="Runnablog" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+  <script src="/blog/js/post-time.js"></script>
+</head>
+
+
+  <body class="page-landing">
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon-defintions">
+  <symbol id="icons-bitbucket" viewBox="0 0 27.438 31.681">
+    <path d='M29.208,3.519a3.47,3.47,0,0,0-.729-0.738,8.244,8.244,0,0,0-2.01-1.1A21.7,21.7,0,0,0,21.768.45,39.134,39.134,0,0,0,10.037.434,24.268,24.268,0,0,0,6,1.385,10.419,10.419,0,0,0,3.525,2.549a4.165,4.165,0,0,0-.976.869,1.832,1.832,0,0,0-.4,1.479C2.32,5.989,2.48,7.082,2.66,8.169q0.4,2.417.811,4.828c0.306,1.787.62,3.573,0.918,5.36a2.026,2.026,0,0,0,.526,1.07,5.663,5.663,0,0,0,.574.543,9.178,9.178,0,0,0,2.432,1.354,20.379,20.379,0,0,0,6.485,1.328,25.257,25.257,0,0,0,4.838-.187,19.46,19.46,0,0,0,4.011-.948,10.809,10.809,0,0,0,2.725-1.382,4.323,4.323,0,0,0,.945-0.9,1.791,1.791,0,0,0,.354-0.805c0.4-2.341.809-4.679,1.2-7.021,0.362-2.172.7-4.346,1.058-6.518A1.78,1.78,0,0,0,29.208,3.519ZM15.82,19.64a4.361,4.361,0,1,1,4.386-4.334A4.359,4.359,0,0,1,15.82,19.64Zm8.7-15.246a1.832,1.832,0,0,1-.436.357,5.524,5.524,0,0,1-1.454.541,20.191,20.191,0,0,1-2.9.485,37.5,37.5,0,0,1-3.791.188,37.891,37.891,0,0,1-4.332-.238,15.852,15.852,0,0,1-3.146-.633,6.893,6.893,0,0,1-.883-0.381,1.385,1.385,0,0,1-.386-0.3A0.443,0.443,0,0,1,7.2,3.746,1.752,1.752,0,0,1,7.61,3.43a5.392,5.392,0,0,1,1.359-.512,20.355,20.355,0,0,1,2.994-.509,37.618,37.618,0,0,1,4.967-.172,30.478,30.478,0,0,1,4.55.431,10.33,10.33,0,0,1,2.075.545,5.336,5.336,0,0,1,.683.346,1.085,1.085,0,0,1,.288.266A0.422,0.422,0,0,1,24.522,4.394Zm1.664,18.367a0.955,0.955,0,0,1-.021.271c-0.305,1.6-.614,3.2-0.911,4.811a2.6,2.6,0,0,1-.724,1.377,5.442,5.442,0,0,1-1.448,1.023A12.151,12.151,0,0,1,20,31.274a18.806,18.806,0,0,1-3.563.407,20.746,20.746,0,0,1-5.917-.7,9.9,9.9,0,0,1-2.3-.953,5.078,5.078,0,0,1-1.042-.789,2.6,2.6,0,0,1-.741-1.4c-0.3-1.6-.609-3.207-0.915-4.81A1.12,1.12,0,0,1,5.5,22.79a0.479,0.479,0,0,1,.724-0.423c0.036,0.021.072,0.041,0.105,0.063a13.221,13.221,0,0,0,3.858,1.856,18.062,18.062,0,0,0,3.873.758,19.587,19.587,0,0,0,4.54-.11,16.41,16.41,0,0,0,5.687-1.827c0.354-.194.686-0.43,1.025-0.646a1.715,1.715,0,0,1,.167-0.1A0.48,0.48,0,0,1,26.186,22.761Zm-8.159-7.477a2.185,2.185,0,1,1-2.177-2.193A2.192,2.192,0,0,1,18.027,15.284Z', transform='translate(-2.122)'</<path d="M29.208,3.519a3.47,3.47,0,0,0-.729-0.738,8.244,8.244,0,0,0-2.01-1.1A21.7,21.7,0,0,0,21.768.45,39.134,39.134,0,0,0,10.037.434,24.268,24.268,0,0,0,6,1.385,10.419,10.419,0,0,0,3.525,2.549a4.165,4.165,0,0,0-.976.869,1.832,1.832,0,0,0-.4,1.479C2.32,5.989,2.48,7.082,2.66,8.169q0.4,2.417.811,4.828c0.306,1.787.62,3.573,0.918,5.36a2.026,2.026,0,0,0,.526,1.07,5.663,5.663,0,0,0,.574.543,9.178,9.178,0,0,0,2.432,1.354,20.379,20.379,0,0,0,6.485,1.328,25.257,25.257,0,0,0,4.838-.187,19.46,19.46,0,0,0,4.011-.948,10.809,10.809,0,0,0,2.725-1.382,4.323,4.323,0,0,0,.945-0.9,1.791,1.791,0,0,0,.354-0.805c0.4-2.341.809-4.679,1.2-7.021,0.362-2.172.7-4.346,1.058-6.518A1.78,1.78,0,0,0,29.208,3.519ZM15.82,19.64a4.361,4.361,0,1,1,4.386-4.334A4.359,4.359,0,0,1,15.82,19.64Zm8.7-15.246a1.832,1.832,0,0,1-.436.357,5.524,5.524,0,0,1-1.454.541,20.191,20.191,0,0,1-2.9.485,37.5,37.5,0,0,1-3.791.188,37.891,37.891,0,0,1-4.332-.238,15.852,15.852,0,0,1-3.146-.633,6.893,6.893,0,0,1-.883-0.381,1.385,1.385,0,0,1-.386-0.3A0.443,0.443,0,0,1,7.2,3.746,1.752,1.752,0,0,1,7.61,3.43a5.392,5.392,0,0,1,1.359-.512,20.355,20.355,0,0,1,2.994-.509,37.618,37.618,0,0,1,4.967-.172,30.478,30.478,0,0,1,4.55.431,10.33,10.33,0,0,1,2.075.545,5.336,5.336,0,0,1,.683.346,1.085,1.085,0,0,1,.288.266A0.422,0.422,0,0,1,24.522,4.394Zm1.664,18.367a0.955,0.955,0,0,1-.021.271c-0.305,1.6-.614,3.2-0.911,4.811a2.6,2.6,0,0,1-.724,1.377,5.442,5.442,0,0,1-1.448,1.023A12.151,12.151,0,0,1,20,31.274a18.806,18.806,0,0,1-3.563.407,20.746,20.746,0,0,1-5.917-.7,9.9,9.9,0,0,1-2.3-.953,5.078,5.078,0,0,1-1.042-.789,2.6,2.6,0,0,1-.741-1.4c-0.3-1.6-.609-3.207-0.915-4.81A1.12,1.12,0,0,1,5.5,22.79a0.479,0.479,0,0,1,.724-0.423c0.036,0.021.072,0.041,0.105,0.063a13.221,13.221,0,0,0,3.858,1.856,18.062,18.062,0,0,0,3.873.758,19.587,19.587,0,0,0,4.54-.11,16.41,16.41,0,0,0,5.687-1.827c0.354-.194.686-0.43,1.025-0.646a1.715,1.715,0,0,1,.167-0.1A0.48,0.48,0,0,1,26.186,22.761Zm-8.159-7.477a2.185,2.185,0,1,1-2.177-2.193A2.192,2.192,0,0,1,18.027,15.284Z" transform="translate(-2.122)"/>
+  </symbol>
+  <symbol id="icons-check" viewBox='0 0 14.5 10'>
+    <path d="M7.25,14a1,1,0,0,1-.707-0.293l-4.5-4.5A1,1,0,0,1,3.457,7.793L7.25,11.586l7.293-7.293a1,1,0,0,1,1.414,1.414l-8,8A1,1,0,0,1,7.25,14Z" transform="translate(-1.75 -4)"/>
+  </symbol>
+  <symbol id="icons-chevron-right" viewBox='0 0 11 18'>
+    <polyline points="1 1 10 9 1 17" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </symbol>
+  <symbol id="icons-chevron-down" viewBox='0 0 18 11'>
+    <polyline points="17 1 9 10 1 1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+  </symbol>
+  <symbol id="icons-close" viewBox="0 0 30 30">
+    <path d="M21,22.2c-0.3,0-0.5-0.1-0.7-0.3L15,16.6l-5.3,5.3c-0.4,0.4-1,0.4-1.4,0s-0.4-1,0-1.4l5.3-5.3L8.3,9.9c-0.4-0.4-0.4-1,0-1.4s1-0.4,1.4,0l5.3,5.3l5.3-5.3c0.4-0.4,1-0.4,1.4,0s0.4,1,0,1.4l-5.3,5.3l5.3,5.3c0.4,0.4,0.4,1,0,1.4C21.5,22.1,21.3,22.2,21,22.2z"/>
+  </symbol>
+  <symbol id="icons-external" viewBox="0 0 15 15">
+    <path fill="currentColor" d="M9.5,9a0.5,0.5,0,0,1-.354-0.854L14.293,3H11a0.5,0.5,0,0,1,0-1h4.506a0.5,0.5,0,0,1,.32.121h0a0.56,0.56,0,0,1,.07.074,0.5,0.5,0,0,1,.1.269c0,0.013,0,.026,0,0.039V7a0.5,0.5,0,0,1-1,0V3.707L9.854,8.854A0.5,0.5,0,0,1,9.5,9Z" transform="translate(-1 -2)"/><path d="M13.317,8.218L13,8.535V14a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V7A2,2,0,0,1,4,5H9.465l0.317-.317A2.5,2.5,0,0,1,9.027,4H4A3,3,0,0,0,1,7v7a3,3,0,0,0,3,3h7a3,3,0,0,0,3-3V8.973A2.5,2.5,0,0,1,13.317,8.218Z" transform="translate(-1 -2)"/>
+  </symbol>
+  <symbol id="icons-github" viewBox="0 0 24 23.41">
+    <path d="M24.336,7.791A12.011,12.011,0,0,1,25.52,23.366a12.083,12.083,0,0,1-5.883,4.313A0.686,0.686,0,0,1,19,27.549a0.648,0.648,0,0,1-.187-0.457l0.023-3.281a3.861,3.861,0,0,0-.258-1.395,2.219,2.219,0,0,0-.562-0.832,7.008,7.008,0,0,0,3.738-1.348Q23.41,19.03,23.5,15.655a5.127,5.127,0,0,0-.34-1.782,4.569,4.569,0,0,0-.9-1.43,3.254,3.254,0,0,0,.234-1.078,4.936,4.936,0,0,0-.352-2.109,1.719,1.719,0,0,0-.8.035A7.4,7.4,0,0,0,18.84,10.5a11.493,11.493,0,0,0-6,0,7.4,7.4,0,0,0-2.508-1.207,1.719,1.719,0,0,0-.8-0.035,4.936,4.936,0,0,0-.352,2.109,3.254,3.254,0,0,0,.234,1.078,4.569,4.569,0,0,0-.9,1.43,5.127,5.127,0,0,0-.34,1.782Q8.27,19.03,9.91,20.237a6.976,6.976,0,0,0,3.75,1.348,1.934,1.934,0,0,0-.48.633,3.414,3.414,0,0,0-.293.984,3.316,3.316,0,0,1-1.594.293,2.42,2.42,0,0,1-1.9-1.3,3.234,3.234,0,0,0-.645-0.75,1.767,1.767,0,0,0-1.184-.469q-0.7.023-.527,0.3a1.324,1.324,0,0,0,.551.469,2.583,2.583,0,0,1,.75.82,5.653,5.653,0,0,1,.469.867,2.2,2.2,0,0,0,.984,1.172,4.5,4.5,0,0,0,3.047.258l0.023,2.227a0.648,0.648,0,0,1-.187.457,0.686,0.686,0,0,1-.633.129A12.083,12.083,0,0,1,6.16,23.366,12,12,0,0,1,24.336,7.791Z" transform="translate(-3.84 -4.287)"/>
+  </symbol>
+  <symbol id="icons-life-preserver" viewBox='0 0 18 18'>
+    <path d="M9,17A8,8,0,1,0,1,9,8,8,0,0,0,9,17ZM9,5A4,4,0,1,1,5,9,4,4,0,0,1,9,5Z" transform="translate(-1 -1)" fill="#fff"/><path d="M9,2A7,7,0,1,1,2,9,7.008,7.008,0,0,1,9,2M9,13.5A4.5,4.5,0,1,0,4.5,9,4.505,4.505,0,0,0,9,13.5M9,1a8,8,0,1,0,8,8A8,8,0,0,0,9,1H9ZM9,12.5A3.5,3.5,0,1,1,12.5,9,3.5,3.5,0,0,1,9,12.5H9Z" transform="translate(-1 -1)"/><path d="M5.259,7.623A3.989,3.989,0,0,1,7.623,5.259L4.654,2.289A8.032,8.032,0,0,0,2.29,4.653Z" transform="translate(-1 -1)"/><path d="M12.741,10.377a3.989,3.989,0,0,1-2.364,2.364l2.969,2.969a8.032,8.032,0,0,0,2.364-2.364Z" transform="translate(-1 -1)"/><path d="M7.623,12.741a3.989,3.989,0,0,1-2.364-2.364L2.289,13.346A8.032,8.032,0,0,0,4.653,15.71Z" transform="translate(-1 -1)"/><path d="M10.377,5.259a3.989,3.989,0,0,1,2.364,2.364l2.969-2.969A8.032,8.032,0,0,0,13.347,2.29Z" transform="translate(-1 -1)"/>
+  </symbol>
+  <symbol id="icons-overflow" viewBox="0 0 18 4.688">
+    <path fill="currentColor" d="M2.344,7.656A1.344,1.344,0,1,1,1,9,1.345,1.345,0,0,1,2.344,7.656m0-1A2.344,2.344,0,1,0,4.688,9,2.344,2.344,0,0,0,2.344,6.656h0Z" transform="translate(0 -6.656)"/><path fill="currentColor" d="M9,7.656A1.344,1.344,0,1,1,7.656,9,1.345,1.345,0,0,1,9,7.656m0-1A2.344,2.344,0,1,0,11.344,9,2.344,2.344,0,0,0,9,6.656H9Z" transform="translate(0 -6.656)"/><path fill="currentColor" d="M15.656,7.656A1.344,1.344,0,1,1,14.313,9a1.345,1.345,0,0,1,1.344-1.344m0-1A2.344,2.344,0,1,0,18,9a2.344,2.344,0,0,0-2.344-2.344h0Z" transform="translate(0 -6.656)"/>
+  </symbol>
+</svg>
+
+    <header class="grid-block shrink header">
+  <div class="grid-block grid-container justify-justified">
+    <a href="/" class="grid-block align-center shrink logo">
+      <img class="img" src="https://runnable.com/images/runnable-logo.svg" height="36" width="192">
+    </a>
+    <nav class="nav grid-block shrink">
+      <div class="grid-content btn btn-sm text-white weight-strong hidden-xs a popover-trigger hover has-links" tabindex="1">
+        <div class="div">Features
+          <svg class="icons icons-chevron-down">
+            <use xlink:href="#icons-chevron-down">
+          </svg>
+        </div>
+        <div class="popover-hover-wrapper popover-feature">
+  <div class="grid-block col list text-left popover popover-header-menu bottom">
+    <a href="/preview-environments/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-staging.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">Preview Environments</p>
+        <p class="small">Isolated, full-stack environments for every branch.</p>
+      </div>
+    </a>
+    <a href="/end-to-end-testing/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-testing.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">End-to-end Testing</p>
+        <p class="small">Test every code change on its own preview environment.</p>
+      </div>
+    </a>
+    <a href="/deploy-to-production/" class="grid-block align-center a padding-sm">
+      <img src="/blog/images/icons-deploy.svg" height="45" width="45" class="img">
+      <div class="grid-block col">
+        <p class="p weight-strong">Deploy to Production</p>
+        <p class="small">Deploy fully-tested builds to any environment.</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+      </div>
+      <a href="/docs/" class="grid-content btn btn-sm text-white weight-strong hidden-sm a">Docs</a>
+      <a href="/pricing/" class="grid-content btn btn-sm text-white weight-strong hidden-md">Pricing</a>
+      <a href="/signup/" class="grid-content btn btn-sm btn-white text-white weight-strong hidden-xs track-sign-up">Sign Up</a>
+      <div class="grid-content btn btn-sm btn-overflow popover-trigger hover has-links" tabindex="1">
+        <svg class="icons icons-overflow">
+          <use xlink:href="#icons-overflow">
+        </svg>
+        <div class="popover-hover-wrapper right-align-sm">
+  <div class="grid-block popover popover-header-menu bottom">
+    <div class="grid-block col list text-left">
+      <small class="small visible-xs text-gray-light margin-left-sm">Features</small>
+      <a href="/preview-environments/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-staging.svg" height="30" width="30" class="img">
+        Preview Environments
+      </a>
+      <a href="/end-to-end-testing/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-testing.svg" height="30" width="30" class="img">
+        End-to-end Testing
+      </a>
+      <a href="/deploy-to-production/" class="grid-block align-center list-item-a list-item-feature visible-xs">
+        <img src="/blog/images/icons-deploy.svg" height="30" width="30" class="img">
+        Deploy to Production
+      </a>
+      <div class="list-item divider visible-xs"></div>
+      <a href="/signup/" class="list-item-a visible-xs track-sign-up">Sign Up</a>
+      <div class="list-item divider visible-md"></div>
+      <a href="/docs/" class="list-item-a visible-sm">Docs</a>
+      <a href="/pricing/" class="list-item-a visible-md">Pricing</a>
+      <a href="/how-it-works/" class="list-item-a">How It Works</a>
+      <a href="/use-cases/" class="list-item-a">Use Cases</a>
+      <a href="/blog/" class="list-item-a">Blog</a>
+      <a href="/contact/" class="list-item-a">Contact</a>
+      <a href="/about/" class="list-item-a">About</a>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+    <main class="grid-block col main">
+      <div class="grid-block col align-center hero hero-post"></div>
+
+<div class="grid-block grid-container col noscroll">
+  <div class="grid-block align-center col post-details">
+    <h1 class="h1 text-center weight-strong margin-top-sm post-title">How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs</h1>
+    
+    <img class="avatar" src="images/authors/jorgesilva.jpg" width="45" height="45">
+    <div>by <a class="link" href="/blog/jorge-silva">Jorge Silva</a></div>
+    <div><time class="time-capitalize" datatime="2017-05-15 18:00:00 -0700">2017-05-15 18:00:00 -0700</time> in Engineering</div>
+    <div class="grid-block social-sharing" data-url="https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes" data-legacy-url="">
+      <a target="_blank" href="https://twitter.com/intent/tweet?text=How To Use Let’s Encrypt on Kubernetes to Automatically Generate Certs&url=https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes&via=GetRunnable" class="share-item share-twitter">
+        <img src="images/logos/logo-twitter.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://runnable.com/blog/how-to-use-lets-encrypt-on-kubernetes" class="share-item share-linkedin">
+        <img src="images/logos/logo-linkedin.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+      <a target="_blank" href="#" class="share-item share-hackernews hidden">
+        <img src="images/logos/logo-hackernews.svg" width="20" height="20">
+        <span class="share-count small">0</span>
+      </a>
+    </div>
+  </div>
+  <article class="article article-body">
+    <p>HTTPS is an extremely important part of deploying applications to the web. It ensures encrypted transport of information between client and server. It can be complicated to set up, but Let’s Encrypt helps solve this problem by providing free SSL/TLS certificates and an API to generate these certificates. Kubernetes allows you to define your application runtime, networking, and allows you to define your infrastructure declaratively through code; making it easier to maintain, review, and share.</p>
+
+<p>We’ll take a look at how to automatically generate SSL/TLS certificates (certs) for the domain used in your Kubernetes-hosted application. We’ll rely on <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/#what-is-ingress">Ingress controllers</a> to route traffic to the domain, use jobs to generate the certs, and use secrets to store them. You can find all the <a href="https://github.com/thejsj/kubernetes-letsencrypt-demo">code for this demo on GitHub</a>. We’ll be diving into more advanced code, so before getting started, be sure to <a href="https://runnable.com/blog/kubernetes-how-do-i-do-that">read about the basics of Kubernetes</a>, kubectl, and have a cluster up and running.</p>
+
+<h3 id="setting-up-our-application">Setting Up Our Application</h3>
+
+<p>To understand how we’re going to generate certificates and add HTTPS, we first need to understand how our application works. For this post, we’ll define an application that returns a 200 and a message when it receives an HTTP request. The first thing we’ll do is define our endpoint by creating a ConfigMap that stores our Nginx configuration. All this config does is respond to a request in port 80:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">ConfigMap</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx-config</span>
+<span class="s">data</span><span class="pi">:</span>
+  <span class="s">default.conf</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="no">server {</span>
+      <span class="no">listen 80;</span>
+      <span class="no">listen [::]:80;</span>
+      <span class="no">server_name  _;</span>
+      <span class="no">location / {</span>
+        <span class="no">add_header Content-Type text/plain; # Prevents download</span>
+        <span class="no">return 200 "Hello world! Kubernetes + Let's encrypt demo.";</span>
+      <span class="no">}</span>
+</code></pre>
+</div>
+
+<p>Next, we’ll create a deployment that runs an image of Nginx with the config we’ve created. The deployment mounts the config file as a volume through this ConfigMap.</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">extensions/v1beta1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">nginx</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">replicas</span><span class="pi">:</span> <span class="s">1</span>
+  <span class="s">template</span><span class="pi">:</span>
+    <span class="s">metadata</span><span class="pi">:</span>
+      <span class="s">labels</span><span class="pi">:</span>
+        <span class="s">app</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="s">spec</span><span class="pi">:</span>
+      <span class="s">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+        <span class="s">image</span><span class="pi">:</span> <span class="s">nginx</span>
+        <span class="s">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">containerPort</span><span class="pi">:</span> <span class="s">80</span>
+        <span class="s">volumeMounts</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">nginx-configs</span>
+          <span class="s">mountPath</span><span class="pi">:</span> <span class="s">/etc/nginx/conf.d</span>
+      <span class="c1"># Load the configuration files for nginx</span>
+      <span class="s">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">nginx-configs</span>
+          <span class="s">configMap</span><span class="pi">:</span>
+            <span class="s">name</span><span class="pi">:</span> <span class="s">nginx-config</span>
+</code></pre>
+</div>
+
+<p>Finally, we’ll create a service to direct traffic to this deployment:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">selector</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">nginx</span>
+  <span class="s">ports</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">TCP"</span>
+    <span class="s">port</span><span class="pi">:</span> <span class="s">80</span>
+</code></pre>
+</div>
+
+<p>In order to test this, we can cURL the service from inside the container:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="nv">POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pods | grep nginx | awk <span class="s1">'{print $1}'</span><span class="k">)</span>
+kubectl <span class="nb">exec</span> <span class="nv">$POD</span> -it bash
+apt-get update <span class="o">&amp;&amp;</span> apt-get install curl -qq -y <span class="c"># Terrible, I know</span>
+curl nginx <span class="c"># Name of the service</span>
+</code></pre>
+</div>
+
+<p>You should get the following response:</p>
+
+<div class="language-shell_session highlighter-rouge"><pre class="highlight"><code><span class="ni">root@nginx-3659739084-tk6ng:/# </span><span class="nc">curl</span><span class="kv"> nginx
+</span>Hello world! Kubernetes + Let's encrypt demo.
+</code></pre>
+</div>
+
+<h3 id="setting-up-our-host-through-ingress">Setting Up Our Host Through Ingress</h3>
+
+<p>Now that our application is up and running, we can expose it to the internet. We’ll create an Ingress controller with the host we want to use. Here we’ll use <code class="highlighter-rouge">kubernetes-letsencrypt.jorge.fail</code> as our domain (great domain name, I know!), and redirect traffic for that host to our existing Nginx service.</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">extensions/v1beta1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Ingress</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">kubernetes-demo-app-ingress-service"</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">rules</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">host</span><span class="pi">:</span> <span class="s">kubernetes-letsencrypt.jorge.fail</span> <span class="c1"># CHANGE ME!</span>
+    <span class="s">http</span><span class="pi">:</span>
+      <span class="s">paths</span><span class="pi">:</span>
+      <span class="c1"># The * is needed so that all traffic gets redirected to nginx</span>
+      <span class="pi">-</span> <span class="s">path</span><span class="pi">:</span> <span class="s">/*</span>
+        <span class="s">backend</span><span class="pi">:</span>
+          <span class="s">serviceName</span><span class="pi">:</span> <span class="s">nginx</span>
+          <span class="s">servicePort</span><span class="pi">:</span> <span class="s">80</span>
+</code></pre>
+</div>
+
+<p>Now that our Ingress is setup, we can look for the IP address for this Ingress controller by running a <code class="highlighter-rouge">describe</code> on our Ingres resource (<code class="highlighter-rouge">kubectl describe ing kubernetes-demo-app-ingress-service</code>). You’ll see the IP address for this Ingress in the “address” entry.</p>
+
+<p><img src="/blog/images/posts/2017-05-15-ss1.png" alt="" width="1200" /></p>
+
+<p>You can now add an A record for this IP address, or test it by adding the IP address and host to your /etc/hosts (if you’re using Minikube, this works automatically).If you’re using Google Cloud Platform (GCP) or AWS we’ll still need to add a couple of things to make this work.</p>
+
+<h3 id="making-changes-to-our-application-for-gcpaws">Making Changes to Our Application for GCP/AWS</h3>
+
+<p>If you’re using GCP and try to access your host, you might get something like this:</p>
+
+<p><img src="/blog/images/posts/2017-05-15-ss2.png" alt="" width="750" /></p>
+
+<p>A great way to debug some of these errors is by running a <code class="highlighter-rouge">describe</code> on your Ingress resource. The “Events” section will show you some of the problems with your Ingres controller:</p>
+
+<p><img src="/blog/images/posts/2017-05-15-ss3.png" alt="" width="1200" /></p>
+
+<p>In order for our Ingress controller to work in the GCP Ingress controller, there are still two things we need to do: we need to add health checks to the Pod, and we need to add a Node port to the Nginx service.</p>
+
+<p>The GCP will not route traffic if the Pod is unhealthy or its health status is unknown. So to verify that our Pod is healthy, we need to add a health route. We’ll do this through an HTTP GET request to <code class="highlighter-rouge">/</code> in order to assert that we get a 200 response.</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">extensions/v1beta1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="s">spec</span><span class="pi">:</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow">...</div>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code>    <span class="s">containers</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow">...</div>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code>      <span class="c1"># HTTP Health Check</span>
+      <span class="s">livenessProbe</span><span class="pi">:</span>
+        <span class="s">httpGet</span><span class="pi">:</span>
+          <span class="s">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="s">port</span><span class="pi">:</span> <span class="s">80</span>
+</code></pre>
+</div>
+
+<p>We’ll also need to expose a port in the host for our Ingress controller by making our Nginx service into a Node port service. The exposed Node port allows the Ingress controller to use a load balancer native to the provider (GCP, AWS); which runs outside the Kubernetes cluster.</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="s">spec</span><span class="pi">:</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow">...</div>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code>  <span class="s">type</span><span class="pi">:</span> <span class="s">NodePort</span>
+  <span class="s">ports</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">TCP"</span>
+    <span class="s">nodePort</span><span class="pi">:</span> <span class="s">32111</span>
+    <span class="s">port</span><span class="pi">:</span> <span class="s">80</span>
+</code></pre>
+</div>
+
+<p>You should now be able to (finally) go to your service over the internet and get back a correct response.</p>
+
+<p><img src="/blog/images/posts/2017-05-15-ss4.png" alt="" width="750" /></p>
+
+<h3 id="generating-certs">Generating Certs</h3>
+
+<p>Now that our application is running and the DNS for it is correctly set up, it’s time to actually create some certificates. First, we’ll create a job in our cluster that uses <a href="https://github.com/thejsj/kubernetes-letsencrypt-demo/blob/master/kube-nginx-letsencrypt/Dockerfile">an image</a> to run a <a href="https://github.com/thejsj/kubernetes-letsencrypt-demo/blob/master/kube-nginx-letsencrypt/entrypoint.sh">shell script</a>. The script will spin up an HTTP service, create the certs, and save them into a predefined secret. Your domain and email are environment variables, so be sure to fill those in:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt-job</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">template</span><span class="pi">:</span>
+    <span class="s">metadata</span><span class="pi">:</span>
+      <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+      <span class="s">labels</span><span class="pi">:</span>
+        <span class="s">app</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+    <span class="s">spec</span><span class="pi">:</span>
+      <span class="s">containers</span><span class="pi">:</span>
+      <span class="c1"># Bash script that starts an http server and launches certbot</span>
+      <span class="c1"># Fork of github.com/sjenning/kube-nginx-letsencrypt</span>
+      <span class="pi">-</span> <span class="s">image</span><span class="pi">:</span> <span class="s">quay.io/hiphipjorge/kube-nginx-letsencrypt:latest</span>
+        <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+        <span class="s">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+        <span class="s">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+          <span class="s">containerPort</span><span class="pi">:</span> <span class="s">80</span>
+        <span class="s">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">DOMAINS</span>
+          <span class="s">value</span><span class="pi">:</span> <span class="s">kubernetes-letsencrypt.jorge.fail</span> <span class="c1"># Domain you want to use. CHANGE ME!</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">EMAIL</span>
+          <span class="s">value</span><span class="pi">:</span> <span class="s">jorge@runnable.com</span> <span class="c1"># Your email. CHANGE ME!</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">SECRET</span>
+          <span class="s">value</span><span class="pi">:</span> <span class="s">letsencrypt-certs</span>
+      <span class="s">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+</code></pre>
+</div>
+
+<p>Now that we have a job running, we can create a service to direct traffic to this job:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">selector</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">letsencrypt</span>
+  <span class="s">ports</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">TCP"</span>
+    <span class="s">port</span><span class="pi">:</span> <span class="s">80</span>
+</code></pre>
+</div>
+
+<p>This job will now be able to run, but we still have three things we need to do before our job actually succeeds and we’re able to access our service over HTTPs.</p>
+
+<p>First, we need to create a secret for the job to actually update and store our certs. Since we don’t have any certs when we create the secret, the secret will just start empty.</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Secret</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">letsencrypt-certs</span>
+<span class="s">type</span><span class="pi">:</span> <span class="s">Opaque</span>
+<span class="c1"># Create an empty secret (with no data) in order for the update to work</span>
+</code></pre>
+</div>
+
+<p>Second, we’ll have to add the secret to the Ingress controller in order for it to fetch the certs. Remember that it is the Ingress controller that knows about our host, which is why our certs need to be specified here. The addition of our secret to the Ingress controller will look something like this:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">extensions/v1beta1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Ingress</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">kubernetes-demo-app-ingress-service"</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">tls</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">kubernetes-letsencrypt.jorge.fail</span> <span class="c1"># Your host. CHANGE ME</span>
+    <span class="s">secretName</span><span class="pi">:</span> <span class="s">letsencrypt-certs</span> <span class="c1"># Name of the secret</span>
+  <span class="s">rules</span><span class="pi">:</span>
+</code></pre>
+</div>
+
+<p>Finally we have to redirect traffic through the host, down to the job, through our Nginx deployment. In order to do that we’ll add a new route and an upstream to our Nginx configuration: This could be done through the Ingress controller by adding a <code class="highlighter-rouge">/.well-known/*</code> entry and redirecting it to the <code class="highlighter-rouge">letsencrypt</code> service. That’s more complex because we would also have to add a health route to the job, so instead we’ll just redirect traffic through the Nginx deployment:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">ConfigMap</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">nginx-config</span>
+<span class="s">data</span><span class="pi">:</span>
+  <span class="s">default.conf</span><span class="pi">:</span> <span class="pi">|</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow">...</div>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code>    <span class="c1"># Add upstream for letsencrypt job</span>
+    <span class="s">upstream letsencrypt {</span>
+      <span class="s">server letsencrypt:80 max_fails=0 fail_timeout=1s;</span>
+    <span class="s">}</span>
+
+    <span class="s">server {</span>
+      <span class="s">listen 80;</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow">...</div>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code>      <span class="c1"># Redirect all traffic in /.well-known/ to letsencrypt</span>
+      <span class="s">location ^~ /.well-known/acme-challenge/ {</span>
+        <span class="s">proxy_pass http://letsencrypt;</span>
+      <span class="s">}</span>
+    <span class="s">}</span>
+</code></pre>
+</div>
+
+<p>After you apply all these changes, destroy your Nginx Pod(s) in order to make sure that the ConfigMap gets updated correctly in the new Pods:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>kubectl get pods | grep ngi | awk <span class="s1">'{print $1}'</span> | xargs kubectl delete pods
+</code></pre>
+</div>
+
+<h3 id="making-sure-it-works">Making Sure It Works</h3>
+
+<p>In order to verify that this works, we should make sure the job actually succeeded. We can do this by getting the job through kubectl or by checking the Kubernetes dashboard.</p>
+
+<div class="language-shell_session highlighter-rouge"><pre class="highlight"><code><span class="w">$ </span><span class="nc">kubectl</span><span class="kv"> get job letsencrypt-job
+</span>NAME              DESIRED   SUCCESSFUL   AGE
+letsencrypt-job   1         1            1d
+</code></pre>
+</div>
+
+<p>We can also check the secret to make sure the certs have been properly populated. Again, we can do this through kubectl or through the dashboard:</p>
+
+<div class="language-shell_session highlighter-rouge"><pre class="highlight"><code><span class="w">$ </span><span class="nc">kubectl</span><span class="kv"> describe secret letsencrypt-certs
+</span>Name:   letsencrypt-certs
+Namespace:  default
+Labels:   &lt;none&gt;
+Annotations:
+Type:   Opaque
+
+Data
+====
+tls.crt:  3493 bytes
+tls.key:  1704 bytes
+</code></pre>
+</div>
+
+<p>Now that we can see that the certs have been successfully created, we can do the very last step in this whole process. For the Ingress controller to pick up the change in the secret (from having no data to having the certs), we need to update it so it gets reloaded. In order to do that, we’ll just add a timestamp as a label to the Ingress controller:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">extensions/v1beta1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Ingress</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">kubernetes-demo-app-ingress-service"</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="c1"># Timestamp used in order to force reload of the secret</span>
+    <span class="s">last_updated</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1494099933"</span>
+</code></pre>
+</div>
+
+<div class="grid-block code-overflow code-end">...</div>
+
+<p>After doing this, you can now access your page through HTTPS!</p>
+
+<p><img src="/blog/images/posts/2017-05-15-ss5.png" alt="" width="750" />
+<img src="/blog/images/posts/2017-05-15-ss6.png" alt="" width="750" /></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Now, you have an idea of how Ingress controllers, services, deployments, and jobs interact with each other. You also know how SSL/TLS fits into the Kubernetes model, and how to leverage Let’s Encrypt to automatically generate SSL/TLS certs for your site. I hope you can take these practices further to make your applications easier to manage and more secure. If you want to take a look at a project that simplifies this process, you should check out <a href="https://github.com/jetstack/kube-lego">Kube-Lego</a>.</p>
+
+  </article>
+
+  <section class="grid-block shrink justify-center align-center section-footer">
+    <a class="grid-block shrink link text-center padding-sm" href="/blog/">View All Posts</a>
+  </section>
+</div>
+
+<script src="js/social-buttons.js"></script>
+
+    </main>
+
+    <footer class="grid-block col footer justify-spaced">
+  <aside class="grid-block aside-support">
+  <div class="grid-block col justify-center support-text">
+    <p class="p weight-strong">Our engineers are here for you.</p>
+    <p class="p">We can answer questions about Docker <br class="br">and help you set up your stack.</p>
+  </div>
+  <figure class="grid-block col figure shrink">
+    <div class="grid-block shrink bubble">
+      <img class="img float-left" src="/blog/images/logos/logo-slack.svg" height="18" width="18" alt="Slack">
+      <div class="grid-block col">
+        <div class="user">
+          <strong class="strong user-name">Jorge</strong>
+          <span class="user-time"> 4:19 PM</span>
+        </div>
+        <p class="p user-text">Can I run multiple commands?</p>
+      </div>
+    </div>
+    <div class="grid-block shrink bubble">
+      <img class="img float-left" src="/blog/images/runnabot-head.png" height="18" width="18" alt="Slack">
+      <div class="grid-block col">
+        <div class="user">
+          <strong class="strong user-name">Taylor</strong>
+          <span class="user-time"> 4:20 PM</span>
+        </div>
+        <p class="p user-text">Hi <span class="link-blue">@jorge</span>!
+          <br>Yes you can. Here’s how: …
+        </p>
+      </div>
+    </div>
+  </figure>
+</aside>
+
+  <div class="grid-block link-wrapper">
+    <div class="grid-block col align-start">
+      <h4 class="h4">Product</h4>
+      <a href="/preview-environments/" class="a">Preview Environments</a>
+      <a href="/end-to-end-testing/" class="a">End-to-End Testing</a>
+      <a href="/deploy-to-production/" class="a">Deploy to Production</a>
+      <a href="/use-cases/" class="a">Use Cases</a>
+      <a href="/how-it-works/" class="a">How It Works</a>
+      <a href="/pricing/" class="a">Pricing</a>
+      <h4 class="h4 margin-top-sm">Help</h4>
+      <a href="/docs/" class="a">Docs</a>
+      <a href="/docker/" class="a">Docker Guides</a>
+    </div>
+    <div class="grid-block col align-start">
+      <h4 class="h4">Company</h4>
+      <a href="/about/" class="a">About</a>
+      <a href="/blog/" class="a">Blog</a>
+      <a href="/contact/" class="a">Contact</a>
+      <a href="https://www.facebook.com/runnable/" class="a">Facebook</a>
+      <a href="https://twitter.com/GetRunnable" class="a">Twitter</a>
+      <a href="https://www.linkedin.com/company/runnable" class="a">Linkedin</a>
+      <h4 class="h4 margin-top-sm">Legal</h4>
+      <a href="/legal/privacy-policy/" class="a">Privacy</a>
+      <a href="/legal/terms-of-service/" class="a">Terms</a>
+      <a href="/legal/acceptable-use-policy/" class="a">Acceptable Use</a>
+    </div>
+  </div>
+</footer>
+
+  </body>
+
+</html>
